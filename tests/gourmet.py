@@ -24,12 +24,18 @@ order_to_exe = {
         },
     ],
 
-    'client': {
+   'client': {
         'shipping_addr': {
-            # datos
+            'billing_address_1': 'Calle Principal 123',
+            'billing_address_2': 'Piso 2, Depto. A',
+            'billing_city': 'Ciudad Principal',
+            'billing_postcode': '12345',
+            'billing_state': 'Madrid'
         },
         'customer': {
-            'name': 'Fulano	Menganito'
+            'phone': '1234567890'
         }
     },
+    
+    'order_comments': 'Por favor, entregar antes del sábado.'
 }

@@ -11,6 +11,10 @@ class WebAutomation:
     def __init__(self):
         self.driver = None
 
+    def nav(self, slug, delay = 0):
+        self.driver.get(self.login_data['site_url']  + '/' + slug)
+        time.sleep(delay)
+
     def setup(self):
         options = Options()
         options.add_extension("D:\ChromeExtensions\DarkReader.crx")
@@ -27,11 +31,8 @@ class WebAutomation:
 
         self.driver = webdriver.Chrome(options=options)
 
-        # Resto del código...
-
     def login(self):
-        self.driver.get(self.login_data['site_url'] + '/' + self.login_data['login_page'])
-        # Resto del código...
+        self.nav(self.login_data['login_page'])
 
         username_input = self.driver.find_element(By.ID, 'user_login')
         username_input.send_keys(self.login_data['log'])
@@ -43,9 +44,7 @@ class WebAutomation:
         login_button.click()
 
     def get_cart_items(self):
-        self.driver.get(self.login_data['site_url'] + self.cart_page)
-        self.driver.get(self.login_data['site_url'] + self.cart_page)
-        time.sleep(5)
+        self.nav(self.cart_page)
 
         cart_items = []
 
@@ -99,8 +98,7 @@ class WebAutomation:
 
     def get_product(self, product_url=None):
         if product_url is not None:
-            self.driver.get(self.login_data['site_url'] + product_url)
-            time.sleep(2)
+            self.nav(product_url)
 
         p = self.Product()
 
@@ -146,6 +144,36 @@ class WebAutomation:
             
         return instructions
 
+    def set_checkout_values(self, order_to_exe):
+        # Establecer la dirección de facturación
+        billing_address_1_input = self.driver.find_element(By.ID, 'billing_address_1')
+        billing_address_1_input.send_keys(order_to_exe['client']['shipping_addr']['billing_address_1'])
+
+        billing_address_2_input = self.driver.find_element(By.ID, 'billing_address_2')
+        billing_address_2_input.send_keys(order_to_exe['client']['shipping_addr']['billing_address_2'])
+
+        billing_city_input = self.driver.find_element(By.ID, 'billing_city')
+        billing_city_input.send_keys(order_to_exe['client']['shipping_addr']['billing_city'])
+
+        billing_postcode_input = self.driver.find_element(By.ID, 'billing_postcode')
+        billing_postcode_input.send_keys(order_to_exe['client']['shipping_addr']['billing_postcode'])
+
+        # Seleccionar el estado de facturación
+        billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
+        billing_state_input.click()
+        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{order_to_exe['client']['shipping_addr']['billing_state']}')]"
+        state_option = self.driver.find_element(By.XPATH, state_option_xpath)
+        state_option.click()
+
+        # Establecer el teléfono
+        billing_phone_input = self.driver.find_element(By.ID, 'billing_phone')
+        billing_phone_input.send_keys(order_to_exe['client']['customer']['phone'])
+
+        # Agregar notas al pedido
+        order_comments_input = self.driver.find_element(By.ID, 'order_comments')
+        order_comments_input.send_keys(order_to_exe['order_comments'])
+
+
     def main(self):
         if len(sys.argv) != 2:
             print("Usage: python router.py <test_file>")
@@ -184,8 +212,7 @@ class WebAutomation:
                 product_page = products['prd']
                 quantity     = products['qty']
 
-                self.driver.get(self.login_data['site_url'] + product_page)
-                time.sleep(2)
+                self.nav(product_page, 2)
 
                 p = self.get_product(product_page)
                 self.Product.print(p)
