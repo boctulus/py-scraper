@@ -180,9 +180,9 @@ class WebAutomation:
             #
 
             print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
-            for order in self.order_to_exe:
-                product_page = order['prd']
-                quantity     = order['qty']
+            for products in self.order_to_exe['products']:
+                product_page = products['prd']
+                quantity     = products['qty']
 
                 self.driver.get(self.login_data['site_url'] + product_page)
                 time.sleep(2)

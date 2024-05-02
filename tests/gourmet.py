@@ -8,17 +8,28 @@ login_data = {
 
 cart_page = '/cart/'
 
-order_to_exe = [
-    {
+order_to_exe = {
+    'products': [
+        {
         'prd': '/producto/queso-oregano-530gr/',
         'qty': 2
+        },
+        {
+            'prd': '/producto/jamon-de-tudanca/',
+            'qty': 5
+        },
+        {
+            'prd': '/producto/chorizo-de-ciervo-300g/',
+            'qty': 3
+        },
+    ],
+
+    'client': {
+        'shipping_addr': {
+            # datos
+        },
+        'customer': {
+            'name': 'Fulano	Menganito'
+        }
     },
-    {
-        'prd': '/producto/jamon-de-tudanca/',
-        'qty': 5
-    },
-    {
-        'prd': '/producto/chorizo-de-ciervo-300g/',
-        'qty': 3
-    }
-]
+}
