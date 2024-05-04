@@ -93,6 +93,7 @@ class WebAutomation:
         self.login_data  = instructions.get('login_data')
 
         try:
+            self.nav('/producto/queso-oregano-530gr/')
 
             title_element = WebDriverWait(self.driver, 10).until(
                 EC.visibility_of_element_located((By.XPATH, "//h1[@class='product-title product_title entry-title']"))
@@ -129,7 +130,7 @@ class WebAutomation:
 
         finally:
             print("Esperando para salir")
-            time.sleep(60)
+            # time.sleep(60)
             
             self.driver.quit()
 
