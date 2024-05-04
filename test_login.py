@@ -42,6 +42,9 @@ class WebAutomation:
         # Ignorar errores de SSL
         options.add_argument('--ignore-certificate-errors')  
 
+        # User Agent
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36")
+
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
         # options.add_argument("start-maximized")
