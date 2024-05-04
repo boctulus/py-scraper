@@ -34,7 +34,7 @@ class WebAutomation:
         
         if is_prod:
             # prod
-            options.add_argument('--headless=new')
+            options.add_argument('--headless')
         else:
             # dev
             options.add_extension("DarkReader.crx")    
@@ -47,10 +47,10 @@ class WebAutomation:
 
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
-        # options.add_argument("start-maximized")
-        # options.add_argument('--disable-dev-shm-usage')
-        # options.add_argument('--disable-gpu')
-        # options.add_argument('--no-sandbox')
+        options.add_argument("start-maximized")
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
         # option.binary_location = "/path/to/google-chrome"
 
         if install:  
@@ -65,6 +65,9 @@ class WebAutomation:
 
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
+
+        self.driver.implicitly_wait(2)
+
 
 
     def load_instructions(self, test_file):
