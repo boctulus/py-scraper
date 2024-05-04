@@ -8,6 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import sys
 import os
+from dotenv import load_dotenv
 
 class WebAutomation:
     def __init__(self):
@@ -18,9 +19,17 @@ class WebAutomation:
         self.driver.get(site_url + '/' + slug)
         time.sleep(delay)
 
-    def setup(self, install=False):
+    def setup(self, is_prod=False, install=False):
         options = Options()
-        options.add_extension("DarkReader.crx")
+        
+        if (is_prod)    {
+            # prod
+            options.add_argument('--headless=new')
+        } else {
+            # dev
+            options.add_extension("DarkReader.crx")
+        }        
+
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
         # options.add_argument("start-maximized")
@@ -273,5 +282,18 @@ class WebAutomation:
 
 if __name__ == "__main__":
     automation = WebAutomation()
-    automation.setup()
+
+    # 
+    # .env
+    #
+    # pip install python-dotenv
+    #
+    # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
+    #
+
+    load_dotenv()
+
+    is_prod = os.getenv('IS_PRODUCTION')
+
+    automation.setup(is_prod)
     automation.main()
