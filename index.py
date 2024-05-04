@@ -22,13 +22,12 @@ class WebAutomation:
     def setup(self, is_prod=False, install=False):
         options = Options()
         
-        if (is_prod)    {
+        if is_prod:
             # prod
             options.add_argument('--headless=new')
-        } else {
+        else:
             # dev
-            options.add_extension("DarkReader.crx")
-        }        
+            options.add_extension("DarkReader.crx")    
 
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
