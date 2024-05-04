@@ -20,7 +20,7 @@ class WebAutomation:
 
     def setup(self, install=True):
         options = Options()
-        options.add_extension("D:\ChromeExtensions\DarkReader.crx")
+        options.add_extension("DarkReader.crx")
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
         # options.add_argument("start-maximized")
