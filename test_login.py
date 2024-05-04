@@ -61,19 +61,6 @@ class WebAutomation:
                 self.driver = webdriver.Firefox(options=options)
 
 
-    def login(self):
-        self.nav(self.login_data['login_page'], 1)
-
-        username_input = self.driver.find_element(By.ID, 'user_login')
-        username_input.send_keys(self.login_data['log'])
-
-        password_input = self.driver.find_element(By.ID, 'user_pass')
-        password_input.send_keys(self.login_data['pwd'])
-
-        login_button = self.driver.find_element(By.ID, 'wp-submit')
-        login_button.click()
-
-
     def load_instructions(self, test_file):
         instructions = {}
         test_file_path = os.path.join('tests', test_file)
@@ -93,11 +80,16 @@ class WebAutomation:
         self.login_data  = instructions.get('login_data')
 
         try:
-            #
-            # Login
-            #
-            
-            self.login()
+            self.nav(self.login_data['login_page'], 1)
+
+            username_input = self.driver.find_element(By.ID, 'user_login')
+            username_input.send_keys(self.login_data['log'])
+
+            password_input = self.driver.find_element(By.ID, 'user_pass')
+            password_input.send_keys(self.login_data['pwd'])
+
+            login_button = self.driver.find_element(By.ID, 'wp-submit')
+            login_button.click()
 
 
         finally:
