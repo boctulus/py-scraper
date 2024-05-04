@@ -18,7 +18,7 @@ class WebAutomation:
         self.driver.get(site_url + '/' + slug)
         time.sleep(delay)
 
-    def setup(self, install=True):
+    def setup(self, install=False):
         options = Options()
         options.add_extension("DarkReader.crx")
         # options.add_argument("--headless")
