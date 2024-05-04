@@ -88,7 +88,7 @@ class WebAutomation:
         self.login_data = instructions.get('login_data')
 
         try:
-            self.nav(self.login_data['login_page'], 2)
+            self.nav('https://torrepadregourmet.es/producto/sobao-pequeno-12-unidades-1kg/')
 
             # Capturar el HTML renderizado
             html = self.driver.page_source
