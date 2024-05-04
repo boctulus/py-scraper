@@ -94,7 +94,7 @@ class WebAutomation:
 
         finally:
             print("Esperando para salir")
-            time.sleep(60)
+            # time.sleep(60)
             
             self.driver.quit()
 
