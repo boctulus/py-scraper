@@ -39,6 +39,9 @@ class WebAutomation:
             # dev
             options.add_extension("DarkReader.crx")    
 
+        # Ignorar errores de SSL
+        options.add_argument('--ignore-certificate-errors')  
+
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
         # options.add_argument("start-maximized")
