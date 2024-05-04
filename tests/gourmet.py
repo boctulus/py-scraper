@@ -2,11 +2,11 @@ login_data = {
     'site_url': 'https://torrepadregourmet.es',
     'log': 'pablo@tiendaonline.com.ar',
     'pwd': 'pablo123$=Nn',
-    'login_page': 'wp-login.php',
-    'cart_page': '/cart/'
+    'login_page': 'wp-login.php'
 }
 
 cart_page = '/cart/'
+checkout_page = '/checkout/'
 
 order_to_exe = {
     'products': [
@@ -26,8 +26,10 @@ order_to_exe = {
 
    'client': {
         'shipping_addr': {
-            'billing_address_1': 'Calle Principal 123',
-            'billing_address_2': 'Piso 2, Depto. A',
+            'billing_first_name': 'Ambrosio F.',
+            'billing_last_name': 'Perez Diaz',
+            'billing_address_1': 'Calle Principal 777',
+            'billing_address_2': 'Piso 5, Depto. B',
             'billing_city': 'Ciudad Principal',
             'billing_postcode': '12345',
             'billing_state': 'Madrid'
@@ -36,6 +38,6 @@ order_to_exe = {
             'phone': '1234567890'
         }
     },
-    
-    'order_comments': 'Por favor, entregar antes del sábado.'
+
+    'order_comments': 'Por favor, entregar antes del sabado.'
 }

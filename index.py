@@ -3,6 +3,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import sys
 import os
@@ -11,11 +13,12 @@ class WebAutomation:
     def __init__(self):
         self.driver = None
 
-    def nav(self, slug, delay = 0):
-        self.driver.get(self.login_data['site_url']  + '/' + slug)
+    def nav(self, slug, delay=0):
+        site_url = self.login_data['site_url'].rstrip('/')
+        self.driver.get(site_url + '/' + slug)
         time.sleep(delay)
 
-    def setup(self):
+    def setup(self, install=True):
         options = Options()
         options.add_extension("D:\ChromeExtensions\DarkReader.crx")
         # options.add_argument("--headless")
@@ -25,11 +28,11 @@ class WebAutomation:
         # options.add_argument('--disable-gpu')
         # options.add_argument('--no-sandbox')
         # option.binary_location = "/path/to/google-chrome"
-            
-        # self.driver = webdriver.Chrome(service=ChromeService(
-        #     ChromeDriverManager().install()), options=options)
 
-        self.driver = webdriver.Chrome(options=options)
+        if install:  # Cambio aquí: if (install) a if install
+            self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        else:
+            self.driver = webdriver.Chrome(options=options)
 
     def login(self):
         self.nav(self.login_data['login_page'])
@@ -144,34 +147,53 @@ class WebAutomation:
             
         return instructions
 
-    def set_checkout_values(self, order_to_exe):
+    def set_checkout(self):
+        self.nav(self.checkout_page)
+
+         # Establecer el nombre
+        billing_first_name_input = self.driver.find_element(By.XPATH, "//input[@id='billing_first_name']")
+        billing_first_name_input.clear()
+        billing_first_name_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_first_name'])
+
+        # Establecer el apellido
+        billing_last_name_input = self.driver.find_element(By.XPATH, "//input[@id='billing_last_name']")
+        billing_last_name_input.clear()
+        billing_last_name_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_last_name'])
+
         # Establecer la dirección de facturación
+
         billing_address_1_input = self.driver.find_element(By.ID, 'billing_address_1')
-        billing_address_1_input.send_keys(order_to_exe['client']['shipping_addr']['billing_address_1'])
+        billing_address_1_input.clear()
+        billing_address_1_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_address_1'])
 
         billing_address_2_input = self.driver.find_element(By.ID, 'billing_address_2')
-        billing_address_2_input.send_keys(order_to_exe['client']['shipping_addr']['billing_address_2'])
+        billing_address_2_input.clear()
+        billing_address_2_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_address_2'])
 
         billing_city_input = self.driver.find_element(By.ID, 'billing_city')
-        billing_city_input.send_keys(order_to_exe['client']['shipping_addr']['billing_city'])
+        billing_city_input.clear()
+        billing_city_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_city'])
 
         billing_postcode_input = self.driver.find_element(By.ID, 'billing_postcode')
-        billing_postcode_input.send_keys(order_to_exe['client']['shipping_addr']['billing_postcode'])
+        billing_postcode_input.clear()
+        billing_postcode_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_postcode'])
 
         # Seleccionar el estado de facturación
         billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
         billing_state_input.click()
-        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{order_to_exe['client']['shipping_addr']['billing_state']}')]"
+        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{self.order_to_exe['client']['shipping_addr']['billing_state']}')]"
         state_option = self.driver.find_element(By.XPATH, state_option_xpath)
         state_option.click()
 
         # Establecer el teléfono
         billing_phone_input = self.driver.find_element(By.ID, 'billing_phone')
-        billing_phone_input.send_keys(order_to_exe['client']['customer']['phone'])
+        billing_phone_input.clear()
+        billing_phone_input.send_keys(self.order_to_exe['client']['customer']['phone'])
 
         # Agregar notas al pedido
         order_comments_input = self.driver.find_element(By.ID, 'order_comments')
-        order_comments_input.send_keys(order_to_exe['order_comments'])
+        order_comments_input.clear()
+        order_comments_input.send_keys(self.order_to_exe['order_comments'])
 
 
     def main(self):
@@ -182,9 +204,10 @@ class WebAutomation:
         test_file = sys.argv[1]
         instructions = self.load_instructions(test_file)
 
-        self.login_data   = instructions.get('login_data')
-        self.cart_page    = instructions.get('cart_page')
-        self.order_to_exe = instructions.get('order_to_exe')
+        self.login_data    = instructions.get('login_data')
+        self.cart_page     = instructions.get('cart_page')
+        self.checkout_page = instructions.get('checkout_page')
+        self.order_to_exe  = instructions.get('order_to_exe')
 
         try:
             #
@@ -236,9 +259,15 @@ class WebAutomation:
             cart_items = self.get_cart_items()
             self.print_cart_items(cart_items)
 
+            #
+            # Checkout
+            #
+
+            self.set_checkout()
+
 
         finally:
-            time.sleep(3)
+            time.sleep(60)
             self.driver.quit()
 
 
