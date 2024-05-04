@@ -87,8 +87,10 @@ class WebAutomation:
 
             # Capturar el HTML renderizado
             html = self.driver.page_source
-            with open('login_page.html', 'w') as f:
-                f.write(html)
+            # with open('login_page.html', 'w') as f:
+            #     f.write(html)
+
+            print(html)
             
             username_input = self.driver.find_element(By.ID, 'user_login')
             username_input.send_keys(self.login_data['log'])
