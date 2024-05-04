@@ -80,7 +80,7 @@ class WebAutomation:
         self.login_data  = instructions.get('login_data')
 
         try:
-            self.nav(self.login_data['login_page'], 1)
+            self.nav(self.login_data['login_page'], 10)
 
             username_input = self.driver.find_element(By.ID, 'user_login')
             username_input.send_keys(self.login_data['log'])
@@ -95,6 +95,12 @@ class WebAutomation:
         finally:
             print("Esperando para salir")
             # time.sleep(60)
+
+            # Capturar el HTML renderizado
+            html = self.driver.page_source
+            with open('login_page.html', 'w') as f:
+                f.write(html)
+            self.driver.quit()
             
             self.driver.quit()
 
