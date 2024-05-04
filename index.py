@@ -1,10 +1,16 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+
+from selenium.webdriver.firefox.options import Options as FireFoxOptions
+from selenium.webdriver.firefox.service import Service as FireFoxService
+from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
+
 import time
 import sys
 import os
@@ -19,8 +25,8 @@ class WebAutomation:
         self.driver.get(site_url + '/' + slug)
         time.sleep(delay)
 
-    def setup(self, is_prod=False, install=False):
-        options = Options()
+    def setup(self, is_prod=False, install=False, web_driver='Google'):
+        options = ChromeOptions()
         
         if is_prod:
             # prod
@@ -292,7 +298,13 @@ if __name__ == "__main__":
 
     load_dotenv()
 
-    is_prod = os.getenv('IS_PRODUCTION')
+    if os.getenv('IS_PRODUCTION') == 'True':
+        is_prod = True
+    else:
+        is_prod = False
 
-    automation.setup(is_prod)
+    web_driver = os.getenv('WEB_DRIVER')
+
+
+    automation.setup(is_prod, False, web_driver)
     automation.main()
