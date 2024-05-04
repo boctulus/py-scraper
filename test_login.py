@@ -34,7 +34,7 @@ class WebAutomation:
         
         if is_prod:
             # prod
-            options.add_argument('--headless')
+            options.add_argument('--headless=new')
         else:
             # dev
             options.add_extension("DarkReader.crx")    
@@ -67,7 +67,6 @@ class WebAutomation:
                 self.driver = webdriver.Firefox(options=options)
 
         self.driver.implicitly_wait(2)
-
 
 
     def load_instructions(self, test_file):
@@ -105,7 +104,7 @@ class WebAutomation:
             password_input.send_keys(self.login_data['pwd'])
 
             login_button = self.driver.find_element(By.ID, 'wp-submit')
-            login_button.click()
+            # login_button.click()
 
 
         finally:
