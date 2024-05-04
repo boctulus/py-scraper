@@ -43,7 +43,7 @@ class WebAutomation:
             self.driver = webdriver.Chrome(options=options)
 
     def login(self):
-        self.nav(self.login_data['login_page'], 2)
+        self.nav(self.login_data['login_page'], 5)
 
         username_input = self.driver.find_element(By.ID, 'user_login')
         username_input.send_keys(self.login_data['log'])
