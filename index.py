@@ -25,8 +25,12 @@ class WebAutomation:
         self.driver.get(site_url + '/' + slug)
         time.sleep(delay)
 
+
     def setup(self, is_prod=False, install=False, web_driver='Google'):
-        options = ChromeOptions()
+        options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
+
+        if options is None:
+            raise ValueError(f"Unsupported web driver: {web_driver}. Supported options are 'Chrome' and 'Firefox'")
         
         if is_prod:
             # prod
@@ -43,13 +47,22 @@ class WebAutomation:
         # options.add_argument('--no-sandbox')
         # option.binary_location = "/path/to/google-chrome"
 
-        if install:  # Cambio aquí: if (install) a if install
-            self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        if install:  
+            if (web_driver == 'Google'):
+                self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) 
+
+            if (web_driver == 'FireFox'):
+                self.driver = webdriver.Firefox(service=ChromeService(FireFoxDriverManager().install()), options=options) 
         else:
-            self.driver = webdriver.Chrome(options=options)
+            if (web_driver == 'Google'):
+                self.driver = webdriver.Chrome(options=options)
+
+            if (web_driver == 'FireFox'):
+                self.driver = webdriver.Firefox(options=options)
+
 
     def login(self):
-        self.nav(self.login_data['login_page'], 5)
+        self.nav(self.login_data['login_page'], 1)
 
         username_input = self.driver.find_element(By.ID, 'user_login')
         username_input.send_keys(self.login_data['log'])
