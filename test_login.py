@@ -48,9 +48,9 @@ class WebAutomation:
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
         options.add_argument("start-maximized")
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-dev-shm-usage')
+        # options.add_argument('--disable-gpu')
+        # options.add_argument('--no-sandbox')
         # option.binary_location = "/path/to/google-chrome"
 
         if install:  
@@ -88,7 +88,7 @@ class WebAutomation:
         self.login_data = instructions.get('login_data')
 
         try:
-            self.nav(self.login_data['login_page'], 10)
+            self.nav(self.login_data['login_page'], 2)
 
             # Capturar el HTML renderizado
             html = self.driver.page_source
@@ -97,13 +97,13 @@ class WebAutomation:
 
             print(html)
             
-            username_input = self.driver.find_element(By.ID, 'user_login')
-            username_input.send_keys(self.login_data['log'])
+            # username_input = self.driver.find_element(By.ID, 'user_login')
+            # username_input.send_keys(self.login_data['log'])
 
-            password_input = self.driver.find_element(By.ID, 'user_pass')
-            password_input.send_keys(self.login_data['pwd'])
+            # password_input = self.driver.find_element(By.ID, 'user_pass')
+            # password_input.send_keys(self.login_data['pwd'])
 
-            login_button = self.driver.find_element(By.ID, 'wp-submit')
+            # login_button = self.driver.find_element(By.ID, 'wp-submit')
             # login_button.click()
 
 
