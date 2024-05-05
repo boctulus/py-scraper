@@ -63,7 +63,17 @@ class WebAutomation:
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-    
+
+    def save_html(filename):
+        if not filename.endswith('.html'):
+            filename += '.html'
+
+        html = self.driver.page_source
+        
+        with open(filename, 'w') as f:
+            f.write(html)
+
+
     # Casos de uso:
     #
     #     selector = get_selector('[id="username"]')
@@ -116,7 +126,6 @@ class WebAutomation:
         # Hacer clic en el botón de inicio de sesión
         login_button = self.get_selector(submit_button)
         login_button.click()
-
 
 
     def load_instructions(self, test_file):

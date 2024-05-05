@@ -62,6 +62,20 @@ class WebAutomation:
                 self.driver = webdriver.Firefox(options=options)
 
 
+    def save_html(filename):
+        """
+        Salva renderizado en archivo
+        """
+        
+        if not filename.endswith('.html'):
+            filename += '.html'
+
+        html = self.driver.page_source
+        
+        with open(filename, 'w') as f:
+            f.write(html)
+
+
     def get_selector(self, selector, debug=False):
         """
         Busca un elemento en la página web utilizando diferentes tipos de selectores.
