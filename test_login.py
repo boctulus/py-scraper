@@ -66,26 +66,17 @@ class WebAutomation:
     def main(self):
         try:        
             # url = 'https://17798452.com/wp-login.php' # OK
-            url = 'https://torrepadregourmet.es/wp-login.php'
+            # url = 'https://torrepadregourmet.es/wp-login.php'
+            url = 'https://torrepadregourmet.es/wp-login.php?redirect_to=https://torrepadregourmet.es/wp-admin/&reauth=1'
 
             self.driver.get(url)
             time.sleep(2)
 
-            # Capturar el HTML renderizado
             html = self.driver.page_source
             # with open('login_page.html', 'w') as f:
             #     f.write(html)
 
             print(html)
-            
-            # username_input = self.driver.find_element(By.ID, 'user_login')
-            # username_input.send_keys(self.login_data['log'])
-
-            # password_input = self.driver.find_element(By.ID, 'user_pass')
-            # password_input.send_keys(self.login_data['pwd'])
-
-            # login_button = self.driver.find_element(By.ID, 'wp-submit')
-            # login_button.click()
 
 
         finally:
