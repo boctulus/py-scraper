@@ -65,7 +65,10 @@ class WebAutomation:
 
     def main(self):
         try:        
-            self.driver.get('https://17798452.com/wp-login.php')
+            # url = 'https://17798452.com/wp-login.php' # OK
+            url = 'https://torrepadregourmet.es/wp-login.php'
+
+            self.driver.get(url)
             time.sleep(2)
 
             # Capturar el HTML renderizado
