@@ -48,6 +48,8 @@ class WebAutomation:
         # options.add_argument('--no-sandbox')
         # option.binary_location = "/path/to/google-chrome"
 
+        # self.driver.implicitly_wait(5)
+
         if install:  
             if (web_driver == 'Google'):
                 self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) 
@@ -76,7 +78,7 @@ class WebAutomation:
             f.write(html)
 
 
-    def get_selector(self, selector, debug=False):
+    def get_selector(self, selector, t=10, debug=False):
         """
         Busca un elemento en la página web utilizando diferentes tipos de selectores.
 
@@ -134,7 +136,11 @@ class WebAutomation:
         if debug:
             print(f"{selector} > {value}")
 
-        return self.driver.find_element(locator, value)
+        # return self.driver.find_element(locator, value)
+
+        return WebDriverWait(self.driver, t).until(
+            EC.visibility_of_element_located((locator, value))
+        )
 
 
     def login(self, debug = False):
