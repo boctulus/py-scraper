@@ -1,3 +1,8 @@
+import time
+import sys
+import os
+import re
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,10 +15,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.firefox.options import Options as FireFoxOptions
 from selenium.webdriver.firefox.service import Service as FireFoxService
 from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
-
-import time
-import sys
-import os
 from dotenv import load_dotenv
 
 class WebAutomation:
@@ -61,17 +62,60 @@ class WebAutomation:
                 self.driver = webdriver.Firefox(options=options)
 
 
-    def login(self):
-        self.nav(self.login_data['login_page'], 1)
+    # Casos de uso:
+    #
+    #     selector = get_selector('[id="username"]')
+    #     selector = get_selector('input[name="login_password"]')
+    #
 
-        username_input = self.driver.find_element(By.ID, 'user_login')
+    def get_selector(self, selector, debug = False):
+        match = re.search(r'id="([^"]+)"', selector)
+        
+        if match:
+            if debug:
+                print(selector + ' > ' + match.group(1))
+            
+            return self.driver.find_element(By.ID, match.group(1))
+        else:
+            if debug:
+                print(selector + ' > ' + selector)
+
+            return self.driver.find_element(By.CSS_SELECTOR, selector)
+
+
+    def login(self, debug = False):
+        self.nav(self.login_data['login_page'])
+
+        default_css_selectors = {
+            'username_input':    '[id="user_login"]',
+            'password_input':    '[id="user_pass"]',
+            'remember_checkbox': '[name="rememberme"]',
+            'submit_button':     '[id="wp-submit"]'
+        }
+
+        custom_selectors = self.login_data.get('css_selectors', default_css_selectors)
+
+        # Obtener los selectores personalizados o los predeterminados
+        username_selector = custom_selectors.get('username_input', default_css_selectors['username_input'])
+        password_selector = custom_selectors.get('password_input', default_css_selectors['password_input'])
+        submit_button     = custom_selectors.get('submit_button',  default_css_selectors['submit_button'])
+
+        if debug:
+            print('username_selector: ' + username_selector) 
+            print('password_selector: ' + password_selector)
+            print('submit_button: '     + submit_button)
+
+        # Enviar las credenciales al formulario de inicio de sesión
+        username_input = self.get_selector(username_selector)
         username_input.send_keys(self.login_data['log'])
 
-        password_input = self.driver.find_element(By.ID, 'user_pass')
+        password_input = self.get_selector(password_selector)
         password_input.send_keys(self.login_data['pwd'])
 
-        login_button = self.driver.find_element(By.ID, 'wp-submit')
+        # Hacer clic en el botón de inicio de sesión
+        login_button = self.get_selector(submit_button)
         login_button.click()
+
 
     def get_cart_items(self):
         self.nav(self.cart_page)
