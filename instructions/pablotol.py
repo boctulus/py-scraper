@@ -3,7 +3,7 @@ login_data = {
     'log': 'pablo',
     'pwd': 'NsoslQPiaHQ0',
     'login_page': '?page_id=5902',
-    'css_selectors': {
+    'selectors': {
         'username_input':    'input[name="login_username"]',
         'password_input':    'input[name="login_password"]',
         'remember_checkbox': 'input[name="login_remember"]',

@@ -98,19 +98,19 @@ class WebAutomation:
     def login(self):
         self.nav(self.login_data['login_page'])
 
-        default_css_selectors = {
+        default_selectors = {
             'username_input':    '[id="user_login"]',
             'password_input':    '[id="user_pass"]',
             'remember_checkbox': '[name="rememberme"]',
             'submit_button':     '[id="wp-submit"]'
         }
 
-        custom_selectors = self.login_data.get('css_selectors', default_css_selectors)
+        custom_selectors = self.login_data.get('selectors', default_selectors)
 
         # Obtener los selectores personalizados o los predeterminados
-        username_selector = custom_selectors.get('username_input', default_css_selectors['username_input'])
-        password_selector = custom_selectors.get('password_input', default_css_selectors['password_input'])
-        submit_button     = custom_selectors.get('submit_button',  default_css_selectors['submit_button'])
+        username_selector = custom_selectors.get('username_input', default_selectors['username_input'])
+        password_selector = custom_selectors.get('password_input', default_selectors['password_input'])
+        submit_button     = custom_selectors.get('submit_button',  default_selectors['submit_button'])
 
         print('username_selector: ' + username_selector) 
         print('password_selector: ' + password_selector)

@@ -3,7 +3,7 @@ login_data = {
     'log': 'pablo@tiendaonline.com.ar',
     'pwd': 'pablo123$=Nn',
     'login_page': 'wp-login.php',
-    # 'css_selectors': {
+    # 'selectors': {
     #     'username_input':    '[id="user_login"]',
     #     'password_input':    '[id="user_pass"]',
     #     'remember_checkbox': '[name="rememberme"]',
