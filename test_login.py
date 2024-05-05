@@ -80,13 +80,22 @@ class WebAutomation:
         print('username_selector: ' + username_selector)
         print('password_selector: ' + password_selector)
 
-        username_input = self.driver.find_element(By.CSS_SELECTOR, username_selector)  
+        # username_input = self.driver.find_element(By.CSS_SELECTOR, username_selector)  
+        # username_input.send_keys(self.login_data['log'])
+
+        # password_input = self.driver.find_element(By.CSS_SELECTOR, password_selector)
+        # password_input.send_keys(self.login_data['pwd'])
+
+        # login_button = self.driver.find_element(By.CSS_SELECTOR, submit_button)
+        # login_button.click()
+
+        username_input = self.driver.find_element(By.ID, 'user_login')
         username_input.send_keys(self.login_data['log'])
 
-        password_input = self.driver.find_element(By.CSS_SELECTOR, password_selector)
+        password_input = self.driver.find_element(By.ID, 'user_pass')
         password_input.send_keys(self.login_data['pwd'])
 
-        login_button = self.driver.find_element(By.CSS_SELECTOR, submit_button)
+        login_button = self.driver.find_element(By.ID, 'wp-submit')
         login_button.click()
 
 
