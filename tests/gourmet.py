@@ -2,7 +2,7 @@ login_data = {
     'site_url': 'https://torrepadregourmet.es',
     'log': 'pablo@tiendaonline.com.ar',
     'pwd': 'pablo123$=Nn',
-    'login_page': 'wp-login.php?redirect_to=https%3A%2F%2Ftorrepadregourmet.es%2Fwp-admin%2F&reauth=1'
+    'login_page': 'wp-login.php'
 }
 
 cart_page = '/cart/'

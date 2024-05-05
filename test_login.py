@@ -20,11 +20,6 @@ class WebAutomation:
     def __init__(self):
         self.driver = None
 
-    def nav(self, slug, delay=0):
-        site_url = self.login_data['site_url'].rstrip('/')
-        self.driver.get(site_url + '/' + slug)
-        time.sleep(delay)
-
 
     def setup(self, is_prod=False, install=False, web_driver='Google'):
         options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
@@ -68,27 +63,10 @@ class WebAutomation:
 
         self.driver.implicitly_wait(2)
 
-
-    def load_instructions(self, test_file):
-        instructions = {}
-        test_file_path = os.path.join('tests', test_file)
-       
-        if not os.path.isfile(test_file_path):
-            print(f"Error: File '{test_file}' not found.")
-            return
-
-        with open(test_file_path, 'r') as f:
-            exec(f.read(), instructions)
-            
-        return instructions
-
     def main(self):
-        instructions    = self.load_instructions('gourmet.py')
-
-        self.login_data = instructions.get('login_data')
-
-        try:
-            self.nav(self.login_data['login_page'])
+        try:        
+            self.driver.get('https://17798452.com/wp-login.php')
+            time.sleep(2)
 
             # Capturar el HTML renderizado
             html = self.driver.page_source
