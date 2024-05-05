@@ -20,11 +20,6 @@ class WebAutomation:
     def __init__(self):
         self.driver = None
 
-    def nav(self, slug, delay=0):
-        site_url = self.login_data['site_url'].rstrip('/')
-        self.driver.get(site_url + '/' + slug)
-        time.sleep(delay)
-
 
     def setup(self, is_prod=False, install=False, web_driver='Google'):
         options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
@@ -45,11 +40,9 @@ class WebAutomation:
         # User Agent
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36")
 
-        # self.driver.implicitly_wait(2)
-
         # options.add_argument("--headless")
         # options.add_argument('--headless=new')
-        # options.add_argument("start-maximized")
+        options.add_argument("start-maximized")
         # options.add_argument('--disable-dev-shm-usage')
         # options.add_argument('--disable-gpu')
         # options.add_argument('--no-sandbox')
@@ -68,61 +61,30 @@ class WebAutomation:
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-
-    def load_instructions(self, test_file):
-        instructions = {}
-        test_file_path = os.path.join('tests', test_file)
-       
-        if not os.path.isfile(test_file_path):
-            print(f"Error: File '{test_file}' not found.")
-            return
-
-        with open(test_file_path, 'r') as f:
-            exec(f.read(), instructions)
-            
-        return instructions
+        self.driver.implicitly_wait(2)
 
     def main(self):
-        instructions    = self.load_instructions('pablotol.py')
+        try:        
+            # u = 'https://17798452.com/wp-login.php' # OK -- mismo server, mismo dominio, mismo subdominio
+            # u = 'https://torrepadregourmet.es/wp-login.php'
+            # u = 'https://torrepadregourmet.es/wp-login.php?redirect_to=https://torrepadregourmet.es/wp-admin/&reauth=1'
+            u = 'https://pablomillan.es/wp-login.php' #OK 
+            u = 'https://pablo.tol.ar/?page_id=5902'
 
-        self.login_data = instructions.get('login_data')
+            self.driver.get(u)
+            time.sleep(2)
 
-        try:
-            self.nav(self.login_data['login_page'], 1)
-
-            # Capturar el HTML renderizado
             html = self.driver.page_source
             # with open('login_page.html', 'w') as f:
             #     f.write(html)
 
             print(html)
-            
-            username_input = self.driver.find_element(By.CSS_SELECTOR, 'input[name="login_username"]')
-            username_input.send_keys(self.login_data['log'])
 
-            password_input = self.driver.find_element(By.CSS_SELECTOR, 'input[name="login_password"]')
-            password_input.send_keys(self.login_data['pwd'])
-
-            remember_checkbox = self.driver.find_element(By.CSS_SELECTOR, 'input[name="login_remember"]')
-
-            # wait = WebDriverWait(self.driver, 1)
-            # wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[name="login_remember"]')))
-
-            # if not remember_checkbox.is_selected():
-            #     remember_checkbox.click()
-
-            login_button = self.driver.find_element(By.CSS_SELECTOR, 'input[name="login_submit"]')
-            login_button.click()
-
-            time.sleep(5)
-
-            html = self.driver.page_source
-            print(html)
 
         finally:
             print("Esperando para salir")
             # time.sleep(60)
-            
+
    
 
 

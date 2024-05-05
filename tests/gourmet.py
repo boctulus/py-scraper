@@ -11,8 +11,8 @@ checkout_page = '/checkout/'
 order_to_exe = {
     'products': [
         {
-        'prd': '/producto/queso-oregano-530gr/',
-        'qty': 2
+            'prd': '/producto/queso-oregano-530gr/',
+            'qty': 2
         },
         {
             'prd': '/producto/jamon-de-tudanca/',
