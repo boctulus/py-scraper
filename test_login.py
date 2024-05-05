@@ -65,11 +65,12 @@ class WebAutomation:
 
     def main(self):
         try:        
-            # url = 'https://17798452.com/wp-login.php' # OK
-            # url = 'https://torrepadregourmet.es/wp-login.php'
-            url = 'https://torrepadregourmet.es/wp-login.php?redirect_to=https://torrepadregourmet.es/wp-admin/&reauth=1'
+            # u = 'https://17798452.com/wp-login.php' # OK -- mismo server, mismo dominio, mismo subdominio
+            # u = 'https://torrepadregourmet.es/wp-login.php'
+            # u = 'https://torrepadregourmet.es/wp-login.php?redirect_to=https://torrepadregourmet.es/wp-admin/&reauth=1'
+            u = 'https://pablomillan.es/wp-login.php'
 
-            self.driver.get(url)
+            self.driver.get(u)
             time.sleep(2)
 
             html = self.driver.page_source
