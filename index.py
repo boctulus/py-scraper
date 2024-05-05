@@ -62,35 +62,75 @@ class WebAutomation:
                 self.driver = webdriver.Firefox(options=options)
 
 
-    # Casos de uso:
-    #
-    #     selector = get_selector('[id="username"]')
-    #     selector = get_selector('input[name="login_password"]')
-    #
+    def get_selector(self, selector, debug=False):
+        """
+        Busca un elemento en la página web utilizando diferentes tipos de selectores.
 
-    def get_selector(self, selector, debug = False):
-        match = re.search(r'id="([^"]+)"', selector)
-        
-        if match:
-            if debug:
-                print(selector + ' > ' + match.group(1))
-            
-            return self.driver.find_element(By.ID, match.group(1))
+        Args:
+            selector (str):         El selector del elemento, que puede comenzar con uno de los siguientes identificadores seguido
+                                    de dos puntos (ID:, NAME:, XPATH:, LINK_TEXT:, PARTIAL_LINK_TEXT:, TAG_NAME:, CLASS_NAME:),
+                                    seguido del valor del selector.
+
+            debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
+
+        Returns:
+            selenium.webdriver.remote.webelement.WebElement: El elemento encontrado en la página.
+
+        Ejemplo de uso:
+            # Buscar un elemento por su ID
+            elemento = self.get_selector('ID:my_id')
+
+            ID = "id"
+            NAME = "name"
+            XPATH = "xpath"
+            LINK_TEXT = "link text"
+            PARTIAL_LINK_TEXT = "partial link text"
+            TAG_NAME = "tag name"
+            CLASS_NAME = "class name"
+            CSS_SELECTOR = "css selector"
+
+            https://selenium-python.readthedocs.io/locating-elements.html
+        """
+
+        if selector.startswith('ID:'):
+            locator = By.ID
+            value = selector[3:]  # Ignorar las primeras tres letras 'ID:'
+        elif selector.startswith('NAME:'):
+            locator = By.NAME
+            value = selector[5:]  # Ignorar las primeras cinco letras 'NAME:'
+        elif selector.startswith('XPATH:'):
+            locator = By.XPATH
+            value = selector[6:]  # Ignorar las primeras seis letras 'XPATH:'
+        elif selector.startswith('LINK_TEXT:'):
+            locator = By.LINK_TEXT
+            value = selector[10:]  # Ignorar las primeras diez letras 'LINK_TEXT:'
+        elif selector.startswith('PARTIAL_LINK_TEXT:'):
+            locator = By.PARTIAL_LINK_TEXT
+            value = selector[18:]  # Ignorar las primeras dieciocho letras 'PARTIAL_LINK_TEXT:'
+        elif selector.startswith('TAG_NAME:'):
+            locator = By.TAG_NAME
+            value = selector[9:]  # Ignorar las primeras nueve letras 'TAG_NAME:'
+        elif selector.startswith('CLASS_NAME:'):
+            locator = By.CLASS_NAME
+            value = selector[11:]  # Ignorar las primeras once letras 'CLASS_NAME:'
         else:
-            if debug:
-                print(selector + ' > ' + selector)
+            locator = By.CSS_SELECTOR
+            value = selector
 
-            return self.driver.find_element(By.CSS_SELECTOR, selector)
+        if debug:
+            print(f"{selector} > {value}")
+
+        return self.driver.find_element(locator, value)
 
 
     def login(self, debug = False):
         self.nav(self.login_data['login_page'])
 
         default_css_selectors = {
-            'username_input':    '[id="user_login"]',
-            'password_input':    '[id="user_pass"]',
-            'remember_checkbox': '[name="rememberme"]',
-            'submit_button':     '[id="wp-submit"]'
+            'username_input':    'ID:user_login',
+            'password_input':    'ID:user_pass',
+            'remember_checkbox': 'NAME:rememberme',
+            'submit_button':     'ID:wp-submit'
         }
 
         custom_selectors = self.login_data.get('css_selectors', default_css_selectors)
@@ -207,7 +247,7 @@ class WebAutomation:
 
     def load_instructions(self, test_file):
         instructions = {}
-        test_file_path = os.path.join('tests', test_file)
+        test_file_path = os.path.join('instructions', test_file)
        
         if not os.path.isfile(test_file_path):
             print(f"Error: File '{test_file}' not found.")

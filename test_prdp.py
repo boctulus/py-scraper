@@ -76,7 +76,7 @@ class WebAutomation:
 
     def load_instructions(self, test_file):
         instructions = {}
-        test_file_path = os.path.join('tests', test_file)
+        test_file_path = os.path.join('instructions', test_file)
        
         if not os.path.isfile(test_file_path):
             print(f"Error: File '{test_file}' not found.")
