@@ -68,7 +68,8 @@ class WebAutomation:
             # u = 'https://17798452.com/wp-login.php' # OK -- mismo server, mismo dominio, mismo subdominio
             # u = 'https://torrepadregourmet.es/wp-login.php'
             # u = 'https://torrepadregourmet.es/wp-login.php?redirect_to=https://torrepadregourmet.es/wp-admin/&reauth=1'
-            u = 'https://pablomillan.es/wp-login.php'
+            u = 'https://pablomillan.es/wp-login.php' #OK 
+            u = 'https://pablo.tol.ar/?page_id=5902'
 
             self.driver.get(u)
             time.sleep(2)
