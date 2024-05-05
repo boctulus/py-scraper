@@ -2,7 +2,13 @@ login_data = {
     'site_url': 'https://pablo.tol.ar',
     'log': 'pablo',
     'pwd': 'NsoslQPiaHQ0',
-    'login_page': '?page_id=5902'
+    'login_page': '?page_id=5902',
+    'css_selectors': {
+        'username_input':    'input[name="login_username"]',
+        'password_input':    'input[name="login_password"]',
+        'remember_checkbox': 'input[name="login_remember"]',
+        'submit_button':     'input[name="login_submit"]'
+    }
 }
 
 cart_page = '?page_id=978'
@@ -37,3 +43,4 @@ order_to_exe = {
 
     'order_comments': 'Por favor, entregar antes del sabado.'
 }
+
