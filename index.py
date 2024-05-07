@@ -130,6 +130,9 @@ class WebAutomation:
         elif selector.startswith('CLASS_NAME:'):
             locator = By.CLASS_NAME
             value = selector[11:]  # Ignorar las primeras once letras 'CLASS_NAME:'
+        elif selector.startswith('CSS_SELECTOR:'):
+            locator = By.CSS_SELECTOR
+            value = selector[13:]  # Ignorar las primeras catorce letras 'CSS_SELECTOR:'
         else:
             locator = By.CSS_SELECTOR
             value = selector
@@ -273,31 +276,11 @@ class WebAutomation:
 
         p = self.Product()
 
-        title_element = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//h1[@class='product-title product_title entry-title']"))
-        )
-        p.title = title_element.text
-
-
-        price_element = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//div[@class='product-main']//bdi[1]"))
-        )
-        p.price = price_element.text
-
-        description_element = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//div[@class='product-short-description']/p"))
-        )
-        p.description = description_element.text
-
-        stock_element = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "p.stock.in-stock"))
-        )
-        p.stock = stock_element.text
-
-        sku_element = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "span.sku"))
-        )
-        p.sku = sku_element.text
+        p.title = self.get_text("XPATH://h1[@class='product-title product_title entry-title']")
+        p.price = self.get_text("XPATH://div[@class='product-main']//bdi[1]")
+        p.description = self.get_text("XPATH://div[@class='product-short-description']/p")
+        p.stock = self.get_text("CSS_SELECTOR:p.stock.in-stock")
+        p.sku = self.get_text("CSS_SELECTOR:span.sku")
 
         # Retorna un objeto Producto
         return p
