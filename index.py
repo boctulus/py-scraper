@@ -24,11 +24,7 @@ from libs.web_automation import WebAutomation
 class MyScraper(WebAutomation):
     def __init__(self):
         self.driver = None
-
-    # def nav(self, slug, delay=0):
-    #     site_url = self.login_data['site_url'].rstrip('/')
-    #     self.driver.get(site_url + '/' + slug)
-    #     time.sleep(delay)
+        self.debug  = True ###
 
     def setup(self, is_prod=False, install=False, web_driver='Google'):
         options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
@@ -117,7 +113,7 @@ class MyScraper(WebAutomation):
 
         p = self.Product()
 
-        p.title       = self.get_text("XPATH://h1[@class='product-title product_title entry-title']")
+        p.title       = self.get_text("XPATH://h1[@class='product_title entry-title']")
         p.price       = self.get_text("XPATH://div[@class='product-main']//bdi[1]")
         p.description = self.get_text("XPATH://div[@class='product-short-description']/p")
         p.stock       = self.get_text("CSS_SELECTOR:p.stock.in-stock")
@@ -144,7 +140,6 @@ class MyScraper(WebAutomation):
         state_option.click()
 
         self.fill("ID:billing_phone", self.order_to_exe['client']['customer']['phone'])
-        self.fill("ID:order_comments", self.order_to_exe['order_comments'])
 
 
     def main(self):
@@ -152,13 +147,15 @@ class MyScraper(WebAutomation):
             print("Usage: python router.py <test_file>")
             return
 
-        test_file = sys.argv[1]
+        test_file    = sys.argv[1]
         instructions = self.load_instructions(test_file)
 
-        self.login_data    = instructions.get('login_data')
-        self.cart_page     = instructions.get('cart_page')
-        self.checkout_page = instructions.get('checkout_page')
-        self.order_to_exe  = instructions.get('order_to_exe')
+        self.login_data       = instructions.get('login_data')
+        self.cart_page        = instructions.get('cart_page')
+        self.checkout_page    = instructions.get('checkout_page')
+        self.order_to_exe     = instructions.get('order_to_exe')
+        self.qty_input_number = instructions.get('qty_input_number')
+        self.add_to_cart_btn  = instructions.get('add_to_cart_btn')
 
         try:
             #
@@ -167,14 +164,24 @@ class MyScraper(WebAutomation):
             
             self.login()
 
-            self.driver.maximize_window()
+            # self.driver.maximize_window()
+
+            # OK
+            # self.nav('?product=musculosa-coral')
+            # self.fill('NAME:selecttalla', 'U')
+            # self.fill('NAME:selectcolor', 'negro')
+
+            # self.fill("CSS_SELECTOR:input[type='number'][name='quantity']", 2)
+
+            # self.get("NAME:add-to-cart").click()
+            # self.quit(400)
 
             #
             # Carrito
             #
 
-            cart_items = self.get_cart_items()
-            self.print_cart_items(cart_items)
+            # cart_items = self.get_cart_items()
+            # self.print_cart_items(cart_items)
 
 
             #
@@ -182,20 +189,25 @@ class MyScraper(WebAutomation):
             #
 
             print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
-            for products in self.order_to_exe['products']:
-                product_page = products['prd']
-                quantity     = products['qty']
 
-                self.nav(product_page, 2)
+            # Navega a la página del producto fuera del bucle
+            product_page = self.order_to_exe['products'][0]['prd']  # Tomamos solo el primer producto por ahora
+            self.nav(product_page)
 
-                p = self.get_product(product_page)
-                self.Product.print(p)
+            for product in self.order_to_exe['products']:
+                quantity = product['qty']
+                att = product.get('att', {})  # Evita errores si no hay atributos definidos
 
-                quantity_input = self.fill("CSS_SELECTOR:div.quantity.buttons_added input[type='number'][name='quantity']", str(quantity))
+                for att_name, att_value in att.items():
+                    self.fill(att_name, att_value)
 
-                add_to_cart_button = self.get("CSS_SELECTOR:button.single_add_to_cart_button")
-                add_to_cart_button.click()
-                time.sleep(3)
+                # Llena la cantidad y agrega al carrito
+                self.fill(self.qty_input_number, str(quantity))
+                self.get(self.add_to_cart_btn).click()
+
+                time.sleep(3)  # Espera un poco antes de continuar
+                
+
             print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
             #
@@ -213,8 +225,7 @@ class MyScraper(WebAutomation):
 
 
         finally:
-            time.sleep(60)
-            self.driver.quit()
+            self.quit(60)
 
 
 if __name__ == "__main__":

@@ -20,11 +20,28 @@ from dotenv import load_dotenv
 
 
 class WebAutomation:
+    def debug(value=True):
+        self.debug = value
+
     def nav(self, slug, delay=0):
         site_url = self.login_data['site_url'].rstrip('/')
-        self.driver.get(site_url + '/' + slug)
+        url      = site_url + '/' + slug
 
-    def save_html(filename):
+        if self.debug:
+            print(f"Navegando a '{url}'")
+
+        self.driver.get(url)
+
+    def quit(self, delay=0):
+        time.sleep(delay)
+
+        if self.debug:
+            print(f"\r\nSaliendo...")
+
+        self.driver.quit()
+        sys.exit()
+
+    def save_html(self, filename):
         """
         Salva renderizado en archivo
         """
@@ -97,9 +114,8 @@ class WebAutomation:
             locator = By.CSS_SELECTOR
             value = selector
 
-        if debug:
+        if self.debug or debug:
             print(f"{selector} > {value}")
-
 
         if (single):
             return WebDriverWait(self.driver, t).until(
@@ -155,11 +171,19 @@ class WebAutomation:
     
     def fill(self, selector, value):
         """
-        Rellena un elemento INPUT
+        Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
+        (SELECT2 de momento no)
 
-        Funcionando con INPUT TEXT
+        Ej:
+
+        self.fill('NAME:selecttalla', 'U')
+        self.fill('NAME:selectcolor', 'negro')
         """
-        element = self.get(selector)
+
+        if self.debug:
+            print(f"Seteando valor {selector} > {value}")
+
+        element     = self.get(selector)
         element_tag = element.tag_name
 
         if element_tag == 'input' or element_tag == 'textarea':
@@ -217,7 +241,7 @@ class WebAutomation:
         # Hacer clic en el botón de inicio de sesión
         login_button = self.get(submit_button)
         login_button.click()
-        
+
 
     def main(self): pass
 
