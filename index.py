@@ -66,39 +66,6 @@ class MyScraper(WebAutomation):
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-    def login(self, debug = False):
-        self.nav(self.login_data['login_page'])
-
-        default_selectors = {
-            'username_input':    'ID:user_login',
-            'password_input':    'ID:user_pass',
-            'remember_checkbox': 'NAME:rememberme',
-            'submit_button':     'ID:wp-submit'
-        }
-
-        custom_selectors = self.login_data.get('selectors', default_selectors)
-
-        # Obtener los selectores personalizados o los predeterminados
-        username_selector = custom_selectors.get('username_input', default_selectors['username_input'])
-        password_selector = custom_selectors.get('password_input', default_selectors['password_input'])
-        submit_button     = custom_selectors.get('submit_button',  default_selectors['submit_button'])
-
-        if debug:
-            print('username_selector: ' + username_selector) 
-            print('password_selector: ' + password_selector)
-            print('submit_button: '     + submit_button)
-
-        # Enviar las credenciales al formulario de inicio de sesión
-        username_input = self.get(username_selector)
-        username_input.send_keys(self.login_data['log'])
-
-        password_input = self.get(password_selector)
-        password_input.send_keys(self.login_data['pwd'])
-
-        # Hacer clic en el botón de inicio de sesión
-        login_button = self.get(submit_button)
-        login_button.click()
-
     def get_cart_items(self):
         self.nav(self.cart_page)
 
@@ -158,19 +125,6 @@ class MyScraper(WebAutomation):
 
         # Retorna un objeto Producto
         return p
-
-    def load_instructions(self, test_file):
-        instructions = {}
-        test_file_path = os.path.join('instructions', test_file)
-       
-        if not os.path.isfile(test_file_path):
-            print(f"Error: File '{test_file}' not found.")
-            return
-
-        with open(test_file_path, 'r') as f:
-            exec(f.read(), instructions)
-            
-        return instructions
 
     def set_checkout(self):
         self.nav(self.checkout_page)
