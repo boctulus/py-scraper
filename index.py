@@ -18,16 +18,17 @@ from selenium.webdriver.firefox.service import Service as FireFoxService
 from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
+from libs.web_automation import WebAutomation
 
-class WebAutomation:
+
+class MyScraper(WebAutomation):
     def __init__(self):
         self.driver = None
 
-    def nav(self, slug, delay=0):
-        site_url = self.login_data['site_url'].rstrip('/')
-        self.driver.get(site_url + '/' + slug)
-        time.sleep(delay)
-
+    # def nav(self, slug, delay=0):
+    #     site_url = self.login_data['site_url'].rstrip('/')
+    #     self.driver.get(site_url + '/' + slug)
+    #     time.sleep(delay)
 
     def setup(self, is_prod=False, install=False, web_driver='Google'):
         options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
@@ -410,7 +411,7 @@ class WebAutomation:
 
 
 if __name__ == "__main__":
-    automation = WebAutomation()
+    automation = MyScraper()
 
     # 
     # .env
