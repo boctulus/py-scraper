@@ -276,11 +276,11 @@ class WebAutomation:
 
         p = self.Product()
 
-        p.title = self.get_text("XPATH://h1[@class='product-title product_title entry-title']")
-        p.price = self.get_text("XPATH://div[@class='product-main']//bdi[1]")
+        p.title       = self.get_text("XPATH://h1[@class='product-title product_title entry-title']")
+        p.price       = self.get_text("XPATH://div[@class='product-main']//bdi[1]")
         p.description = self.get_text("XPATH://div[@class='product-short-description']/p")
-        p.stock = self.get_text("CSS_SELECTOR:p.stock.in-stock")
-        p.sku = self.get_text("CSS_SELECTOR:span.sku")
+        p.stock       = self.get_text("CSS_SELECTOR:p.stock.in-stock")
+        p.sku         = self.get_text("CSS_SELECTOR:span.sku")
 
         # Retorna un objeto Producto
         return p
@@ -297,6 +297,11 @@ class WebAutomation:
             exec(f.read(), instructions)
             
         return instructions
+
+    def fill(self, selector, value):
+        input_field = self.get(selector)
+        input_field.clear()
+        input_field.send_keys(value)    
 
     def set_checkout(self):
         self.nav(self.checkout_page)
