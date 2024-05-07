@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -16,6 +17,7 @@ from selenium.webdriver.firefox.options import Options as FireFoxOptions
 from selenium.webdriver.firefox.service import Service as FireFoxService
 from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
+
 
 class WebAutomation:
     def __init__(self):
@@ -301,11 +303,20 @@ class WebAutomation:
     def fill(self, selector, value):
         """
         Rellena un elemento INPUT
-        """
 
-        input_field = self.get(selector)
-        input_field.clear()
-        input_field.send_keys(value)    
+        Funcionando con INPUT TEXT
+        """
+        element = self.get(selector)
+        element_tag = element.tag_name
+
+        if element_tag == 'input' or element_tag == 'textarea':
+            element.clear()
+            element.send_keys(value)
+        elif element_tag == 'select':            
+            select = Select(element)
+            select.select_by_visible_text(value)
+        else:
+            raise ValueError(f"Unsupported element type: {element_tag}")        
 
     def set_checkout(self):
         self.nav(self.checkout_page)
@@ -372,14 +383,9 @@ class WebAutomation:
                 p = self.get_product(product_page)
                 self.Product.print(p)
 
-                quantity_input = WebDriverWait(self.driver, 10).until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, "div.quantity.buttons_added input[type='number'][name='quantity']"))
-                )
+                quantity_input = self.fill("CSS_SELECTOR:div.quantity.buttons_added input[type='number'][name='quantity']", str(quantity))
 
-                quantity_input.clear()
-                quantity_input.send_keys(str(quantity))
-
-                add_to_cart_button = self.driver.find_element(By.CSS_SELECTOR, "button.single_add_to_cart_button")
+                add_to_cart_button = self.get("CSS_SELECTOR:button.single_add_to_cart_button")
                 add_to_cart_button.click()
                 time.sleep(3)
             print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")

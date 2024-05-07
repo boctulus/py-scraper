@@ -45,5 +45,5 @@ order_to_exe = {
         }
     },
 
-    'order_comments': 'Por favor, entregar antes del sabado.'
+    'order_comments': 'Por favor, entregar antes del domingo.'
 }
