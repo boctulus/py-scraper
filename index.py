@@ -166,15 +166,6 @@ class MyScraper(WebAutomation):
 
             # self.driver.maximize_window()
 
-            # OK
-            # self.nav('?product=musculosa-coral')
-            # self.fill('NAME:selecttalla', 'U')
-            # self.fill('NAME:selectcolor', 'negro')
-
-            # self.fill("CSS_SELECTOR:input[type='number'][name='quantity']", 2)
-
-            # self.get("NAME:add-to-cart").click()
-            # self.quit(400)
 
             #
             # Carrito
@@ -190,23 +181,23 @@ class MyScraper(WebAutomation):
 
             print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
 
-            # Navega a la página del producto fuera del bucle
-            product_page = self.order_to_exe['products'][0]['prd']  # Tomamos solo el primer producto por ahora
-            self.nav(product_page)
-
             for product in self.order_to_exe['products']:
-                quantity = product['qty']
-                att = product.get('att', {})  # Evita errores si no hay atributos definidos
+                
+                product_page = product['slug'] 
+                quantity     = product['qty']
+                attrs        = product.get('attrs', {})  # Evita errores si no hay atributos definidos
 
-                for att_name, att_value in att.items():
+                self.nav(product_page)
+
+                for att_name, att_value in attrs.items():
                     self.fill(att_name, att_value)
 
                 # Llena la cantidad y agrega al carrito
                 self.fill(self.qty_input_number, str(quantity))
                 self.get(self.add_to_cart_btn).click()
 
-                time.sleep(3)  # Espera un poco antes de continuar
-                
+                time.sleep(2)  
+
 
             print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 

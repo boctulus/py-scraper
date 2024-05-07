@@ -20,13 +20,13 @@ add_to_cart_btn  = "NAME:add-to-cart"
 order_to_exe = {
     "products": [
         {
-            "prd": "/product/producto-x/",
+            "slug": "/product/producto-x/",
             "qty": 5
         },
         {
-            "prd": "/product/nicke-one-p-variable/",
+            "slug": "/product/nicke-one-p-variable/",
             "qty": 2,
-            "att": {
+            "attrs": {
                 "NAME:attribute_talla": "6",
                 "NAME:attribute_color": "verde"
             }

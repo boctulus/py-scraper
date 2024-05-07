@@ -20,15 +20,15 @@ add_to_cart_btn  = "CSS_SELECTOR:button.single_add_to_cart_button"
 order_to_exe = {
     "products": [
         {
-            "prd": "/producto/queso-oregano-530gr/",
+            "slug": "/producto/queso-oregano-530gr/",
             "qty": 2
         },
         {
-            "prd": "/producto/jamon-de-tudanca/",
+            "slug": "/producto/jamon-de-tudanca/",
             "qty": 5
         },
         {
-            "prd": "/producto/chorizo-de-ciervo-300g/",
+            "slug": "/producto/chorizo-de-ciervo-300g/",
             "qty": 3
         },
     ],

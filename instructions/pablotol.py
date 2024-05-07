@@ -20,21 +20,21 @@ add_to_cart_btn  = "NAME:add-to-cart"
 order_to_exe = {
     "products": [
         {
-            "prd": "?product=musculosa-coral",
+            "slug": "?product=musculosa-coral",
             "qty": 2,
-            "att": {
+            "attrs": {
                 "NAME:selecttalla": "U",
                 "NAME:selectcolor": "negro"
             }
         },
-        # {
-        #     "prd": "?product=chaqueta-marinera",
-        #     "qty": 1,
-        #     "att": {
-        #         "NAME:selecttalla": "U",
-        #         "NAME:selectcolor": "crema"
-        #     }
-        # }
+        {
+            "slug": "?product=chaqueta-marinera",
+            "qty": 1,
+            "attrs": {
+                "NAME:selecttalla": "U",
+                "NAME:selectcolor": "crema"
+            }
+        }
     ],
 
    "client": {
