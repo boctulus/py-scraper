@@ -78,9 +78,20 @@ class WebAutomation:
             f.write(html)
 
 
-    def get_selector(self, selector, t=10, debug=False):
+    def get(self, selector, t=10, debug=False):
         """
-        Busca un elemento en la página web utilizando diferentes tipos de selectores.
+        Obtiene un "selector" de CSS
+
+        Tipos soportados:
+
+        ID = "id"
+        NAME = "name"
+        XPATH = "xpath"
+        LINK_TEXT = "link text"
+        PARTIAL_LINK_TEXT = "partial link text"
+        TAG_NAME = "tag name"
+        CLASS_NAME = "class name"
+        CSS_SELECTOR = "css selector"
 
         Args:
             selector (str):         El selector del elemento, que puede comenzar con uno de los siguientes identificadores seguido
@@ -94,16 +105,7 @@ class WebAutomation:
 
         Ejemplo de uso:
             # Buscar un elemento por su ID
-            elemento = self.get_selector('ID:my_id')
-
-            ID = "id"
-            NAME = "name"
-            XPATH = "xpath"
-            LINK_TEXT = "link text"
-            PARTIAL_LINK_TEXT = "partial link text"
-            TAG_NAME = "tag name"
-            CLASS_NAME = "class name"
-            CSS_SELECTOR = "css selector"
+            elemento = self.get('ID:my_id')
 
             https://selenium-python.readthedocs.io/locating-elements.html
         """
@@ -166,14 +168,14 @@ class WebAutomation:
             print('submit_button: '     + submit_button)
 
         # Enviar las credenciales al formulario de inicio de sesión
-        username_input = self.get_selector(username_selector)
+        username_input = self.get(username_selector)
         username_input.send_keys(self.login_data['log'])
 
-        password_input = self.get_selector(password_selector)
+        password_input = self.get(password_selector)
         password_input.send_keys(self.login_data['pwd'])
 
         # Hacer clic en el botón de inicio de sesión
-        login_button = self.get_selector(submit_button)
+        login_button = self.get(submit_button)
         login_button.click()
 
 
