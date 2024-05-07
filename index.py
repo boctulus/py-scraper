@@ -77,7 +77,6 @@ class WebAutomation:
         with open(filename, 'w') as f:
             f.write(html)
 
-
     def get(self, selector, t=10, debug=False):
         """
         Obtiene un "selector" de CSS
@@ -144,6 +143,45 @@ class WebAutomation:
             EC.visibility_of_element_located((locator, value))
         )
 
+
+    def get_attr(self, selector, attr_name, t=10, debug=False):
+        """
+        Obtiene el valor de un atributo de un elemento identificado por un selector CSS.
+
+        Args:
+            selector (str):         Selector CSS del elemento.
+            attr_name (str):        Nombre del atributo que se desea obtener.
+            t (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
+            debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
+
+        Returns:
+            str: El valor del atributo especificado.
+
+        Ejemplo de uso:
+            # Obtener el atributo href de un enlace
+            href_value = self.get_attr('a', 'href')
+        """
+        element = self.get(selector, t, debug)
+        return element.get_attribute(attr_name)
+
+    def get_text(self, selector, t=10, debug=False):
+        """
+        Obtiene el texto contenido dentro de un elemento identificado por un selector CSS.
+
+        Args:
+            selector (str):         Selector CSS del elemento.
+            t (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
+            debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
+
+        Returns:
+            str: El texto contenido dentro del elemento especificado.
+
+        Ejemplo de uso:
+            # Obtener el texto de un elemento de clase 'title'
+            title_text = self.get_text('.title')
+        """
+        element = self.get(selector, t, debug)
+        return element.text
 
     def login(self, debug = False):
         self.nav(self.login_data['login_page'])
