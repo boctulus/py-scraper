@@ -77,7 +77,7 @@ class WebAutomation:
         with open(filename, 'w') as f:
             f.write(html)
 
-    def get(self, selector, t=10, debug=False):
+    def get(self, selector, single=True, t=10, debug=False):
         """
         Obtiene un "selector" de CSS
 
@@ -137,12 +137,18 @@ class WebAutomation:
         if debug:
             print(f"{selector} > {value}")
 
-        # return self.driver.find_element(locator, value)
 
-        return WebDriverWait(self.driver, t).until(
-            EC.visibility_of_element_located((locator, value))
-        )
+        if (single):
+            return WebDriverWait(self.driver, t).until(
+                EC.visibility_of_element_located((locator, value))
+            )
+        else:
+             return WebDriverWait(self.driver, t).until(
+                EC.presence_of_all_elements_located((locator, value))
+            )
 
+    def get_all(self, selector, t=10, debug=False):
+        return self.get(selector, single=False, t=t, debug=debug)
 
     def get_attr(self, selector, attr_name, t=10, debug=False):
         """
@@ -216,29 +222,19 @@ class WebAutomation:
         login_button = self.get(submit_button)
         login_button.click()
 
-
     def get_cart_items(self):
         self.nav(self.cart_page)
 
         cart_items = []
 
-        product_rows = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "tr.woocommerce-cart-form__cart-item"))
-        )
+        product_rows = self.get_all("tr.woocommerce-cart-form__cart-item")
 
         for row in product_rows:
-            product_name_element = row.find_element(By.CSS_SELECTOR, "td.product-name a")
-            product_name = product_name_element.text
-            product_url = product_name_element.get_attribute("href")
-
-            product_price_element = row.find_element(By.CSS_SELECTOR, "td.product-price span.woocommerce-Price-amount")
-            product_price = product_price_element.text
-
-            product_quantity_element = row.find_element(By.CSS_SELECTOR, "td.product-quantity input.input-text.qty.text")
-            product_quantity = product_quantity_element.get_attribute("value")
-
-            product_subtotal_element = row.find_element(By.CSS_SELECTOR, "td.product-subtotal span.woocommerce-Price-amount")
-            product_subtotal = product_subtotal_element.text
+            product_name     = self.get_text("td.product-name a")
+            product_url      = self.get_attr("td.product-name a", "href")
+            product_price    = self.get_text("td.product-price span.woocommerce-Price-amount")
+            product_quantity = self.get_attr("td.product-quantity input.input-text.qty.text", "value")
+            product_subtotal = self.get_text("td.product-subtotal span.woocommerce-Price-amount")
 
             cart_items.append({
                 'name': product_name,
@@ -249,6 +245,7 @@ class WebAutomation:
             })
 
         return cart_items
+
 
     def print_cart_items(self, cart_items):
         print("[ CART ] -----------------------------\r\n")
