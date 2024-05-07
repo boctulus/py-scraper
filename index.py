@@ -299,6 +299,10 @@ class WebAutomation:
         return instructions
 
     def fill(self, selector, value):
+        """
+        Rellena un elemento INPUT
+        """
+
         input_field = self.get(selector)
         input_field.clear()
         input_field.send_keys(value)    
@@ -306,33 +310,12 @@ class WebAutomation:
     def set_checkout(self):
         self.nav(self.checkout_page)
 
-         # Establecer el nombre
-        billing_first_name_input = self.driver.find_element(By.XPATH, "//input[@id='billing_first_name']")
-        billing_first_name_input.clear()
-        billing_first_name_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_first_name'])
-
-        # Establecer el apellido
-        billing_last_name_input = self.driver.find_element(By.XPATH, "//input[@id='billing_last_name']")
-        billing_last_name_input.clear()
-        billing_last_name_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_last_name'])
-
-        # Establecer la dirección de facturación
-
-        billing_address_1_input = self.driver.find_element(By.ID, 'billing_address_1')
-        billing_address_1_input.clear()
-        billing_address_1_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_address_1'])
-
-        billing_address_2_input = self.driver.find_element(By.ID, 'billing_address_2')
-        billing_address_2_input.clear()
-        billing_address_2_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_address_2'])
-
-        billing_city_input = self.driver.find_element(By.ID, 'billing_city')
-        billing_city_input.clear()
-        billing_city_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_city'])
-
-        billing_postcode_input = self.driver.find_element(By.ID, 'billing_postcode')
-        billing_postcode_input.clear()
-        billing_postcode_input.send_keys(self.order_to_exe['client']['shipping_addr']['billing_postcode'])
+        self.fill("XPATH://input[@id='billing_first_name']", self.order_to_exe['client']['shipping_addr']['billing_first_name'])
+        self.fill("XPATH://input[@id='billing_last_name']", self.order_to_exe['client']['shipping_addr']['billing_last_name'])
+        self.fill("ID:billing_address_1", self.order_to_exe['client']['shipping_addr']['billing_address_1'])
+        self.fill("ID:billing_address_2", self.order_to_exe['client']['shipping_addr']['billing_address_2'])
+        self.fill("ID:billing_city", self.order_to_exe['client']['shipping_addr']['billing_city'])
+        self.fill("ID:billing_postcode", self.order_to_exe['client']['shipping_addr']['billing_postcode'])
 
         # Seleccionar el estado de facturación
         billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
@@ -341,15 +324,8 @@ class WebAutomation:
         state_option = self.driver.find_element(By.XPATH, state_option_xpath)
         state_option.click()
 
-        # Establecer el teléfono
-        billing_phone_input = self.driver.find_element(By.ID, 'billing_phone')
-        billing_phone_input.clear()
-        billing_phone_input.send_keys(self.order_to_exe['client']['customer']['phone'])
-
-        # Agregar notas al pedido
-        order_comments_input = self.driver.find_element(By.ID, 'order_comments')
-        order_comments_input.clear()
-        order_comments_input.send_keys(self.order_to_exe['order_comments'])
+        self.fill("ID:billing_phone", self.order_to_exe['client']['customer']['phone'])
+        self.fill("ID:order_comments", self.order_to_exe['order_comments'])
 
 
     def main(self):
