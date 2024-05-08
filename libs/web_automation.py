@@ -55,9 +55,9 @@ class WebAutomation:
         with open(filename, 'w') as f:
             f.write(html)
 
-    def _get(self, selector, single=True, timeout=10, debug=False):
+    def _get(self, selector, root=None, single=True, timeout=10, debug=False):
         """
-        Obtiene un "selector" de CSS
+        Obtiene un "selector" de CSS dentro de un elemento raíz.
 
         Tipos soportados:
 
@@ -74,19 +74,13 @@ class WebAutomation:
             selector (str):         El selector del elemento, que puede comenzar con uno de los siguientes identificadores seguido
                                     de dos puntos (ID:, NAME:, XPATH:, LINK_TEXT:, PARTIAL_LINK_TEXT:, TAG_NAME:, CLASS_NAME:),
                                     seguido del valor del selector.
-
+            single (bool, opcional): Indica si se espera un solo elemento. Por defecto es True.
+            root (WebElement, opcional): Elemento raíz dentro del cual buscar el selector. Por defecto es None (la página completa).
             debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
 
         Returns:
-            selenium.webdriver.remote.webelement.WebElement: El elemento encontrado en la página.
-
-        Ejemplo de uso:
-            # Buscar un elemento por su ID
-            elemento = self.get('ID:my_id')
-
-            https://selenium-python.readthedocs.io/locating-elements.html
+            selenium.webdriver.remote.webelement.WebElement o lista de elementos: El elemento encontrado en la página, o una lista de elementos si single es False.
         """
-
         if selector.startswith('ID:'):
             locator = By.ID
             value = selector[3:]  # Ignorar las primeras tres letras 'ID:'
@@ -119,58 +113,53 @@ class WebAutomation:
             print(f"{selector} > {value}")
 
         if (single):
-            return WebDriverWait(self.driver, timeout).until(   # line 121
+            return WebDriverWait(root or self.driver, timeout).until(
                 EC.visibility_of_element_located((locator, value))
             )
         else:
-             return WebDriverWait(self.driver, timeout).until(
+            return WebDriverWait(root or self.driver, timeout).until(
                 EC.presence_of_all_elements_located((locator, value))
             )
 
-    def get(self, selector, timeout=10, debug=False):
-        return self._get(selector, single=True, timeout=timeout, debug=debug)
+    def get(self, selector, root=None, timeout=10, debug=False):
+        return self._get(selector, single=True, root=root, timeout=timeout, debug=debug)
 
-    def get_all(self, selector, timeout=10, debug=False):
-        return self._get(selector, single=False, timeout=timeout, debug=debug)
+    def get_all(self, selector, root=None, timeout=10, debug=False):
+        return self._get(selector, single=False, root=root, timeout=timeout, debug=debug)
 
-    def get_attr(self, selector, attr_name, timeout=10, debug=False):
+    def get_attr(self, selector, attr_name, root=None, timeout=10, debug=False):
         """
-        Obtiene el valor de un atributo de un elemento identificado por un selector CSS.
+        Obtiene el valor de un atributo de un elemento identificado por un selector CSS dentro de un elemento raíz.
 
         Args:
             selector (str):         Selector CSS del elemento.
             attr_name (str):        Nombre del atributo que se desea obtener.
+            root (WebElement, opcional): Elemento raíz dentro del cual buscar el selector. Por defecto es None (la página completa).
             timeout (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
             debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
 
         Returns:
             str: El valor del atributo especificado.
-
-        Ejemplo de uso:
-            # Obtener el atributo href de un enlace
-            href_value = self.get_attr('a', 'href')
         """
-        element = self.get(selector, timeout, debug)
+        element = self.get(selector, root=root, timeout=timeout, debug=debug)
         return element.get_attribute(attr_name)
 
-    def get_text(self, selector, timeout=10, debug=False):
+    def get_text(self, selector, root=None, timeout=10, debug=False):
         """
-        Obtiene el texto contenido dentro de un elemento identificado por un selector CSS.
+        Obtiene el texto contenido dentro de un elemento identificado por un selector CSS dentro de un elemento raíz.
 
         Args:
             selector (str):         Selector CSS del elemento.
+            root (WebElement, opcional): Elemento raíz dentro del cual buscar el selector. Por defecto es None (la página completa).
             timeout (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
             debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
 
         Returns:
             str: El texto contenido dentro del elemento especificado.
-
-        Ejemplo de uso:
-            # Obtener el texto de un elemento de clase 'title'
-            title_text = self.get_text('.title')
         """
-        element = self.get(selector, timeout, debug)
+        element = self.get(selector, root=root, timeout=timeout, debug=debug)
         return element.text
+
 
     def fill(self, selector, value, timeout=5, fail_if_not_exist=True):
         """
