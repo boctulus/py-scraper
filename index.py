@@ -141,6 +141,8 @@ class MyScraper(WebAutomation):
 
         self.fill("ID:billing_phone", self.order_to_exe['client']['customer']['phone'])
 
+        print("Terminado el trabajo con el Checkout. ---")
+
 
     def main(self):
         try:
