@@ -122,6 +122,29 @@ class MyScraper(WebAutomation):
         # Retorna un objeto Producto
         return p
 
+    def process_order():
+        print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
+
+        for product in self.order_to_exe['products']:
+            
+            product_page = product['slug'] 
+            quantity     = product['qty']
+            attrs        = product.get('attrs', {})  # Evita errores si no hay atributos definidos
+
+            self.nav(product_page)
+
+            for att_name, att_value in attrs.items():
+                self.fill(att_name, att_value)
+
+            # Llena la cantidad y agrega al carrito
+            self.fill(selector=self.qty_input_number, value=str(quantity), timeout=5, fail_if_not_exist=False)
+
+            self.get(self.add_to_cart_btn).click()
+
+            time.sleep(2)  
+
+        print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
+
     def set_checkout(self):
         self.nav(self.checkout_page)
 
@@ -173,39 +196,31 @@ class MyScraper(WebAutomation):
             # self.driver.maximize_window()
 
 
+            # self.nav('?product=musculosa-coral')
+            # self.fill('NAME:selecttalla', 'U')
+            # self.fill('NAME:selectcolor', 'negro')
+
+            # self.fill("CSS_SELECTOR:input[type='number'][name='quantity']", 2)
+
+            # self.get("NAME:add-to-cart").click()
+            # self.quit(400)
+
+
             #
             # Carrito
             #
 
-            # cart_items = self.get_cart_items()
-            # self.print_cart_items(cart_items)
+            cart_items = self.get_cart_items()
+            self.print_cart_items(cart_items)
+
+            self.quit()
 
 
             #
             # Orden
             #
 
-            print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
-
-            for product in self.order_to_exe['products']:
-                
-                product_page = product['slug'] 
-                quantity     = product['qty']
-                attrs        = product.get('attrs', {})  # Evita errores si no hay atributos definidos
-
-                self.nav(product_page)
-
-                for att_name, att_value in attrs.items():
-                    self.fill(att_name, att_value)
-
-                # Llena la cantidad y agrega al carrito
-                self.fill(self.qty_input_number, str(quantity), 5, False)
-
-                self.get(self.add_to_cart_btn).click()
-
-                time.sleep(2)  
-
-            print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
+            self.process_order()
 
             #
             # Carrito

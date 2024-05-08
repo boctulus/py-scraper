@@ -189,11 +189,19 @@ class WebAutomation:
             if self.debug:
                 print(f"Seteando valor {selector} > {value}")
 
-            element     = self.get(selector, timeout) # line 186
-            element_tag = element.tag_name
-
             if not fail_if_not_exist:
                 return False
+
+            try:
+                element     = self.get(selector, timeout) 
+
+            except Exception as e:
+                if not fail_if_not_exist:
+                    return False
+                else:
+                    raise ValueError(e)
+
+            element_tag = element.tag_name
 
             if element_tag == 'input' or element_tag == 'textarea':
                 element.clear()
@@ -205,9 +213,6 @@ class WebAutomation:
                 raise ValueError(f"Unsupported element type: {element_tag}") 
 
         except Exception as e:
-            if not fail_if_not_exist:
-                return False
-
             raise ValueError("Se ha producido un error durante el relleno del elemento")
             traceback.print_exc()
 
