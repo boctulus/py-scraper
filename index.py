@@ -194,7 +194,7 @@ class MyScraper(WebAutomation):
                     self.fill(att_name, att_value)
 
                 # Llena la cantidad y agrega al carrito
-                self.fill(self.qty_input_number, str(quantity))
+                self.fill(self.qty_input_number, str(quantity))  # 197
                 self.get(self.add_to_cart_btn).click()
 
                 time.sleep(2)  
@@ -218,7 +218,7 @@ class MyScraper(WebAutomation):
             self.quit(60)
 
         except Exception as e:
-            print("Se ha producido un error durante la ejecución:", e)
+            # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
 
         # finally:

@@ -54,7 +54,7 @@ class WebAutomation:
         with open(filename, 'w') as f:
             f.write(html)
 
-    def get(self, selector, single=True, t=10, debug=False):
+    def _get(self, selector, single=True, t=10, debug=False):
         """
         Obtiene un "selector" de CSS
 
@@ -118,7 +118,7 @@ class WebAutomation:
             print(f"{selector} > {value}")
 
         if (single):
-            return WebDriverWait(self.driver, t).until(
+            return WebDriverWait(self.driver, t).until(   # line 121
                 EC.visibility_of_element_located((locator, value))
             )
         else:
@@ -126,8 +126,11 @@ class WebAutomation:
                 EC.presence_of_all_elements_located((locator, value))
             )
 
+    def get(self, selector, t=10, debug=False):
+        return self._get(selector, single=True, t=t, debug=debug)
+
     def get_all(self, selector, t=10, debug=False):
-        return self.get(selector, single=False, t=t, debug=debug)
+        return self._get(selector, single=False, t=t, debug=debug)
 
     def get_attr(self, selector, attr_name, t=10, debug=False):
         """
@@ -168,8 +171,7 @@ class WebAutomation:
         element = self.get(selector, t, debug)
         return element.text
 
-    
-    def fill(self, selector, value):
+    def fill(self, selector, value, t=5):
         """
         Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
         (SELECT2 de momento no)
@@ -180,21 +182,25 @@ class WebAutomation:
         self.fill('NAME:selectcolor', 'negro')
         """
 
-        if self.debug:
-            print(f"Seteando valor {selector} > {value}")
+        try:
+            if self.debug:
+                print(f"Seteando valor {selector} > {value}")
 
-        element     = self.get(selector)
-        element_tag = element.tag_name
+            element     = self.get(selector, t) # line 186
+            element_tag = element.tag_name
 
-        if element_tag == 'input' or element_tag == 'textarea':
-            element.clear()
-            element.send_keys(value)
-        elif element_tag == 'select':            
-            select = Select(element)
-            select.select_by_visible_text(value)
-        else:
-            raise ValueError(f"Unsupported element type: {element_tag}") 
+            if element_tag == 'input' or element_tag == 'textarea':
+                element.clear()
+                element.send_keys(value)
+            elif element_tag == 'select':            
+                select = Select(element)
+                select.select_by_visible_text(value)
+            else:
+                raise ValueError(f"Unsupported element type: {element_tag}") 
 
+        except Exception as e:
+            print("Se ha producido un error durante el relleno del elemento:")
+            traceback.print_exc()
 
     def load_instructions(self, test_file):
         instructions = {}
