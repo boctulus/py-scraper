@@ -70,11 +70,11 @@ class MyScraper(WebAutomation):
         product_rows = self.get_all("tr.woocommerce-cart-form__cart-item")
 
         for row in product_rows:
-            product_name     = self.get_text("td.product-name a")
-            product_url      = self.get_attr("td.product-name a", "href")
-            product_price    = self.get_text("td.product-price span.woocommerce-Price-amount")
-            product_quantity = self.get_attr("td.product-quantity input.input-text.qty.text", "value")
-            product_subtotal = self.get_text("td.product-subtotal span.woocommerce-Price-amount")
+            product_name     = row.find_element(By.CSS_SELECTOR, "td.product-name a").text
+            product_url      = row.find_element(By.CSS_SELECTOR, "td.product-name a").get_attribute("href")
+            product_price    = row.find_element(By.CSS_SELECTOR, "td.product-price span.woocommerce-Price-amount").text
+            product_quantity = row.find_element(By.CSS_SELECTOR, "td.product-quantity input.input-text.qty.text").get_attribute("value")
+            product_subtotal = row.find_element(By.CSS_SELECTOR, "td.product-subtotal span.woocommerce-Price-amount").text
 
             cart_items.append({
                 'name': product_name,
@@ -85,6 +85,7 @@ class MyScraper(WebAutomation):
             })
 
         return cart_items
+
 
 
     def print_cart_items(self, cart_items):
