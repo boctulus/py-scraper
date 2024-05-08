@@ -2,6 +2,7 @@ import time
 import sys
 import os
 import re
+import traceback
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -213,13 +214,15 @@ class MyScraper(WebAutomation):
 
             self.set_checkout()
 
-        except Exception as e:
-            # Captura cualquier excepción que ocurra durante la ejecución
-            print("Se ha producido un error durante la ejecución:", e)
-
-        finally:
+            # quiting
             self.quit(60)
 
+        except Exception as e:
+            print("Se ha producido un error durante la ejecución:", e)
+            traceback.print_exc(limit=5)
+
+        # finally:
+            
 
 if __name__ == "__main__":
     automation = MyScraper()
