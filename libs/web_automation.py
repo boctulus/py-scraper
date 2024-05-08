@@ -2,6 +2,7 @@ import time
 import sys
 import os
 import re
+import traceback
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
