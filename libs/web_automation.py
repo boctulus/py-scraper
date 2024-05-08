@@ -19,6 +19,8 @@ from selenium.webdriver.firefox.service import Service as FireFoxService
 from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
+from selenium.common.exceptions import NoSuchElementException
+
 
 class WebAutomation:
     def debug(value=True):
@@ -161,7 +163,7 @@ class WebAutomation:
         return element.text
 
 
-    def fill(self, selector, value, timeout=5, fail_if_not_exist=True):
+    def fill(self, selector, value, root=None, timeout=5, fail_if_not_exist=True):
         """
         Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
         (SELECT2 de momento no)
@@ -171,21 +173,14 @@ class WebAutomation:
         self.fill('NAME:selecttalla', 'U')
         self.fill('NAME:selectcolor', 'negro')
 
-        Si el elemento puede no existir.... se debe enviar fail_if_not_exist=False
+        Si el elemento puede no existir, se debe enviar fail_if_not_exist=False.
         """
-        
+
         try:
             if self.debug:
                 print(f"Seteando valor {selector} > {value}")
 
-            try:
-                element = self.get(selector, timeout) 
-
-            except Exception as e:
-                if not fail_if_not_exist:
-                    return False
-                else:
-                    raise ValueError(e)
+            element = self.get(selector, root=root, timeout=timeout)
 
             element_tag = element.tag_name
 
@@ -198,8 +193,13 @@ class WebAutomation:
             else:
                 raise ValueError(f"Unsupported element type: {element_tag}") 
 
+        except NoSuchElementException:
+            if fail_if_not_exist:
+                raise ValueError(f"Element not found: {selector}")
+            else:
+                return False
+
         except Exception as e:
-            raise ValueError("Se ha producido un error durante el relleno del elemento")
             traceback.print_exc()
 
     def load_instructions(self, test_file):
