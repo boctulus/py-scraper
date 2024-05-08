@@ -48,8 +48,6 @@ class MyScraper(WebAutomation):
         # options.add_argument('--no-sandbox')
         # option.binary_location = "/path/to/google-chrome"
 
-        # self.driver.implicitly_wait(5)
-
         if install:  
             if (web_driver == 'Google'):
                 self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) 
@@ -62,6 +60,7 @@ class MyScraper(WebAutomation):
 
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
+
 
     def get_cart_items(self):
         self.nav(self.cart_page)
@@ -144,21 +143,25 @@ class MyScraper(WebAutomation):
 
 
     def main(self):
-        if len(sys.argv) != 2:
-            print("Usage: python router.py <test_file>")
-            return
-
-        test_file    = sys.argv[1]
-        instructions = self.load_instructions(test_file)
-
-        self.login_data       = instructions.get('login_data')
-        self.cart_page        = instructions.get('cart_page')
-        self.checkout_page    = instructions.get('checkout_page')
-        self.order_to_exe     = instructions.get('order_to_exe')
-        self.qty_input_number = instructions.get('qty_input_number')
-        self.add_to_cart_btn  = instructions.get('add_to_cart_btn')
-
         try:
+            if len(sys.argv) != 2:
+                print("Usage: python router.py <test_file>")
+                return
+
+            test_file    = sys.argv[1]
+            instructions = self.load_instructions(test_file)
+
+            self.login_data       = instructions.get('login_data')
+            self.cart_page        = instructions.get('cart_page')
+            self.checkout_page    = instructions.get('checkout_page')
+            self.order_to_exe     = instructions.get('order_to_exe')
+            self.qty_input_number = instructions.get('qty_input_number')
+            self.add_to_cart_btn  = instructions.get('add_to_cart_btn')
+
+            # Espera implicita
+            # self.driver.implicitly_wait(10)
+
+
             #
             # Login
             #
@@ -194,7 +197,8 @@ class MyScraper(WebAutomation):
                     self.fill(att_name, att_value)
 
                 # Llena la cantidad y agrega al carrito
-                self.fill(self.qty_input_number, str(quantity))  # 197
+                self.fill(self.qty_input_number, str(quantity), 5, False)
+
                 self.get(self.add_to_cart_btn).click()
 
                 time.sleep(2)  

@@ -55,7 +55,7 @@ class WebAutomation:
         with open(filename, 'w') as f:
             f.write(html)
 
-    def _get(self, selector, single=True, t=10, debug=False):
+    def _get(self, selector, single=True, timeout=10, debug=False):
         """
         Obtiene un "selector" de CSS
 
@@ -119,28 +119,28 @@ class WebAutomation:
             print(f"{selector} > {value}")
 
         if (single):
-            return WebDriverWait(self.driver, t).until(   # line 121
+            return WebDriverWait(self.driver, timeout).until(   # line 121
                 EC.visibility_of_element_located((locator, value))
             )
         else:
-             return WebDriverWait(self.driver, t).until(
+             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_all_elements_located((locator, value))
             )
 
-    def get(self, selector, t=10, debug=False):
-        return self._get(selector, single=True, t=t, debug=debug)
+    def get(self, selector, timeout=10, debug=False):
+        return self._get(selector, single=True, timeout=timeout, debug=debug)
 
-    def get_all(self, selector, t=10, debug=False):
-        return self._get(selector, single=False, t=t, debug=debug)
+    def get_all(self, selector, timeout=10, debug=False):
+        return self._get(selector, single=False, timeout=timeout, debug=debug)
 
-    def get_attr(self, selector, attr_name, t=10, debug=False):
+    def get_attr(self, selector, attr_name, timeout=10, debug=False):
         """
         Obtiene el valor de un atributo de un elemento identificado por un selector CSS.
 
         Args:
             selector (str):         Selector CSS del elemento.
             attr_name (str):        Nombre del atributo que se desea obtener.
-            t (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
+            timeout (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
             debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
 
         Returns:
@@ -150,16 +150,16 @@ class WebAutomation:
             # Obtener el atributo href de un enlace
             href_value = self.get_attr('a', 'href')
         """
-        element = self.get(selector, t, debug)
+        element = self.get(selector, timeout, debug)
         return element.get_attribute(attr_name)
 
-    def get_text(self, selector, t=10, debug=False):
+    def get_text(self, selector, timeout=10, debug=False):
         """
         Obtiene el texto contenido dentro de un elemento identificado por un selector CSS.
 
         Args:
             selector (str):         Selector CSS del elemento.
-            t (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
+            timeout (int, opcional):      Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
             debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
 
         Returns:
@@ -169,10 +169,10 @@ class WebAutomation:
             # Obtener el texto de un elemento de clase 'title'
             title_text = self.get_text('.title')
         """
-        element = self.get(selector, t, debug)
+        element = self.get(selector, timeout, debug)
         return element.text
 
-    def fill(self, selector, value, t=5):
+    def fill(self, selector, value, timeout=5, fail_if_not_exist=True):
         """
         Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
         (SELECT2 de momento no)
@@ -187,8 +187,11 @@ class WebAutomation:
             if self.debug:
                 print(f"Seteando valor {selector} > {value}")
 
-            element     = self.get(selector, t) # line 186
+            element     = self.get(selector, timeout) # line 186
             element_tag = element.tag_name
+
+            if not fail_if_not_exist:
+                return False
 
             if element_tag == 'input' or element_tag == 'textarea':
                 element.clear()
@@ -200,7 +203,10 @@ class WebAutomation:
                 raise ValueError(f"Unsupported element type: {element_tag}") 
 
         except Exception as e:
-            print("Se ha producido un error durante el relleno del elemento:")
+            if not fail_if_not_exist:
+                return False
+                
+            raise ValueError("Se ha producido un error durante el relleno del elemento")
             traceback.print_exc()
 
     def load_instructions(self, test_file):
