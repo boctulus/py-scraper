@@ -198,7 +198,6 @@ class MyScraper(WebAutomation):
 
                 time.sleep(2)  
 
-
             print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
             #
@@ -214,6 +213,9 @@ class MyScraper(WebAutomation):
 
             self.set_checkout()
 
+        except Exception as e:
+            # Captura cualquier excepción que ocurra durante la ejecución
+            print("Se ha producido un error durante la ejecución:", e)
 
         finally:
             self.quit(60)
