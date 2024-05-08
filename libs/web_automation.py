@@ -193,14 +193,15 @@ class WebAutomation:
             else:
                 raise ValueError(f"Unsupported element type: {element_tag}") 
 
-        except NoSuchElementException:
+            return True
+
+        except:
             if fail_if_not_exist:
+                traceback.print_exc()
                 raise ValueError(f"Element not found: {selector}")
             else:
                 return False
 
-        except Exception as e:
-            traceback.print_exc()
 
     def load_instructions(self, test_file):
         instructions = {}
