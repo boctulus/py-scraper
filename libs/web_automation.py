@@ -57,7 +57,7 @@ class WebAutomation:
         with open(filename, 'w') as f:
             f.write(html)
 
-    def _get(self, selector, root=None, single=True, timeout=10, debug=False):
+    def _get(self, selector, root=None, single=True, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene un "selector" de CSS dentro de un elemento raíz.
 
@@ -114,22 +114,34 @@ class WebAutomation:
         if self.debug or debug:
             print(f"{selector} > {value}")
 
-        if (single):
-            return WebDriverWait(root or self.driver, timeout).until(
-                EC.visibility_of_element_located((locator, value))
-            )
-        else:
-            return WebDriverWait(root or self.driver, timeout).until(
-                EC.presence_of_all_elements_located((locator, value))
-            )
+        try:
+            if (single):
+                element = WebDriverWait(root or self.driver, timeout).until(
+                    EC.visibility_of_element_located((locator, value))
+                )
+                return element
+            else:
+                elements = WebDriverWait(root or self.driver, timeout).until(
+                    EC.presence_of_all_elements_located((locator, value))
+                )
+                return elements
+        except:
+            if fail_if_not_exist:
+                traceback.print_exc()
+                raise ValueError(f"Element(s) not found: {selector}")
+            else:
+                if (single):
+                    return False
+                else:
+                    return []
 
-    def get(self, selector, root=None, timeout=10, debug=False):
-        return self._get(selector, single=True, root=root, timeout=timeout, debug=debug)
+    def get(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+        return self._get(selector, single=True, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
 
-    def get_all(self, selector, root=None, timeout=10, debug=False):
-        return self._get(selector, single=False, root=root, timeout=timeout, debug=debug)
+    def get_all(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+        return self._get(selector, single=False, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
 
-    def get_attr(self, selector, attr_name, root=None, timeout=10, debug=False):
+    def get_attr(self, selector, attr_name, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene el valor de un atributo de un elemento identificado por un selector CSS dentro de un elemento raíz.
 
@@ -143,10 +155,10 @@ class WebAutomation:
         Returns:
             str: El valor del atributo especificado.
         """
-        element = self.get(selector, root=root, timeout=timeout, debug=debug)
+        element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.get_attribute(attr_name)
 
-    def get_text(self, selector, root=None, timeout=10, debug=False):
+    def get_text(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene el texto contenido dentro de un elemento identificado por un selector CSS dentro de un elemento raíz.
 
@@ -159,11 +171,11 @@ class WebAutomation:
         Returns:
             str: El texto contenido dentro del elemento especificado.
         """
-        element = self.get(selector, root=root, timeout=timeout, debug=debug)
+        element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.text
 
 
-    def fill(self, selector, value, root=None, timeout=5, fail_if_not_exist=True):
+    def fill(self, selector, value, root=None, fail_if_not_exist=True, timeout=5):
         """
         Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
         (SELECT2 de momento no)
@@ -180,7 +192,7 @@ class WebAutomation:
             if self.debug:
                 print(f"Seteando valor {selector} > {value}")
 
-            element = self.get(selector, root=root, timeout=timeout)
+            element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist,timeout=timeout)
 
             element_tag = element.tag_name
 

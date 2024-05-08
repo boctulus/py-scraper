@@ -67,25 +67,25 @@ class MyScraper(WebAutomation):
 
         cart_items = []
 
-        product_rows = self.get_all("tr.woocommerce-cart-form__cart-item")
+        product_rows = self.get_all("tr.woocommerce-cart-form__cart-item", fail_if_not_exist=False) # aqui
 
-        for row in product_rows:
-            product_name     = self.get_text("td.product-name a", root=row)
-            product_url      = self.get_attr("td.product-name a", "href", root=row)
-            product_price    = self.get_text("td.product-price span.woocommerce-Price-amount", root=row)
-            product_quantity = self.get_attr("td.product-quantity input.input-text.qty.text", "value", root=row)
-            product_subtotal = self.get_text("td.product-subtotal span.woocommerce-Price-amount", root=row)
+        if isinstance(product_rows, list):
+            for row in product_rows:
+                product_name     = self.get_text("td.product-name a", root=row)
+                product_url      = self.get_attr("td.product-name a", "href", root=row)
+                product_price    = self.get_text("td.product-price span.woocommerce-Price-amount", root=row)
+                product_quantity = self.get_attr("td.product-quantity input.input-text.qty.text", "value", root=row)
+                product_subtotal = self.get_text("td.product-subtotal span.woocommerce-Price-amount", root=row)
 
-            cart_items.append({
-                'name': product_name,
-                'url': product_url,
-                'price': product_price,
-                'quantity': product_quantity,
-                'subtotal': product_subtotal
-            })
+                cart_items.append({
+                    'name': product_name,
+                    'url': product_url,
+                    'price': product_price,
+                    'quantity': product_quantity,
+                    'subtotal': product_subtotal
+                })
 
         return cart_items
-
 
 
     def print_cart_items(self, cart_items):
@@ -167,28 +167,6 @@ class MyScraper(WebAutomation):
 
         print("Terminado el trabajo con el Checkout. ---")
 
-    def clear_cart(self):
-        while True:
-            # Espera hasta que la cantidad de elementos en el carrito sea mayor a cero
-            self.wait_for_cart_items()
-
-            # Encuentra todos los elementos "a.remove" en el carrito
-            remove_links = self.get_all('CSS_SELECTOR:a.remove')
-
-            # Si no hay elementos "a.remove", salir del bucle
-            if not remove_links:
-                break
-
-            # Hacer clic en cada enlace "a.remove"
-            for remove_link in remove_links:
-                remove_link.click()
-
-                # Esperar a que la cantidad de elementos con a.remove decrezca en una unidad
-                self.wait_for_cart_items_decrease(len(remove_links))
-
-                # Esperar un breve tiempo antes de repetir el proceso
-                time.sleep(1)
-
     def wait_for_cart_items(self):
         """
         Espera hasta que la cantidad de elementos en el carrito sea mayor a cero.
@@ -218,6 +196,31 @@ class MyScraper(WebAutomation):
             if current_count < previous_count:
                 break
             time.sleep(0.5)
+
+    def clear_cart(self):
+        """
+        Limpia el carrito (de momento con el selector "a.remove")
+        """
+        while True:
+            # Espera hasta que la cantidad de elementos en el carrito sea mayor a cero
+            self.wait_for_cart_items()
+
+            # Encuentra todos los elementos "a.remove" en el carrito
+            remove_links = self.get_all('CSS_SELECTOR:a.remove')
+
+            # Si no hay elementos "a.remove", salir del bucle
+            if not remove_links:
+                break
+
+            # Hacer clic en cada enlace "a.remove"
+            for remove_link in remove_links:
+                remove_link.click()
+
+                # Esperar a que la cantidad de elementos con a.remove decrezca en una unidad
+                self.wait_for_cart_items_decrease(len(remove_links))
+
+                # Esperar un breve tiempo antes de repetir el proceso
+                time.sleep(1)
 
 
     def main(self):
