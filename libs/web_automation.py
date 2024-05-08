@@ -173,36 +173,25 @@ class WebAutomation:
 
         Si el elemento puede no existir.... se debe enviar fail_if_not_exist=False
         """
-
+        
         try:
             if self.debug:
                 print(f"Seteando valor {selector} > {value}")
 
-            if not fail_if_not_exist:
-                return False
-
-            try:
-                element     = self.get(selector, timeout) 
-
-            except Exception as e:
-                if not fail_if_not_exist:
-                    return False
-                else:
-                    raise ValueError(e)
-
+            element = self.get(selector)  # line 186
             element_tag = element.tag_name
 
             if element_tag == 'input' or element_tag == 'textarea':
                 element.clear()
                 element.send_keys(value)
-            elif element_tag == 'select':            
+            elif element_tag == 'select':
                 select = Select(element)
                 select.select_by_visible_text(value)
             else:
-                raise ValueError(f"Unsupported element type: {element_tag}") 
+                raise ValueError(f"Unsupported element type: {element_tag}")
 
         except Exception as e:
-            raise ValueError("Se ha producido un error durante el relleno del elemento")
+            print("Se ha producido un error durante el relleno del elemento:")
             traceback.print_exc()
 
     def load_instructions(self, test_file):

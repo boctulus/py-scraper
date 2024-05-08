@@ -123,7 +123,7 @@ class MyScraper(WebAutomation):
         # Retorna un objeto Producto
         return p
 
-    def process_order():
+    def process_order(self):
         print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
 
         for product in self.order_to_exe['products']:
@@ -184,9 +184,12 @@ class MyScraper(WebAutomation):
             self.qty_input_number = instructions.get('qty_input_number')
             self.add_to_cart_btn  = instructions.get('add_to_cart_btn')
 
-            # Espera implicita
-            # self.driver.implicitly_wait(10)
+            #
+            # Ajustes al web driver
+            #
 
+            # self.driver.implicitly_wait(10)
+            self.driver.maximize_window()
 
             #
             # Login
@@ -194,9 +197,7 @@ class MyScraper(WebAutomation):
             
             self.login()
 
-            # self.driver.maximize_window()
-
-
+            
             # self.nav('?product=musculosa-coral')
             # self.fill('NAME:selecttalla', 'U')
             # self.fill('NAME:selectcolor', 'negro')
@@ -214,7 +215,7 @@ class MyScraper(WebAutomation):
             cart_items = self.get_cart_items()
             self.print_cart_items(cart_items)
 
-            self.quit()
+            # self.quit()
 
 
             #
