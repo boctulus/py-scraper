@@ -244,7 +244,7 @@ class MyScraper(WebAutomation):
             #
 
             # self.driver.implicitly_wait(10)
-            self.driver.maximize_window()
+            # self.driver.maximize_window()
 
             #
             # Login
