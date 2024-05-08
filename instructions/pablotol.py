@@ -45,7 +45,7 @@ order_to_exe = {
             "billing_address_2": "Piso 5, Depto. B",
             "billing_city": "Ciudad Principal",
             "billing_postcode": "12345",
-            "billing_state": "CABA"
+            "billing_state": "Arizona"
         },
         "customer": {
             "phone": "1234567890"

@@ -181,6 +181,8 @@ class WebAutomation:
 
         self.fill('NAME:selecttalla', 'U')
         self.fill('NAME:selectcolor', 'negro')
+
+        Si el elemento puede no existir.... se debe enviar fail_if_not_exist=False
         """
 
         try:
@@ -205,7 +207,7 @@ class WebAutomation:
         except Exception as e:
             if not fail_if_not_exist:
                 return False
-                
+
             raise ValueError("Se ha producido un error durante el relleno del elemento")
             traceback.print_exc()
 
