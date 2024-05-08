@@ -167,6 +167,58 @@ class MyScraper(WebAutomation):
 
         print("Terminado el trabajo con el Checkout. ---")
 
+    def clear_cart(self):
+        while True:
+            # Espera hasta que la cantidad de elementos en el carrito sea mayor a cero
+            self.wait_for_cart_items()
+
+            # Encuentra todos los elementos "a.remove" en el carrito
+            remove_links = self.get_all('CSS_SELECTOR:a.remove')
+
+            # Si no hay elementos "a.remove", salir del bucle
+            if not remove_links:
+                break
+
+            # Hacer clic en cada enlace "a.remove"
+            for remove_link in remove_links:
+                remove_link.click()
+
+                # Esperar a que la cantidad de elementos con a.remove decrezca en una unidad
+                self.wait_for_cart_items_decrease(len(remove_links))
+
+                # Esperar un breve tiempo antes de repetir el proceso
+                time.sleep(1)
+
+    def wait_for_cart_items(self):
+        """
+        Espera hasta que la cantidad de elementos en el carrito sea mayor a cero.
+        """
+        self.wait_until_elements_present('CSS_SELECTOR:div.cart-contents')
+
+    def wait_for_cart_items_decrease(self, previous_count):
+        """
+        Espera hasta que la cantidad de elementos con a.remove decrezca en una unidad.
+        Args:
+            previous_count (int): La cantidad anterior de elementos en el carrito.
+        """
+        self.wait_until_elements_decrease('CSS_SELECTOR:a.remove', previous_count)
+
+    def wait_until_elements_present(self, selector, timeout=10):
+        """
+        Espera hasta que al menos un elemento identificado por el selector esté presente en la página.
+        """
+        self.get(selector, timeout=timeout)
+
+    def wait_until_elements_decrease(self, selector, previous_count, timeout=10):
+        """
+        Espera hasta que la cantidad de elementos identificados por el selector sea menor que previous_count.
+        """
+        while True:
+            current_count = len(self.get_all(selector, timeout=timeout))
+            if current_count < previous_count:
+                break
+            time.sleep(0.5)
+
 
     def main(self):
         try:
