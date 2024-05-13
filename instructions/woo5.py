@@ -15,7 +15,7 @@ cart_page        = "/cart"
 checkout_page    = "/checkout"
 
 qty_input_number = "CSS_SELECTOR:input[type='number'][name='quantity']"
-add_to_cart_btn  = "NAME:add-to-cart"
+add_to_cart_btn  = "CSS_SELECTOR:button.single_add_to_cart_button"
 
 order_to_exe = {
     "products": [

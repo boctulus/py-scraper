@@ -4,6 +4,8 @@ import os
 import re
 import traceback
 
+import undetected_chromedriver as uc
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -23,6 +25,10 @@ from libs.web_automation import WebAutomation
 
 
 class MyScraper(WebAutomation):
+    """
+        https://chatgpt.com/c/b460b582-3f19-48e4-bd76-ae1f5c322890
+    """
+    
     def __init__(self):
         self.driver = None
         self.debug  = True ###
@@ -135,7 +141,7 @@ class MyScraper(WebAutomation):
             self.nav(product_page)
 
             for att_name, att_value in attrs.items():
-                self.fill(att_name, att_value)
+                self.fill(att_name, att_value, fail_if_not_exist=False)
 
             # Llena la cantidad y agrega al carrito
             self.fill(selector=self.qty_input_number, value=str(quantity), timeout=5, fail_if_not_exist=False)
@@ -149,12 +155,17 @@ class MyScraper(WebAutomation):
     def set_checkout(self):
         self.nav(self.checkout_page)
 
+        # Reeemplazos necesarios pero usando un diccionario
+        if self.order_to_exe['client']['shipping_addr']['billing_state'] == "CABA":
+            self.order_to_exe['client']['shipping_addr']['billing_state'] = "Ciudad Autónoma de Buenos Aires"
+
         self.fill("XPATH://input[@id='billing_first_name']", self.order_to_exe['client']['shipping_addr']['billing_first_name'])
         self.fill("XPATH://input[@id='billing_last_name']", self.order_to_exe['client']['shipping_addr']['billing_last_name'])
         self.fill("ID:billing_address_1", self.order_to_exe['client']['shipping_addr']['billing_address_1'])
         self.fill("ID:billing_address_2", self.order_to_exe['client']['shipping_addr']['billing_address_2'])
         self.fill("ID:billing_city", self.order_to_exe['client']['shipping_addr']['billing_city'])
         self.fill("ID:billing_postcode", self.order_to_exe['client']['shipping_addr']['billing_postcode'])
+        self.fill("ID:order_comments", self.order_to_exe['order_comments'])  # Corregido acceso a 'order_comments'
 
         # Seleccionar el estado de facturación
         billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
@@ -246,6 +257,10 @@ class MyScraper(WebAutomation):
             # self.driver.implicitly_wait(10)
             # self.driver.maximize_window()
 
+            # self.cloudflareChallenge()
+            # time.sleep(20)
+
+
             #
             # Login
             #
@@ -267,8 +282,8 @@ class MyScraper(WebAutomation):
             # Carrito
             #
 
-            cart_items = self.get_cart_items()
-            self.print_cart_items(cart_items)
+            # cart_items = self.get_cart_items()
+            # self.print_cart_items(cart_items)
 
             # self.quit()
 
@@ -277,14 +292,14 @@ class MyScraper(WebAutomation):
             # Orden
             #
 
-            self.process_order()
+            # self.process_order()
 
             #
             # Carrito
             #
 
-            cart_items = self.get_cart_items()
-            self.print_cart_items(cart_items)
+            # cart_items = self.get_cart_items()
+            # self.print_cart_items(cart_items)
 
             #
             # Checkout

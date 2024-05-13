@@ -1,5 +1,5 @@
 login_data = {
-    "site_url": "https://pablo.tol.ar",
+    "site_url": "https://www.rainbowcompania.com",
     "log": "pablo",
     "pwd": "NsoslQPiaHQ0",
     "login_page": "?page_id=5902",
@@ -29,39 +29,29 @@ order_to_exe = {
         },
         {
             "slug": "?product=musculosa-coral",
-            "qty": 5,
+            "qty": 2,
             "attrs": {
                 "NAME:selecttalla": "U",
                 "NAME:selectcolor": "negro"
             }
-        },
-         {
-            "slug": "?product=pantalones-vaquero",
-            "qty": 1,
-            "attrs": {
-                "NAME:selecttalla": "U",
-                "NAME:selectcolor": "blano"
-            }
-        },
+        }        
     ],
 
    "client": {
         "shipping_addr": {
-            "billing_first_name": "Adriana",
-            "billing_last_name": "Fulana",
-            "billing_address_1": "Calle Principal 321",
-            "billing_address_2": "Piso 1, Depto. C",
+            "billing_first_name": "Juan",
+            "billing_last_name": "Perez",
+            "billing_address_1": "Calle Principal 777",
+            "billing_address_2": "Piso 5, Depto. B",
+            "billing_city": "Ciudad Principal",
             "billing_postcode": "12345",
-            "billing_country": "Argentina",
-            "billing_state": "CABA",           # prov
-            "billing_city": "Palermo viejo",   # ciudad o barrio     
-            "billing_wc_enviamelo_dni": "12345678"
+            "billing_state": "Arizona"
         },
         "customer": {
             "phone": "1234567890"
         }
     },
 
-    "order_comments": "Por favor, entregar antes del martes!"
+    "order_comments": "Por favor, entregar antes del martes."
 }
 

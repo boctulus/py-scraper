@@ -4,6 +4,8 @@ import os
 import re
 import traceback
 
+import undetected_chromedriver as uc
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -261,6 +263,16 @@ class WebAutomation:
         login_button = self.get(submit_button)
         login_button.click()
 
+    def cloudflareChallenge(self):
+        """
+            https://stackoverflow.com/questions/76575298/how-to-click-on-verify-you-are-human-checkbox-challenge-by-cloudflare-using-se
+            https://stackoverflow.com/questions/68289474/selenium-headless-how-to-bypass-cloudflare-detection-using-selenium
+            https://stackoverflow.com/questions/71518406/how-to-bypass-cloudflare-browser-checking-selenium-python
+            https://stackoverflow.com/questions/71518406/how-to-bypass-cloudflare-browser-checking-selenium-python
+        """
+        time.sleep(5)
+        WebDriverWait(self.driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR,"iframe[title='Widget containing a Cloudflare security challenge']")))
+        WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "label.ctp-checkbox-label"))).click()
 
     def main(self): pass
 
