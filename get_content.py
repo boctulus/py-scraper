@@ -22,6 +22,56 @@ from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
+from collections import namedtuple
+
+# Javascript scripts -----------------------------------------------------------------------------------------------
+SELECT_BY_VALUE = \
+'''
+$(arguments[0]).val(arguments[1]);
+$(arguments[0]).trigger('change');
+'''
+
+GET_OPTIONS = \
+'''
+var myOpts = document.getElementById(arguments[0]).options;
+return myOpts;
+'''
+
+GET_SELECTIONS = \
+'''
+return $(arguments[0]).select2('data');
+'''
+# End Javascript scripts -------------------------------------------------------------------------------------------
+
+Option = namedtuple('Option', 'text')
+
+
+class Select2:
+    """Drop-in replacement for Selenium Select"""
+    def __init__(self, webdriver, select_id: str):
+        self.webdriver = webdriver
+        self.select_id = select_id
+        self.options = None
+
+    def get_options(self):
+        if not self.options:
+            options_elements = self.webdriver.execute_script(GET_OPTIONS, self.select_id)
+            self.options = {opt.text: opt.get_attribute('value') for opt in options_elements}
+        return self.options
+
+    def select_by_visible_text(self, text):
+        options = self.get_options()
+        value = options[text]
+        self.select_by_value(value)
+
+    def select_by_value(self, value):
+        self.webdriver.execute_script(SELECT_BY_VALUE, '#' + self.select_id, value)
+
+    @property
+    def first_selected_option(self):
+        selections = self.webdriver.execute_script(GET_SELECTIONS, '#' + self.select_id)
+        option = Option(selections[0]['text'])
+        return option
 
 
 class MyScraper(WebAutomation):
@@ -31,7 +81,7 @@ class MyScraper(WebAutomation):
     
     def __init__(self):
         self.driver = None
-        self.debug  = True ###
+        self.debug  = True
 
     def setup(self, is_prod=False, install=False, web_driver='Google'):
         options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
@@ -61,24 +111,23 @@ class MyScraper(WebAutomation):
 
     def main(self):
         try:
-            # self.driver.implicitly_wait(5)
             self.driver.maximize_window()
-
             self.driver.get('http://simplerest.lan/html_builder/select2')
 
-            # quiting
-            self.quit(60)
+            select2_countries = Select2(self.driver, 'countries')
+            select2_countries.select_by_visible_text('Austria')
+
+            # Espera un momento para que los cambios se reflejen
+            time.sleep(5)
+
+            # Aquí puedes añadir más acciones o verificaciones si es necesario
 
         except Exception as e:
-            # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
-
         finally:
-            self.quit(500)
-            
+            self.quit(60)
 
 if __name__ == "__main__":
     automation = MyScraper()
-
     automation.setup(False, False, 'Google')
     automation.main()
