@@ -165,26 +165,10 @@ class MyScraper(WebAutomation):
         # Rellenar el campo de comentarios
         self.fill("ID:order_comments", self.order_to_exe['checkout']['order_comments'])
 
-         # Seleccionar el estado de facturación
+        # Seleccionar el estado de facturación
         billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
-        try:
-            # Intentar hacer clic en el elemento usando JavaScript para evitar interceptaciones
-            self.driver.execute_script("arguments[0].scrollIntoView(true); arguments[0].click();", billing_state_input)
-        except ElementClickInterceptedException:
-            # Si aún falla, intentar con Actions
-            actions = webdriver.ActionChains(self.driver)
-            actions.move_to_element(billing_state_input).click().perform()
+        # ...    
 
-        # Seleccionar la opción del estado en el menú desplegable
-        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{self.order_to_exe['checkout']['shipping_addr']['ID:billing_state']}')]"
-        state_option = self.driver.find_element(By.XPATH, state_option_xpath)
-        try:
-            # Intentar hacer clic en el elemento usando JavaScript
-            self.driver.execute_script("arguments[0].scrollIntoView(true); arguments[0].click();", state_option)
-        except ElementClickInterceptedException:
-            # Si aún falla, intentar con Actions
-            actions = webdriver.ActionChains(self.driver)
-            actions.move_to_element(state_option).click().perform()
 
         # Rellenar los campos del cliente
         for selector, value in self.order_to_exe['checkout']['customer'].items():

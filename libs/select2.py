@@ -31,7 +31,7 @@ class Select2:
         self.options = None
 
     def get_options(self):
-        if not self.options:
+        if not self.options:    
             options_elements = self.webdriver.execute_script(self.GET_OPTIONS, self.select_id)
             self.options = {opt.text: opt.get_attribute('value') for opt in options_elements}
         return self.options
@@ -51,10 +51,10 @@ class Select2:
         return option
 
     @staticmethod
-    def is_select2(webdriver, select_id):
-        """
-        Verifica si el elemento select ha sido convertido a Select2.
-        """
-        select_element = webdriver.find_element(By.ID, select_id)
-        classes = select_element.get_attribute('class').split()
-        return 'select2-hidden-accessible' in classes
+    def is_select2(element):
+        if element:
+            classes = element.get_attribute('class').split(' ')
+            for class_name in classes:
+                if class_name == 'select2-hidden-accessible':
+                    return True
+        return False

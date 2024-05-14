@@ -66,11 +66,13 @@ class MyScraper(WebAutomation):
             self.driver.maximize_window()
             self.driver.get('http://simplerest.lan/html_builder/select2')
 
-            select2_countries = Select2(self.driver, 'countries')
+            billing_state_input = self.get('ID:countries')
 
             # chequeo si realmente es un select2
-            if Select2.is_select2(self.driver, 'countries'):
+            if Select2.is_select2(billing_state_input):
+                select2_countries = Select2(self.driver, 'countries')
                 select2_countries.select_by_visible_text('Austria')  # selecciono
+               
                 print(f"Selected: {select2_countries.first_selected_option.text}")
             else:
                 print("The select element is not a Select2.")
