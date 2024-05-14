@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from collections import namedtuple
 
 class Select2:
@@ -48,3 +49,11 @@ class Select2:
         selections = self.webdriver.execute_script(self.GET_SELECTIONS, '#' + self.select_id)
         option = self.Option(selections[0]['text'])
         return option
+
+    def is_select2(self):
+        """
+        Verifica si el elemento select ha sido convertido a Select2.
+        """
+        select_element = self.webdriver.find_element(By.ID, self.select_id)
+        classes = select_element.get_attribute('class').split()
+        return 'select2-hidden-accessible' in classes

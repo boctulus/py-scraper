@@ -67,7 +67,12 @@ class MyScraper(WebAutomation):
             self.driver.get('http://simplerest.lan/html_builder/select2')
 
             select2_countries = Select2(self.driver, 'countries')
-            select2_countries.select_by_visible_text('España')
+
+            if select2_countries.is_select2():
+                select2_countries.select_by_visible_text('Austria')
+                print(f"Selected: {select2_countries.first_selected_option.text}")
+            else:
+                print("The select element is not a Select2.")
 
             # Espera un momento para que los cambios se reflejen
             time.sleep(5)
