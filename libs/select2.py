@@ -14,7 +14,7 @@ class Select2:
 
     GET_OPTIONS = \
     '''
-    var myOpts = document.getElementById(arguments[0]).options;
+    var myOpts = $(arguments[0]).find('option');
     return myOpts;
     '''
 
@@ -23,30 +23,26 @@ class Select2:
     return $(arguments[0]).select2('data');
     '''
     # End Javascript scripts -------------------------------------------------------------------------------------------
-    
-    """Drop-in replacement for Selenium Select"""
-    def __init__(self, webdriver, select_id: str):
+
+    def __init__(self, webdriver, element):
         self.webdriver = webdriver
-        self.select_id = select_id
+        self.element = element
         self.options = None
 
     def get_options(self):
-        if not self.options:    
-            options_elements = self.webdriver.execute_script(self.GET_OPTIONS, self.select_id)
+        if not self.options:
+            options_elements = self.webdriver.execute_script(self.GET_OPTIONS, self.element)
             self.options = {opt.text: opt.get_attribute('value') for opt in options_elements}
         return self.options
 
     def select_by_visible_text(self, text):
         options = self.get_options()
         value = options[text]
-        self.select_by_value(value)
-
-    def select_by_value(self, value):
-        self.webdriver.execute_script(self.SELECT_BY_VALUE, '#' + self.select_id, value)
+        self.webdriver.execute_script(self.SELECT_BY_VALUE, self.element, value)
 
     @property
     def first_selected_option(self):
-        selections = self.webdriver.execute_script(self.GET_SELECTIONS, '#' + self.select_id)
+        selections = self.webdriver.execute_script(self.GET_SELECTIONS, self.element)
         option = self.Option(selections[0]['text'])
         return option
 
