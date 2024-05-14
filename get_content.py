@@ -24,29 +24,29 @@ from dotenv import load_dotenv
 from libs.web_automation import WebAutomation
 from collections import namedtuple
 
-# Javascript scripts -----------------------------------------------------------------------------------------------
-SELECT_BY_VALUE = \
-'''
-$(arguments[0]).val(arguments[1]);
-$(arguments[0]).trigger('change');
-'''
-
-GET_OPTIONS = \
-'''
-var myOpts = document.getElementById(arguments[0]).options;
-return myOpts;
-'''
-
-GET_SELECTIONS = \
-'''
-return $(arguments[0]).select2('data');
-'''
-# End Javascript scripts -------------------------------------------------------------------------------------------
-
-Option = namedtuple('Option', 'text')
-
 
 class Select2:
+    Option = namedtuple('Option', 'text')
+
+    # Javascript scripts -----------------------------------------------------------------------------------------------
+    SELECT_BY_VALUE = \
+    '''
+    $(arguments[0]).val(arguments[1]);
+    $(arguments[0]).trigger('change');
+    '''
+
+    GET_OPTIONS = \
+    '''
+    var myOpts = document.getElementById(arguments[0]).options;
+    return myOpts;
+    '''
+
+    GET_SELECTIONS = \
+    '''
+    return $(arguments[0]).select2('data');
+    '''
+    # End Javascript scripts -------------------------------------------------------------------------------------------
+    
     """Drop-in replacement for Selenium Select"""
     def __init__(self, webdriver, select_id: str):
         self.webdriver = webdriver
@@ -70,7 +70,7 @@ class Select2:
     @property
     def first_selected_option(self):
         selections = self.webdriver.execute_script(GET_SELECTIONS, '#' + self.select_id)
-        option = Option(selections[0]['text'])
+        option = self.Option(selections[0]['text'])
         return option
 
 
