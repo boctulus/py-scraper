@@ -67,7 +67,7 @@ class MyScraper(WebAutomation):
             self.driver.get('http://simplerest.lan/html_builder/select2')
 
             select2_countries = Select2(self.driver, 'countries')
-            select2_countries.select_by_visible_text('Austria')
+            select2_countries.select_by_visible_text('España')
 
             # Espera un momento para que los cambios se reflejen
             time.sleep(5)
