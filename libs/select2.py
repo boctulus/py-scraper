@@ -50,10 +50,11 @@ class Select2:
         option = self.Option(selections[0]['text'])
         return option
 
-    def is_select2(self):
+    @staticmethod
+    def is_select2(webdriver, select_id):
         """
         Verifica si el elemento select ha sido convertido a Select2.
         """
-        select_element = self.webdriver.find_element(By.ID, self.select_id)
+        select_element = webdriver.find_element(By.ID, select_id)
         classes = select_element.get_attribute('class').split()
         return 'select2-hidden-accessible' in classes
