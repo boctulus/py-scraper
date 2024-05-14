@@ -70,7 +70,7 @@ class MyScraper(WebAutomation):
 
             # self.get_input_by_value("flat_rate:7").click()
 
-            self.get_input_by_label_text("Recogida local").click()
+            self.get_input_by_label_text("Moto GRAN BUENOS AIRES").click()
 
             # Espera un momento para que los cambios se reflejen
             time.sleep(5)
