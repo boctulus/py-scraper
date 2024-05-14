@@ -3,6 +3,22 @@ from selenium.webdriver.common.by import By
 from collections import namedtuple
 
 class Select2:
+    """
+    Forma de uso:
+
+    # Seleccionar el estado de facturación
+    billing_state_input = self.get('ID:billing_state')
+
+    # Obtener el elemento como un Select2 si es un Select2
+    select2_countries = Select2(self.driver, billing_state_input)
+
+    if select2_countries:
+        select2_countries.select_by_visible_text('Salta') # selecciono
+    else:
+        print("The select element is not a Select2.")
+
+    """
+
     Option = namedtuple('Option', 'text')
 
     # Javascript scripts -----------------------------------------------------------------------------------------------

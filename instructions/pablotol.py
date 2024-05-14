@@ -46,7 +46,7 @@ order_to_exe = {
     ],
 
    "checkout": {
-        "shipping_addr": {
+        "shipping": {
             "XPATH://input[@id='billing_first_name']": "Adriana",
             "XPATH://input[@id='billing_last_name']": "Fulana",
             "ID:billing_address_1": "Calle Principal 321",
@@ -54,9 +54,10 @@ order_to_exe = {
             "ID:billing_city": "Palermo viejo",
             "ID:billing_postcode": "12345",
             "ID:billing_country": "Argentina",
-            "ID:billing_state": "Salta",
+            "ID:billing_state": "CABA",
             "ID:billing_wc_enviamelo_dni": "12345678",
-            "NAME:order_comments": "Por favor, usar la direccion de envio"
+            "NAME:order_comments": "Una nota cualquiera",
+            "NAME:shipping_method": "flat_rate:7"
         },
         "customer": {
             "ID:billing_phone": "1234567890"

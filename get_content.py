@@ -64,18 +64,15 @@ class MyScraper(WebAutomation):
     def main(self):
         try:
             self.driver.maximize_window()
-            self.driver.get('http://simplerest.lan/html_builder/select2')
+            self.driver.get('http://simplerest.lan/dumb/test_radios_1')
 
-            billing_state_input = self.get('ID:countries')
+           
+            # SELECCIONAR RADIO AQUI -- OK!
 
-            # Obtener el elemento como un Select2 si es un Select2
-            select2_countries = Select2(self.driver, billing_state_input)
+            # Seleccionar radio button por su valor
+            radio_button = self.driver.find_element(By.XPATH, '//input[@value="flat_rate:7"]')
+            radio_button.click()
 
-            if select2_countries:
-                select2_countries.select_by_visible_text('Austria')  # selecciono
-                print(f"Selected: {select2_countries.first_selected_option.text}")
-            else:
-                print("The select element is not a Select2.")
 
             # Espera un momento para que los cambios se reflejen
             time.sleep(5)

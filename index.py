@@ -158,25 +158,12 @@ class MyScraper(WebAutomation):
 
         time.sleep(1)
 
-        # if self.order_to_exe['checkout']['shipping_addr']['ID:billing_state'] == "CABA":
-        #     self.order_to_exe['checkout']['shipping_addr']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
+        if self.order_to_exe['checkout']['shipping']['ID:billing_state'] == "CABA":
+            self.order_to_exe['checkout']['shipping']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
 
-        # Rellenar los campos de shipping_addr
-        for selector, value in self.order_to_exe['checkout']['shipping_addr'].items():
+        # Rellenar los campos de shipping
+        for selector, value in self.order_to_exe['checkout']['shipping'].items():
             self.fill(selector, value)
-
-        # Seleccionar el estado de facturación
-        billing_state_input = self.get('ID:billing_state')
-
-        # Obtener el elemento como un Select2 si es un Select2
-        select2_countries = Select2(self.driver, billing_state_input)
-
-        if select2_countries:
-            select2_countries.select_by_visible_text(self.order_to_exe['checkout']['shipping_addr']['ID:billing_state']) # selecciono
-            print(f"Selected: {select2_countries.first_selected_option.text}")
-        else:
-            print("The select element is not a Select2.")
-
 
         # Rellenar los campos del cliente
         for selector, value in self.order_to_exe['checkout']['customer'].items():
