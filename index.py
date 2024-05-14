@@ -156,25 +156,25 @@ class MyScraper(WebAutomation):
         self.nav(self.checkout_page)
 
         # Reeemplazos necesarios pero usando un diccionario
-        if self.order_to_exe['client']['shipping_addr']['billing_state'] == "CABA":
-            self.order_to_exe['client']['shipping_addr']['billing_state'] = "Ciudad Autónoma de Buenos Aires"
+        if self.order_to_exe['checkout']['shipping_addr']['billing_state'] == "CABA":
+            self.order_to_exe['checkout']['shipping_addr']['billing_state'] = "Ciudad Autónoma de Buenos Aires"
 
-        self.fill("XPATH://input[@id='billing_first_name']", self.order_to_exe['client']['shipping_addr']['billing_first_name'])
-        self.fill("XPATH://input[@id='billing_last_name']", self.order_to_exe['client']['shipping_addr']['billing_last_name'])
-        self.fill("ID:billing_address_1", self.order_to_exe['client']['shipping_addr']['billing_address_1'])
-        self.fill("ID:billing_address_2", self.order_to_exe['client']['shipping_addr']['billing_address_2'])
-        self.fill("ID:billing_city", self.order_to_exe['client']['shipping_addr']['billing_city'])
-        self.fill("ID:billing_postcode", self.order_to_exe['client']['shipping_addr']['billing_postcode'])
-        self.fill("ID:order_comments", self.order_to_exe['order_comments'])  # Corregido acceso a 'order_comments'
+        self.fill("XPATH://input[@id='billing_first_name']", self.order_to_exe['checkout']['shipping_addr']['billing_first_name'])
+        self.fill("XPATH://input[@id='billing_last_name']", self.order_to_exe['checkout']['shipping_addr']['billing_last_name'])
+        self.fill("ID:billing_address_1", self.order_to_exe['checkout']['shipping_addr']['billing_address_1'])
+        self.fill("ID:billing_address_2", self.order_to_exe['checkout']['shipping_addr']['billing_address_2'])
+        self.fill("ID:billing_city", self.order_to_exe['checkout']['shipping_addr']['billing_city'])
+        self.fill("ID:billing_postcode", self.order_to_exe['checkout']['shipping_addr']['billing_postcode'])
+        self.fill("ID:order_comments", self.order_to_exe['checkout']['order_comments'])  # Corregido acceso a 'order_comments'
 
         # Seleccionar el estado de facturación
         billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
         billing_state_input.click()
-        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{self.order_to_exe['client']['shipping_addr']['billing_state']}')]"
+        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{self.order_to_exe['checkout']['shipping_addr']['billing_state']}')]"
         state_option = self.driver.find_element(By.XPATH, state_option_xpath)
         state_option.click()
 
-        self.fill("ID:billing_phone", self.order_to_exe['client']['customer']['phone'])
+        self.fill("ID:billing_phone", self.order_to_exe['checkout']['customer']['phone'])
 
         print("Terminado el trabajo con el Checkout. ---")
 
@@ -314,7 +314,8 @@ class MyScraper(WebAutomation):
             # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
 
-        # finally:
+        finally:
+            self.quit(500)
             
 
 if __name__ == "__main__":

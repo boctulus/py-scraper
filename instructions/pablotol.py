@@ -45,7 +45,7 @@ order_to_exe = {
         },
     ],
 
-   "client": {
+   "checkout": {
         "shipping_addr": {
             "billing_first_name": "Adriana",
             "billing_last_name": "Fulana",
@@ -59,9 +59,10 @@ order_to_exe = {
         },
         "customer": {
             "phone": "1234567890"
-        }
+        },
+        "order_comments": "Por favor, usar la direccion de envio"
     },
 
-    "order_comments": "Por favor, entregar antes del martes!"
+    
 }
 
