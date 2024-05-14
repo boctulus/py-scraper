@@ -55,12 +55,12 @@ order_to_exe = {
             "ID:billing_postcode": "12345",
             "ID:billing_country": "Argentina",
             "ID:billing_state": "Salta",
-            "ID:billing_wc_enviamelo_dni": "12345678"
+            "ID:billing_wc_enviamelo_dni": "12345678",
+            "NAME:order_comments": "Por favor, usar la direccion de envio"
         },
         "customer": {
             "ID:billing_phone": "1234567890"
-        },
-        "NAME:order_comments": "Por favor, usar la direccion de envio"
+        }       
     },
 
     

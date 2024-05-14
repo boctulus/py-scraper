@@ -165,9 +165,6 @@ class MyScraper(WebAutomation):
         for selector, value in self.order_to_exe['checkout']['shipping_addr'].items():
             self.fill(selector, value)
 
-        # Rellenar el campo de comentarios
-        self.fill("ID:order_comments", self.order_to_exe['checkout']['order_comments'])
-
         # Seleccionar el estado de facturación
         billing_state_input = self.get('ID:billing_state')
 
