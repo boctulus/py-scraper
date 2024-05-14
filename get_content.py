@@ -55,7 +55,7 @@ class Select2:
 
     def get_options(self):
         if not self.options:
-            options_elements = self.webdriver.execute_script(GET_OPTIONS, self.select_id)
+            options_elements = self.webdriver.execute_script(self.GET_OPTIONS, self.select_id)
             self.options = {opt.text: opt.get_attribute('value') for opt in options_elements}
         return self.options
 
@@ -65,11 +65,11 @@ class Select2:
         self.select_by_value(value)
 
     def select_by_value(self, value):
-        self.webdriver.execute_script(SELECT_BY_VALUE, '#' + self.select_id, value)
+        self.webdriver.execute_script(self.SELECT_BY_VALUE, '#' + self.select_id, value)
 
     @property
     def first_selected_option(self):
-        selections = self.webdriver.execute_script(GET_SELECTIONS, '#' + self.select_id)
+        selections = self.webdriver.execute_script(self.GET_SELECTIONS, '#' + self.select_id)
         option = self.Option(selections[0]['text'])
         return option
 
