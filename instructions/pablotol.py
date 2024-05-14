@@ -47,15 +47,15 @@ order_to_exe = {
 
    "checkout": {
         "shipping_addr": {
-            "billing_first_name": "Adriana",
-            "billing_last_name": "Fulana",
-            "billing_address_1": "Calle Principal 321",
-            "billing_address_2": "Piso 1, Depto. C",
-            "billing_postcode": "12345",
-            "billing_country": "Argentina",
-            "billing_state": "CABA",           # prov
-            "billing_city": "Palermo viejo",   # ciudad o barrio     
-            "billing_wc_enviamelo_dni": "12345678"
+            "XPATH://input[@id='billing_first_name']": "Adriana",
+            "XPATH://input[@id='billing_last_name']": "Fulana",
+            "ID:billing_address_1": "Calle Principal 321",
+            "ID:billing_address_2": "Piso 1, Depto. C",
+            "ID:billing_city": "Palermo viejo",
+            "ID:billing_postcode": "12345",
+            "ID:billing_country": "Argentina",
+            "ID:billing_state": "Salta",
+            "ID:billing_wc_enviamelo_dni": "12345678"
         },
         "customer": {
             "phone": "1234567890"

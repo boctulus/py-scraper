@@ -12,17 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-
-from selenium.webdriver.firefox.options import Options as FireFoxOptions
-from selenium.webdriver.firefox.service import Service as FireFoxService
-from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
-from dotenv import load_dotenv
-
-from selenium.common.exceptions import NoSuchElementException
-
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, NoSuchElementException
 
 class WebAutomation:
     def debug(value=True):
@@ -177,7 +167,29 @@ class WebAutomation:
         return element.text
 
 
-    def fill(self, selector, value, root=None, fail_if_not_exist=True, timeout=5):
+    # Hacer clic usando JavaScript
+    def click_by_js(self, element):
+        self.driver.execute_script("arguments[0].click();", element)
+
+    def click_selector(self, selector):
+        element = self.get(selector)
+
+        try:
+            element.click()
+        except ElementClickInterceptedException:
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            self.driver.execute_script("arguments[0].click();", element)
+
+    def send_return(self, element, value):
+        """
+        I was able to get around it by using .SendKeys(Keys.Return) instead of .Click. 
+         
+        This worked for me in Chrome where I was having this issue and in Firefox where I was having another similar issue on this particular link
+        (anchor wrapped in a Div)
+        """
+        element.send_keys(value)
+
+    def fill(self, selector, value, root=None, fail_if_not_exist=True, scrollToView=True, timeout=5):
         """
         Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
         (SELECT2 de momento no)
@@ -197,6 +209,10 @@ class WebAutomation:
             element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist,timeout=timeout)
 
             element_tag = element.tag_name
+
+            if scrollToView:
+                # Desplazar el elemento a la vista
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
 
             if element_tag == 'input' or element_tag == 'textarea':
                 element.clear()
@@ -275,5 +291,3 @@ class WebAutomation:
         WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "label.ctp-checkbox-label"))).click()
 
     def main(self): pass
-
-

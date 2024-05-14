@@ -155,28 +155,32 @@ class MyScraper(WebAutomation):
     def set_checkout(self):
         self.nav(self.checkout_page)
 
-        # Reeemplazos necesarios pero usando un diccionario
-        if self.order_to_exe['checkout']['shipping_addr']['billing_state'] == "CABA":
-            self.order_to_exe['checkout']['shipping_addr']['billing_state'] = "Ciudad Autónoma de Buenos Aires"
+        # if self.order_to_exe['checkout']['shipping_addr']['ID:billing_state'] == "CABA":
+        #     self.order_to_exe['checkout']['shipping_addr']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
 
-        self.fill("XPATH://input[@id='billing_first_name']", self.order_to_exe['checkout']['shipping_addr']['billing_first_name'])
-        self.fill("XPATH://input[@id='billing_last_name']", self.order_to_exe['checkout']['shipping_addr']['billing_last_name'])
-        self.fill("ID:billing_address_1", self.order_to_exe['checkout']['shipping_addr']['billing_address_1'])
-        self.fill("ID:billing_address_2", self.order_to_exe['checkout']['shipping_addr']['billing_address_2'])
-        self.fill("ID:billing_city", self.order_to_exe['checkout']['shipping_addr']['billing_city'])
-        self.fill("ID:billing_postcode", self.order_to_exe['checkout']['shipping_addr']['billing_postcode'])
-        self.fill("ID:order_comments", self.order_to_exe['checkout']['order_comments'])  # Corregido acceso a 'order_comments'
+        # Rellenar los campos de shipping_addr
+        for selector, value in self.order_to_exe['checkout']['shipping_addr'].items():
+            self.fill(selector, value)
 
-        # Seleccionar el estado de facturación
-        billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
-        billing_state_input.click()
-        state_option_xpath = f"//ul[@id='select2-billing_state-results']//li[contains(text(), '{self.order_to_exe['checkout']['shipping_addr']['billing_state']}')]"
-        state_option = self.driver.find_element(By.XPATH, state_option_xpath)
-        state_option.click()
+        # Rellenar el campo de comentarios
+        self.fill("ID:order_comments", self.order_to_exe['checkout']['order_comments'])
 
-        self.fill("ID:billing_phone", self.order_to_exe['checkout']['customer']['phone'])
+        billing_state_value = self.order_to_exe['checkout']['shipping_addr']['ID:billing_state']
+        billing_state_selector = 'ID:select2-billing_state-container'
+
+        # Hacer clic en el contenedor del SELECT2 para desplegar las opciones
+        self.click_selector(billing_state_selector)
+
+        # Seleccionar la opción deseada del estado
+        state_option_xpath = f"//li[contains(text(), '{billing_state_value}')]"
+        self.click_selector(state_option_xpath)
+
+        # Rellenar los campos del cliente
+        for selector, value in self.order_to_exe['checkout']['customer'].items():
+            self.fill(selector, value)
 
         print("Terminado el trabajo con el Checkout. ---")
+
 
     def wait_for_cart_items(self):
         """
@@ -254,8 +258,8 @@ class MyScraper(WebAutomation):
             # Ajustes al web driver
             #
 
-            # self.driver.implicitly_wait(10)
-            # self.driver.maximize_window()
+            # self.driver.implicitly_wait(5)
+            self.driver.maximize_window()
 
             # self.cloudflareChallenge()
             # time.sleep(20)
