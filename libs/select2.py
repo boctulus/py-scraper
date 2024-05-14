@@ -8,26 +8,26 @@ class Select2:
     # Javascript scripts -----------------------------------------------------------------------------------------------
     SELECT_BY_VALUE = \
     '''
-    $(arguments[0]).val(arguments[1]);
-    $(arguments[0]).trigger('change');
+    jQuery(arguments[0]).val(arguments[1]);
+    jQuery(arguments[0]).trigger('change');
     '''
 
     GET_OPTIONS = \
     '''
-    var myOpts = $(arguments[0]).find('option');
+    var myOpts = jQuery(arguments[0]).find('option');
     return myOpts;
     '''
 
     GET_SELECTIONS = \
     '''
-    return $(arguments[0]).select2('data');
+    return jQuery(arguments[0]).select2('data');
     '''
     # End Javascript scripts -------------------------------------------------------------------------------------------
 
     def __init__(self, webdriver, element):
         self.webdriver = webdriver
-        self.element = element
-        self.options = None
+        self.element   = element
+        self.options   = None
 
     def get_options(self):
         if not self.options:
@@ -37,7 +37,7 @@ class Select2:
 
     def select_by_visible_text(self, text):
         options = self.get_options()
-        value = options[text]
+        value   = options[text]
         self.webdriver.execute_script(self.SELECT_BY_VALUE, self.element, value)
 
     @property

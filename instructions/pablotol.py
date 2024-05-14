@@ -58,9 +58,9 @@ order_to_exe = {
             "ID:billing_wc_enviamelo_dni": "12345678"
         },
         "customer": {
-            "phone": "1234567890"
+            "ID:billing_phone": "1234567890"
         },
-        "order_comments": "Por favor, usar la direccion de envio"
+        "NAME:order_comments": "Por favor, usar la direccion de envio"
     },
 
     

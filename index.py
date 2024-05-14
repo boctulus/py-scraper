@@ -22,6 +22,7 @@ from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
+from libs.select2 import Select2
 
 
 class MyScraper(WebAutomation):
@@ -155,6 +156,8 @@ class MyScraper(WebAutomation):
     def set_checkout(self):
         self.nav(self.checkout_page)
 
+        time.sleep(1)
+
         # if self.order_to_exe['checkout']['shipping_addr']['ID:billing_state'] == "CABA":
         #     self.order_to_exe['checkout']['shipping_addr']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
 
@@ -166,8 +169,16 @@ class MyScraper(WebAutomation):
         self.fill("ID:order_comments", self.order_to_exe['checkout']['order_comments'])
 
         # Seleccionar el estado de facturación
-        billing_state_input = self.driver.find_element(By.ID, 'select2-billing_state-container')
-        # ...    
+        billing_state_input = self.get('ID:billing_state')
+
+        # Obtener el elemento como un Select2 si es un Select2
+        select2_countries = Select2(self.driver, billing_state_input)
+
+        if select2_countries:
+            select2_countries.select_by_visible_text(self.order_to_exe['checkout']['shipping_addr']['ID:billing_state']) # selecciono
+            print(f"Selected: {select2_countries.first_selected_option.text}")
+        else:
+            print("The select element is not a Select2.")
 
 
         # Rellenar los campos del cliente
