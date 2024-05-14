@@ -166,6 +166,56 @@ class WebAutomation:
         element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.text
 
+    
+    def get_input_by_value(self, value, fail_if_not_exist=True, timeout=10, debug=False):
+        """
+        Caso de uso: "radio buttons", otros
+
+        Ej:
+
+        self.get_input_by_value("flat_rate:7").click()
+        """
+
+        xpath = f'//input[@value="{value}"]'
+        
+        try:
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located((By.XPATH, xpath))
+            )
+            return element
+        except Exception as e:
+            if fail_if_not_exist:
+                raise ValueError(f"Element not found: {xpath}")
+            else:
+                return None
+
+    def get_input_by_label_text(self, text, fail_if_not_exist=True, timeout=10, debug=False):
+        """
+        Caso de uso: "radio buttons", otros
+
+        EJ:
+
+        self.get_input_by_label_text("Recogida local").click()
+        """
+
+        # Encuentra el label que contiene el texto especificado
+        label = self.get(f'XPATH://label[contains(text(), "{text}")]')
+
+        if label is None:
+            if fail_if_not_exist:
+                raise ValueError(f"Label not found with text: {text}")
+            else:
+                return None
+
+        # Obtén el atributo 'for' del label para encontrar el input asociado
+        radio_button_id = label.get_attribute('for')
+
+        # Encuentra el input usando el id obtenido y haz clic en él
+        radio_button = self.get(f'ID:{radio_button_id}')
+        
+        return radio_button
+
+
 
     # Hacer clic usando JavaScript
     def click_by_js(self, element):

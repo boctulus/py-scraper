@@ -66,13 +66,11 @@ class MyScraper(WebAutomation):
             self.driver.maximize_window()
             self.driver.get('http://simplerest.lan/dumb/test_radios_1')
 
-           
-            # SELECCIONAR RADIO AQUI -- OK!
+            # SELECCIONAR RADIO
 
-            # Seleccionar radio button por su valor
-            radio_button = self.driver.find_element(By.XPATH, '//input[@value="flat_rate:7"]')
-            radio_button.click()
+            # self.get_input_by_value("flat_rate:7").click()
 
+            self.get_input_by_label_text("Recogida local").click()
 
             # Espera un momento para que los cambios se reflejen
             time.sleep(5)
