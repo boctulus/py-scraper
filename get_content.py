@@ -68,8 +68,9 @@ class MyScraper(WebAutomation):
 
             select2_countries = Select2(self.driver, 'countries')
 
+            # chequeo si realmente es un select2
             if select2_countries.is_select2():
-                select2_countries.select_by_visible_text('Austria')
+                select2_countries.select_by_visible_text('Austria')  # selecciono
                 print(f"Selected: {select2_countries.first_selected_option.text}")
             else:
                 print("The select element is not a Select2.")
