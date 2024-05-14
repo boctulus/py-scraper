@@ -56,8 +56,11 @@ order_to_exe = {
             "ID:billing_country": "Argentina",
             "ID:billing_state": "CABA",
             "ID:billing_wc_enviamelo_dni": "12345678",
-            "NAME:order_comments": "Una nota cualquiera",
-            "NAME:shipping_method": "flat_rate:7"
+            "NAME:order_comments": "Una nota cualquiera"
+        },
+        "radios": {            
+            # "NAME:shipping_method": "local_pickup:15",
+            "NAME:payment_method": "mobbex"
         },
         "customer": {
             "ID:billing_phone": "1234567890"

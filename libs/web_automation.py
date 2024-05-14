@@ -109,6 +109,7 @@ class WebAutomation:
         try:
             if (single):
                 element = WebDriverWait(root or self.driver, timeout).until(
+                    # EC.element_to_be_clickable
                     EC.visibility_of_element_located((locator, value))
                 )
                 return element

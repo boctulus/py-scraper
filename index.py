@@ -165,6 +165,10 @@ class MyScraper(WebAutomation):
         for selector, value in self.order_to_exe['checkout']['shipping'].items():
             self.fill(selector, value)
 
+        # Rellenar los campos tipo "radio"
+        # for selector, value in self.order_to_exe['checkout']['radios'].items():
+        #     self.get_input_by_value(value).click()
+
         # Rellenar los campos del cliente
         for selector, value in self.order_to_exe['checkout']['customer'].items():
             self.fill(selector, value)
