@@ -12,15 +12,42 @@ order_to_exe = {
         }
     },
 
+    "product_page": {
+        "qty_input_number": "CSS_SELECTOR:input[type='number'][name='quantity']"
+    },
+
     "cart": {
         "add_to_cart_btn": "NAME:add-to-cart",
         "cart_page": "?page_id=978",
     },
 
-    "product_page": {
-        "qty_input_number": "CSS_SELECTOR:input[type='number'][name='quantity']"
-    },
+    "checkout": {
+        "checkout_page": "?page_id=979",
 
+        "shipping": {
+            "XPATH://input[@id='billing_first_name']": "Adriana",
+            "XPATH://input[@id='billing_last_name']": "Fulana",
+            "ID:billing_address_1": "Calle Principal 321",
+            "ID:billing_address_2": "Piso 1, Depto. C",
+            "ID:billing_city": "Palermo viejo",
+            "ID:billing_postcode": "12345",
+            "ID:billing_country": "Argentina",
+            "ID:billing_state": "CABA",
+            "ID:billing_wc_enviamelo_dni": "12345678",
+            "ID:billing_phone": "1234567890",
+            "NAME:order_comments": "Una nota cualquiera"
+        },
+
+        # Para los RADIO(s) no importa el selector sino el value
+        "radios": {            
+            "NAME:shipping_method": "shipping_method_0_flat_rate7",
+            "NAME:payment_method": "payment_method_cheque"
+        },
+
+        # En este caso, el selector va del lado derecho
+        "submit_btn": "NAME:woocommerce_checkout_place_order"       
+    },
+    
     "products": [
         {
             "slug": "?product=musculosa-rallada",
@@ -63,34 +90,6 @@ order_to_exe = {
         #     }
         # },
     ],
-
-   "checkout": {
-        "checkout_page": "?page_id=979",
-
-        "shipping": {
-            "XPATH://input[@id='billing_first_name']": "Adriana",
-            "XPATH://input[@id='billing_last_name']": "Fulana",
-            "ID:billing_address_1": "Calle Principal 321",
-            "ID:billing_address_2": "Piso 1, Depto. C",
-            "ID:billing_city": "Palermo viejo",
-            "ID:billing_postcode": "12345",
-            "ID:billing_country": "Argentina",
-            "ID:billing_state": "CABA",
-            "ID:billing_wc_enviamelo_dni": "12345678",
-            "ID:billing_phone": "1234567890",
-            "NAME:order_comments": "Una nota cualquiera"
-        },
-
-        # Para los RADIO(s) no importa el selector sino el value
-        "radios": {            
-            "NAME:shipping_method": "shipping_method_0_flat_rate7",
-            "NAME:payment_method": "payment_method_cheque"
-        },
-
-        # En este caso, el selector va del lado derecho
-        "submit_btn": "NAME:woocommerce_checkout_place_order"       
-    },
-
     
 }
 
