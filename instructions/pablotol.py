@@ -64,10 +64,13 @@ order_to_exe = {
             "NAME:shipping_method": "shipping_method_0_flat_rate7",
             "NAME:payment_method": "payment_method_cheque"
         },
-        
+
         "customer": {
             "ID:billing_phone": "1234567890"
-        }       
+        },
+
+        # En este caso, el selector va del lado derecho
+        "submit_btn": "NAME:woocommerce_checkout_place_order"       
     },
 
     

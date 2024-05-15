@@ -174,6 +174,10 @@ class MyScraper(WebAutomation):
         for selector, value in self.order_to_exe['checkout']['customer'].items():
             self.fill(selector, value)
 
+        # Enviar pedido (presionar boton)
+        time.sleep(1)
+        self.click_selector(self.order_to_exe['checkout']['submit_btn'])
+
         print("Terminado el trabajo con el Checkout. ---")
 
 
