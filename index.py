@@ -69,7 +69,7 @@ class MyScraper(WebAutomation):
                 self.driver = webdriver.Firefox(options=options)
 
     def get_cart_items(self):
-        self.nav(self.order_to_exe['cart_page'])
+        self.nav(self.order_to_exe['cart']['cart_page'])
 
         cart_items = []
 
@@ -153,7 +153,7 @@ class MyScraper(WebAutomation):
         print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
     def set_checkout(self):
-        self.nav(self.order_to_exe['checkout_page'])
+        self.nav(self.order_to_exe['checkout']['checkout_page'])
 
         time.sleep(1)
 

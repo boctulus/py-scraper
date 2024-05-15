@@ -12,11 +12,9 @@ order_to_exe = {
         }
     },
 
-    "cart_page": "?page_id=978",
-    "checkout_page": "?page_id=979",
-
     "cart": {
-        "add_to_cart_btn": "NAME:add-to-cart"
+        "add_to_cart_btn": "NAME:add-to-cart",
+        "cart_page": "?page_id=978",
     },
 
     "product_page": {
@@ -25,13 +23,21 @@ order_to_exe = {
 
     "products": [
         {
-            "slug": "?product=vestido-de-mujer",
+            "slug": "?product=musculosa-rallada",
             "qty": 1,
             "attrs": {
                 "NAME:selecttalla": "U",
                 "NAME:selectcolor": "negro"
             }
         },
+        # {
+        #     "slug": "?product=vestido-de-mujer",
+        #     "qty": 1,
+        #     "attrs": {
+        #         "NAME:selecttalla": "U",
+        #         "NAME:selectcolor": "negro"
+        #     }
+        # },
         # {
         #     "slug": "?product=chaqueta-marinera",
         #     "qty": 1,
@@ -59,6 +65,8 @@ order_to_exe = {
     ],
 
    "checkout": {
+        "checkout_page": "?page_id=979",
+
         "shipping": {
             "XPATH://input[@id='billing_first_name']": "Adriana",
             "XPATH://input[@id='billing_last_name']": "Fulana",
