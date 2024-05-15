@@ -2,6 +2,10 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+"""
+https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-22-04#creating-the-wsgi-entry-point
+"""
+
 @app.route('/api/v1/scraper/robot/order', methods=['POST'])
 def receive_order():
     # Obtener el JSON del body de la solicitud
