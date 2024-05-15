@@ -309,7 +309,7 @@ if __name__ == "__main__":
     # Skip en True implica NO ejecutar
     automation.skips = {
         "login"   : False,
-        "cart_1"  : True,
+        "cart_1"  : False,
         "order"   : False,
         "cart_2"  : False,
         "checkout": False,
