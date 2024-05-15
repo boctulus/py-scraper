@@ -2,4 +2,5 @@
 .env
 *.zip
 *.rar
+screenshots/
 __pycache__/
