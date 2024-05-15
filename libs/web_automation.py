@@ -14,6 +14,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, NoSuchElementException
 
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+
+from selenium.webdriver.firefox.options import Options as FireFoxOptions
+from selenium.webdriver.firefox.service import Service as FireFoxService
+from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
+
 
 class WebAutomation:
     def set_base_url(self, url):
@@ -361,5 +369,39 @@ class WebAutomation:
         time.sleep(5)
         WebDriverWait(self.driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR,"iframe[title='Widget containing a Cloudflare security challenge']")))
         WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "label.ctp-checkbox-label"))).click()
+    
+    def setup(self, is_prod=False, install=False, web_driver='Google'):
+        options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
+
+        if options is None:
+            raise ValueError(f"Unsupported web driver: {web_driver}. Supported options are 'Chrome' and 'Firefox'")
+        
+        if is_prod:
+            # prod
+            options.add_argument('--headless=new')
+        else:
+            # dev
+            options.add_extension("DarkReader.crx")    
+
+        # options.add_argument("--headless")
+        # options.add_argument('--headless=new')
+        # options.add_argument("start-maximized")
+        # options.add_argument('--disable-dev-shm-usage')
+        # options.add_argument('--disable-gpu')
+        # options.add_argument('--no-sandbox')
+        # option.binary_location = "/path/to/google-chrome"
+
+        if install:  
+            if (web_driver == 'Google'):
+                self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) 
+
+            if (web_driver == 'FireFox'):
+                self.driver = webdriver.Firefox(service=ChromeService(FireFoxDriverManager().install()), options=options) 
+        else:
+            if (web_driver == 'Google'):
+                self.driver = webdriver.Chrome(options=options)
+
+            if (web_driver == 'FireFox'):
+                self.driver = webdriver.Firefox(options=options)
 
     def main(self): pass

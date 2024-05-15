@@ -12,13 +12,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-
-from selenium.webdriver.firefox.options import Options as FireFoxOptions
-from selenium.webdriver.firefox.service import Service as FireFoxService
-from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
@@ -35,42 +28,8 @@ class MyScraper(WebAutomation):
         self.driver = None
         self.debug  = True ###
 
-    def setup(self, is_prod=False, install=False, web_driver='Google'):
-        options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
-
-        if options is None:
-            raise ValueError(f"Unsupported web driver: {web_driver}. Supported options are 'Chrome' and 'Firefox'")
-        
-        if is_prod:
-            # prod
-            options.add_argument('--headless=new')
-        else:
-            # dev
-            options.add_extension("DarkReader.crx")    
-
-        # options.add_argument("--headless")
-        # options.add_argument('--headless=new')
-        # options.add_argument("start-maximized")
-        # options.add_argument('--disable-dev-shm-usage')
-        # options.add_argument('--disable-gpu')
-        # options.add_argument('--no-sandbox')
-        # option.binary_location = "/path/to/google-chrome"
-
-        if install:  
-            if (web_driver == 'Google'):
-                self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) 
-
-            if (web_driver == 'FireFox'):
-                self.driver = webdriver.Firefox(service=ChromeService(FireFoxDriverManager().install()), options=options) 
-        else:
-            if (web_driver == 'Google'):
-                self.driver = webdriver.Chrome(options=options)
-
-            if (web_driver == 'FireFox'):
-                self.driver = webdriver.Firefox(options=options)
-
     def get_cart_items(self):
-        self.nav(self.order_to_exe['cart']['cart_page'])
+        self.nav(self.data['cart']['cart_page'])
 
         cart_items = []
 
@@ -133,7 +92,7 @@ class MyScraper(WebAutomation):
     def process_order(self):
         print("COMIENZO A EJECUTAR LA ORDEN: --->\r\n")
 
-        for product in self.order_to_exe['products']:
+        for product in self.data['products']:
             
             product_page = product['slug'] 
             quantity     = product['qty']
@@ -145,34 +104,41 @@ class MyScraper(WebAutomation):
                 self.fill(att_name, att_value, fail_if_not_exist=False)
 
             # Llena la cantidad y agrega al carrito
-            self.fill(selector=self.order_to_exe['product_page']['qty_input_number'], value=str(quantity), timeout=5, fail_if_not_exist=False)
+            self.fill(selector=self.data['product_page']['qty_input_number'], value=str(quantity), timeout=5, fail_if_not_exist=False)
 
-            self.get(self.order_to_exe['cart']['add_to_cart_btn'], None, False).click()
+            self.get(self.data['cart']['add_to_cart_btn'], None, False).click()
 
             time.sleep(2)  
 
         print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
     def set_checkout(self):
-        self.nav(self.order_to_exe['checkout']['checkout_page'])
+        self.nav(self.data['checkout']['checkout_page'])
 
         time.sleep(1)
 
-        if self.order_to_exe['checkout']['shipping']['ID:billing_state'] == "CABA":
-            self.order_to_exe['checkout']['shipping']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
+        if self.data['checkout']['shipping']['ID:billing_state'] == "CABA":
+            self.data['checkout']['shipping']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
 
         # Rellenar los campos de shipping
-        for selector, value in self.order_to_exe['checkout']['shipping'].items():
+        for selector, value in self.data['checkout']['shipping'].items():
             self.fill(selector, value)
 
         # Rellenar los campos tipo "radio" --- no es una solucion 100 fiable o estable
-        for selector, value in self.order_to_exe['checkout']['radios'].items():
+        """
+        Otra posibilidad es usar get_input_by_label_text() que soporta substrings pero no funciona correctamente
+
+        Ej:
+        
+        self.get_input_by_label_text("Moto GRAN BUENOS AIRES").click()  # por texto en la label
+        """
+        for selector, value in self.data['checkout']['radios'].items():
             time.sleep(5)
             Label.click(self.driver, value)
 
         # Enviar pedido (presionar boton)
         time.sleep(1)
-        self.click_selector(self.order_to_exe['checkout']['submit_btn'])
+        self.click_selector(self.data['checkout']['submit_btn'])
 
         print("Terminado el trabajo con el Checkout. ---")
 
@@ -243,9 +209,9 @@ class MyScraper(WebAutomation):
 
             test_file         = sys.argv[1]
             instructions      = loader.load_instructions(test_file)
-            self.order_to_exe = instructions.get('order_to_exe')
+            self.data = instructions.get('data')
            
-            login = self.order_to_exe['login']
+            login = self.data['login']
             
             self.set_base_url(login['site_url'])
 

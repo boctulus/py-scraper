@@ -12,13 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 
-from selenium.webdriver.firefox.options import Options as FireFoxOptions
-from selenium.webdriver.firefox.service import Service as FireFoxService
-from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
@@ -35,47 +29,16 @@ class MyScraper(WebAutomation):
         self.driver = None
         self.debug  = True
 
-    def setup(self, is_prod=False, install=False, web_driver='Google'):
-        options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
-
-        if options is None:
-            raise ValueError(f"Unsupported web driver: {web_driver}. Supported options are 'Chrome' and 'Firefox'")
-        
-        if is_prod:
-            # prod
-            options.add_argument('--headless=new')
-        else:
-            # dev
-            options.add_extension("DarkReader.crx")    
-
-        if install:  
-            if (web_driver == 'Google'):
-                self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options) 
-
-            if (web_driver == 'FireFox'):
-                self.driver = webdriver.Firefox(service=ChromeService(FireFoxDriverManager().install()), options=options) 
-        else:
-            if (web_driver == 'Google'):
-                self.driver = webdriver.Chrome(options=options)
-
-            if (web_driver == 'FireFox'):
-                self.driver = webdriver.Firefox(options=options)
-
     def main(self):
         try:
             self.driver.maximize_window()
             self.driver.get('http://simplerest.lan/dumb/test_radios_1')
 
-            # SELECCIONAR RADIO
+            self.driver.get('https://www.python.org')
+            time.sleep(1)
 
-            # self.get_input_by_value("flat_rate:7").click()
+            self.driver.get_screenshot_as_file("screenshots/screenshot.png")
 
-            self.get_input_by_label_text("Moto GRAN BUENOS AIRES").click()
-
-            # Espera un momento para que los cambios se reflejen
-            time.sleep(5)
-
-            # Aquí puedes añadir más acciones o verificaciones si es necesario
 
         except Exception as e:
             traceback.print_exc(limit=5)
