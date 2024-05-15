@@ -68,9 +68,8 @@ class MyScraper(WebAutomation):
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-
     def get_cart_items(self):
-        self.nav(self.cart_page)
+        self.nav(self.order_to_exe['cart_page'])
 
         cart_items = []
 
@@ -145,16 +144,16 @@ class MyScraper(WebAutomation):
                 self.fill(att_name, att_value, fail_if_not_exist=False)
 
             # Llena la cantidad y agrega al carrito
-            self.fill(selector=self.qty_input_number, value=str(quantity), timeout=5, fail_if_not_exist=False)
+            self.fill(selector=self.order_to_exe['product_page']['qty_input_number'], value=str(quantity), timeout=5, fail_if_not_exist=False)
 
-            self.get(self.add_to_cart_btn).click()
+            self.get(self.order_to_exe['cart']['add_to_cart_btn'], None, False).click()
 
             time.sleep(2)  
 
         print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
     def set_checkout(self):
-        self.nav(self.checkout_page)
+        self.nav(self.order_to_exe['checkout_page'])
 
         time.sleep(1)
 
@@ -169,10 +168,6 @@ class MyScraper(WebAutomation):
         for selector, value in self.order_to_exe['checkout']['radios'].items():
             time.sleep(5)
             Label.click(self.driver, value)
-
-        # Rellenar los campos del cliente
-        for selector, value in self.order_to_exe['checkout']['customer'].items():
-            self.fill(selector, value)
 
         # Enviar pedido (presionar boton)
         time.sleep(1)
@@ -243,15 +238,13 @@ class MyScraper(WebAutomation):
                 print("Usage: python router.py <test_file>")
                 return
 
-            test_file    = sys.argv[1]
-            instructions = self.load_instructions(test_file)
-
-            self.login_data       = instructions.get('login_data')
-            self.cart_page        = instructions.get('cart_page')
-            self.checkout_page    = instructions.get('checkout_page')
-            self.order_to_exe     = instructions.get('order_to_exe')
-            self.qty_input_number = instructions.get('qty_input_number')
-            self.add_to_cart_btn  = instructions.get('add_to_cart_btn')
+            test_file         = sys.argv[1]
+            instructions      = self.load_instructions(test_file)
+            self.order_to_exe = instructions.get('order_to_exe')
+           
+            login = self.order_to_exe['login']
+            
+            self.set_base_url(login['site_url'])
 
             #
             # Ajustes al web driver
@@ -268,7 +261,7 @@ class MyScraper(WebAutomation):
             # Login
             #
             
-            self.login()
+            self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
 
             #
             # Carrito

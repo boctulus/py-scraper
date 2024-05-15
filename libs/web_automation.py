@@ -15,12 +15,14 @@ from selenium.common.exceptions import TimeoutException, ElementClickIntercepted
 
 
 class WebAutomation:
-    def debug(value=True):
+    def set_base_url(self, url):
+        self.base_url = url.rstrip('/')
+
+    def debug(self, value=True):
         self.debug = value
 
-    def nav(self, slug, delay=0):
-        site_url = self.login_data['site_url'].rstrip('/')
-        url      = site_url + '/' + slug
+    def nav(self, slug, delay=0):        
+        url = self.base_url + '/' + slug
 
         if self.debug:
             print(f"Navegando a '{url}'")
@@ -297,22 +299,13 @@ class WebAutomation:
             
         return instructions       
 
-    def login(self, debug = False):
-        self.nav(self.login_data['login_page'])
-
-        default_selectors = {
-            'username_input':    'ID:user_login',
-            'password_input':    'ID:user_pass',
-            'remember_checkbox': 'NAME:rememberme',
-            'submit_button':     'ID:wp-submit'
-        }
-
-        custom_selectors = self.login_data.get('selectors', default_selectors)
+    def login(self, slug, selectors, username, password, debug = False):
+        self.nav(slug)
 
         # Obtener los selectores personalizados o los predeterminados
-        username_selector = custom_selectors.get('username_input', default_selectors['username_input'])
-        password_selector = custom_selectors.get('password_input', default_selectors['password_input'])
-        submit_button     = custom_selectors.get('submit_button',  default_selectors['submit_button'])
+        username_selector = selectors.get('username_input')
+        password_selector = selectors.get('password_input')
+        submit_button     = selectors.get('submit_button')
 
         if debug:
             print('username_selector: ' + username_selector) 
@@ -321,14 +314,15 @@ class WebAutomation:
 
         # Enviar las credenciales al formulario de inicio de sesión
         username_input = self.get(username_selector)
-        username_input.send_keys(self.login_data['log'])
+        username_input.send_keys(username)
 
         password_input = self.get(password_selector)
-        password_input.send_keys(self.login_data['pwd'])
+        password_input.send_keys(password)
 
         # Hacer clic en el botón de inicio de sesión
         login_button = self.get(submit_button)
         login_button.click()
+
 
     def cloudflareChallenge(self):
         """

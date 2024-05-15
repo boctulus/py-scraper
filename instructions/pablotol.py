@@ -1,48 +1,61 @@
-login_data = {
-    "site_url": "https://pablo.tol.ar",
-    "log": "pablo",
-    "pwd": "NsoslQPiaHQ0",
-    "login_page": "?page_id=5902",
-    "selectors": {
-        "username_input":    'input[name="login_username"]',
-        "password_input":    'input[name="login_password"]',
-        "remember_checkbox": 'input[name="login_remember"]',
-        "submit_button":     'input[name="login_submit"]'
-    }
-}
-
-cart_page        = "?page_id=978"
-checkout_page    = "?page_id=979"
-
-qty_input_number = "CSS_SELECTOR:input[type='number'][name='quantity']"
-add_to_cart_btn  = "NAME:add-to-cart"
-
 order_to_exe = {
+    "login": {
+        "site_url": "https://pablo.tol.ar",
+        "log": "pablo",
+        "pwd": "NsoslQPiaHQ0",
+        "slug": "?page_id=5902",
+        "selectors": {
+            "username_input":    'input[name="login_username"]',
+            "password_input":    'input[name="login_password"]',
+            "remember_checkbox": 'input[name="login_remember"]',
+            "submit_button":     'input[name="login_submit"]'
+        }
+    },
+
+    "cart_page": "?page_id=978",
+    "checkout_page": "?page_id=979",
+
+    "cart": {
+        "add_to_cart_btn": "NAME:add-to-cart"
+    },
+
+    "product_page": {
+        "qty_input_number": "CSS_SELECTOR:input[type='number'][name='quantity']"
+    },
+
     "products": [
         {
-            "slug": "?product=chaqueta-marinera",
+            "slug": "?product=vestido-de-mujer",
             "qty": 1,
-            "attrs": {
-                "NAME:selecttalla": "U",
-                "NAME:selectcolor": "crema"
-            }
-        },
-        {
-            "slug": "?product=musculosa-coral",
-            "qty": 5,
             "attrs": {
                 "NAME:selecttalla": "U",
                 "NAME:selectcolor": "negro"
             }
         },
-         {
-            "slug": "?product=pantalones-vaquero",
-            "qty": 1,
-            "attrs": {
-                "NAME:selecttalla": "U",
-                "NAME:selectcolor": "blano"
-            }
-        },
+        # {
+        #     "slug": "?product=chaqueta-marinera",
+        #     "qty": 1,
+        #     "attrs": {
+        #         "NAME:selecttalla": "U",
+        #         "NAME:selectcolor": "crema"
+        #     }
+        # },
+        # {
+        #     "slug": "?product=musculosa-coral",
+        #     "qty": 5,
+        #     "attrs": {
+        #         "NAME:selecttalla": "U",
+        #         "NAME:selectcolor": "negro"
+        #     }
+        # },
+        # {
+        #     "slug": "?product=pantalones-vaquero",
+        #     "qty": 1,
+        #     "attrs": {
+        #         "NAME:selecttalla": "U",
+        #         "NAME:selectcolor": "blano"
+        #     }
+        # },
     ],
 
    "checkout": {
@@ -56,6 +69,7 @@ order_to_exe = {
             "ID:billing_country": "Argentina",
             "ID:billing_state": "CABA",
             "ID:billing_wc_enviamelo_dni": "12345678",
+            "ID:billing_phone": "1234567890",
             "NAME:order_comments": "Una nota cualquiera"
         },
 
@@ -63,10 +77,6 @@ order_to_exe = {
         "radios": {            
             "NAME:shipping_method": "shipping_method_0_flat_rate7",
             "NAME:payment_method": "payment_method_cheque"
-        },
-
-        "customer": {
-            "ID:billing_phone": "1234567890"
         },
 
         # En este caso, el selector va del lado derecho
