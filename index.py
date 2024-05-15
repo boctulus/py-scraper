@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
 from libs.select2 import Select2
-
+from libs.label import Label
 
 class MyScraper(WebAutomation):
     """
@@ -166,8 +166,9 @@ class MyScraper(WebAutomation):
             self.fill(selector, value)
 
         # Rellenar los campos tipo "radio"
-        # for selector, value in self.order_to_exe['checkout']['radios'].items():
-        #     self.get_input_by_value(value).click()
+        for selector, value in self.order_to_exe['checkout']['radios'].items():
+            time.sleep(1)
+            Label.click(self.driver, value)
 
         # Rellenar los campos del cliente
         for selector, value in self.order_to_exe['checkout']['customer'].items():
@@ -306,14 +307,14 @@ class MyScraper(WebAutomation):
             self.set_checkout()
 
             # quiting
-            self.quit(60)
+            self.quit(6000)
 
         except Exception as e:
             # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
 
         finally:
-            self.quit(500)
+            self.quit(5000)
             
 
 if __name__ == "__main__":

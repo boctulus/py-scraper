@@ -59,8 +59,8 @@ order_to_exe = {
             "NAME:order_comments": "Una nota cualquiera"
         },
         "radios": {            
-            # "NAME:shipping_method": "local_pickup:15",
-            "NAME:payment_method": "mobbex"
+            "NAME:shipping_method": "shipping_method_0_flat_rate7",
+            "NAME:payment_method": "payment_method_cheque"
         },
         "customer": {
             "ID:billing_phone": "1234567890"
