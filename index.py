@@ -165,7 +165,7 @@ class MyScraper(WebAutomation):
         for selector, value in self.order_to_exe['checkout']['shipping'].items():
             self.fill(selector, value)
 
-        # Rellenar los campos tipo "radio"
+        # Rellenar los campos tipo "radio" --- no es una solucion 100 fiable o estable
         for selector, value in self.order_to_exe['checkout']['radios'].items():
             time.sleep(5)
             Label.click(self.driver, value)
