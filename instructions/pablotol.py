@@ -58,10 +58,13 @@ order_to_exe = {
             "ID:billing_wc_enviamelo_dni": "12345678",
             "NAME:order_comments": "Una nota cualquiera"
         },
+
+        # Para los RADIO(s) no importa el selector sino el value
         "radios": {            
             "NAME:shipping_method": "shipping_method_0_flat_rate7",
             "NAME:payment_method": "payment_method_cheque"
         },
+        
         "customer": {
             "ID:billing_phone": "1234567890"
         }       

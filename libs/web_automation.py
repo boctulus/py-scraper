@@ -240,7 +240,7 @@ class WebAutomation:
         """
         element.send_keys(value)
 
-    def fill(self, selector, value, root=None, fail_if_not_exist=True, scrollToView=True, timeout=5):
+    def fill(self, selector, value, root=None, fail_if_not_exist=True, scrollToView=False, timeout=5):
         """
         Rellena un elemento de formulario como INPUT TEXT, TEXTAREA y SELECT 
         (SELECT2 de momento no)

@@ -253,7 +253,7 @@ class MyScraper(WebAutomation):
             # Ajustes al web driver
             #
 
-            self.driver.implicitly_wait(10)
+            # self.driver.implicitly_wait(10)
             self.driver.maximize_window()
 
             # self.cloudflareChallenge()
@@ -266,23 +266,12 @@ class MyScraper(WebAutomation):
             
             self.login()
 
-            
-            # self.nav('?product=musculosa-coral')
-            # self.fill('NAME:selecttalla', 'U')
-            # self.fill('NAME:selectcolor', 'negro')
-
-            # self.fill("CSS_SELECTOR:input[type='number'][name='quantity']", 2)
-
-            # self.get("NAME:add-to-cart").click()
-            # self.quit(400)
-
-
             #
             # Carrito
             #
 
-            # cart_items = self.get_cart_items()
-            # self.print_cart_items(cart_items)
+            cart_items = self.get_cart_items()
+            self.print_cart_items(cart_items)
 
             # self.quit()
 
@@ -291,14 +280,14 @@ class MyScraper(WebAutomation):
             # Orden
             #
 
-            # self.process_order()
+            self.process_order()
 
             #
             # Carrito
             #
 
-            # cart_items = self.get_cart_items()
-            # self.print_cart_items(cart_items)
+            cart_items = self.get_cart_items()
+            self.print_cart_items(cart_items)
 
             #
             # Checkout
