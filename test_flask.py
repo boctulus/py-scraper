@@ -48,7 +48,7 @@ def get_specific_screenshot(order_id):
 @app.route('/api/v1/scraper/robot/status', methods=['GET'])
 def get_scraper_status():
     # Aquí puedes obtener y devolver el estado actual del scraper
-    scraper_status = 'running'  # Ejemplo de estado del scraper
+    scraper_status = 'running ...'  # Ejemplo de estado del scraper
     return jsonify({'status': scraper_status})
 
 
