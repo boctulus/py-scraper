@@ -167,7 +167,7 @@ class MyScraper(WebAutomation):
 
         # Rellenar los campos tipo "radio"
         for selector, value in self.order_to_exe['checkout']['radios'].items():
-            time.sleep(1)
+            time.sleep(5)
             Label.click(self.driver, value)
 
         # Rellenar los campos del cliente
@@ -253,7 +253,7 @@ class MyScraper(WebAutomation):
             # Ajustes al web driver
             #
 
-            # self.driver.implicitly_wait(5)
+            self.driver.implicitly_wait(10)
             self.driver.maximize_window()
 
             # self.cloudflareChallenge()
