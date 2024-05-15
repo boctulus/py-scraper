@@ -22,6 +22,7 @@ from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
+from libs.instruction_loader import InstructionLoader
 from libs.select2 import Select2
 from libs.label import Label
 
@@ -238,8 +239,10 @@ class MyScraper(WebAutomation):
                 print("Usage: python router.py <test_file>")
                 return
 
+            loader = InstructionLoader()
+
             test_file         = sys.argv[1]
-            instructions      = self.load_instructions(test_file)
+            instructions      = loader.load_instructions(test_file)
             self.order_to_exe = instructions.get('order_to_exe')
            
             login = self.order_to_exe['login']

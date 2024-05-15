@@ -5,10 +5,10 @@ order_to_exe = {
         "pwd": "NsoslQPiaHQ0",
         "slug": "?page_id=5902",
         "selectors": {
-            "username_input":    'input[name="login_username"]',
-            "password_input":    'input[name="login_password"]',
-            "remember_checkbox": 'input[name="login_remember"]',
-            "submit_button":     'input[name="login_submit"]'
+            "username_input":    "input[name='login_username']",
+            "password_input":    "input[name='login_password']",
+            "remember_checkbox": "input[name='login_remember']",
+            "submit_button":     "input[name='login_submit']"
         }
     },
 

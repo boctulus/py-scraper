@@ -1,3 +1,5 @@
+# Ver 1.0
+
 login_data = {
     "site_url": "http://woo5.lan",
     "log": "boctulus",
