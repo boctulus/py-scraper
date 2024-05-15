@@ -404,4 +404,29 @@ class WebAutomation:
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
+    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
+        """
+        Tomar screenshots en full page requiere de modo "headless" y setear el tamano de la ventana
+
+        https://dev.to/shadow_b/capturing-full-webpage-screenshots-with-selenium-in-python-a-step-by-step-guide-187f
+
+        """
+        time.sleep(timeout)
+        if not filename.endswith(".png"):
+            filename += ".png"
+
+        if full_page == False:
+            self.driver.get_screenshot_as_file(f"screenshots/{filename}")
+            return
+        
+        # Use JavaScript to get the full width and height of the webpage
+        width  = self.driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth );")
+        height = self.driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );")
+
+        # Set the window size to match the entire webpage
+        self.driver.set_window_size(width, height)
+
+        # Capture the screenshot of the entire page
+        self.driver.get_screenshot_as_file(f"screenshots/{filename}")
+
     def main(self): pass

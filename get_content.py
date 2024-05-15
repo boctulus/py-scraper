@@ -32,13 +32,9 @@ class MyScraper(WebAutomation):
     def main(self):
         try:
             self.driver.maximize_window()
-            self.driver.get('http://simplerest.lan/dumb/test_radios_1')
-
             self.driver.get('https://www.python.org')
-            time.sleep(1)
-
-            self.driver.get_screenshot_as_file("screenshots/screenshot.png")
-
+            
+            self.take_screenshot('mi_archivo2.png')
 
         except Exception as e:
             traceback.print_exc(limit=5)

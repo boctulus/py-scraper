@@ -19,6 +19,7 @@ from libs.instruction_loader import InstructionLoader
 from libs.select2 import Select2
 from libs.label import Label
 
+
 class MyScraper(WebAutomation):
     """
         https://chatgpt.com/c/b460b582-3f19-48e4-bd76-ae1f5c322890
@@ -52,7 +53,6 @@ class MyScraper(WebAutomation):
                 })
 
         return cart_items
-
 
     def print_cart_items(self, cart_items):
         print("[ CART ] -----------------------------\r\n")
@@ -137,8 +137,9 @@ class MyScraper(WebAutomation):
             Label.click(self.driver, value)
 
         # Enviar pedido (presionar boton)
-        time.sleep(1)
-        self.click_selector(self.data['checkout']['submit_btn'])
+        if (not automation.skips['submit']):
+            time.sleep(1)
+            self.click_selector(self.data['checkout']['submit_btn'])
 
         print("Terminado el trabajo con el Checkout. ---")
 
@@ -198,6 +199,23 @@ class MyScraper(WebAutomation):
                 # Esperar un breve tiempo antes de repetir el proceso
                 time.sleep(1)
 
+    def empty_directory(self, directory):
+        # Verificar si el directorio existe
+        if not os.path.exists(directory):
+            print(f"El directorio '{directory}' no existe.")
+            return
+
+        # Obtener la lista de archivos en el directorio
+        files = os.listdir(directory)
+
+        # Eliminar cada archivo en el directorio
+        for file in files:
+            file_path = os.path.join(directory, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                print(f"Archivo '{file}' eliminado.")
+
+        print(f"Se han eliminado todos los archivos de '{directory}'.")
 
     def main(self):
         try:
@@ -215,9 +233,9 @@ class MyScraper(WebAutomation):
             
             self.set_base_url(login['site_url'])
 
-            #
-            # Ajustes al web driver
-            #
+            """
+            Ajustes al web driver
+            """
 
             # self.driver.implicitly_wait(10)
             self.driver.maximize_window()
@@ -225,55 +243,78 @@ class MyScraper(WebAutomation):
             # self.cloudflareChallenge()
             # time.sleep(20)
 
-
-            #
-            # Login
-            #
+            """
+            Login
+            """
             
-            self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
+            self.empty_directory("screenshots")
+            
+            if (not automation.skips['login']):
+                self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
+                self.take_screenshot('after_login')
+            
+            """
+            Carrito
+            """
 
-            #
-            # Carrito
-            #
+            if (not automation.skips['cart_1']):
+                cart_items = self.get_cart_items()
+                self.print_cart_items(cart_items)
+                self.take_screenshot('after_prev_cart')
 
-            cart_items = self.get_cart_items()
-            self.print_cart_items(cart_items)
 
             # self.quit()
 
+            """
+            Orden
+            """
 
-            #
-            # Orden
-            #
+            if (not automation.skips['order']):
+                self.process_order()
+                self.take_screenshot('after_order')
 
-            self.process_order()
+            """
+            Carrito
+            """
 
-            #
-            # Carrito
-            #
+            if (not automation.skips['cart_2']):
+                cart_items = self.get_cart_items()
+                self.print_cart_items(cart_items)
+                self.take_screenshot('cart_after_order')
 
-            cart_items = self.get_cart_items()
-            self.print_cart_items(cart_items)
+            """
+            Checkout
+            """
 
-            #
-            # Checkout
-            #
-
-            self.set_checkout()
+            if (not automation.skips['checkout']):
+                self.set_checkout()
+                self.take_screenshot('after_checkout')
 
             # quiting
-            self.quit(6000)
+            if not self.is_prod:
+                self.quit(6000)
 
         except Exception as e:
             # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
 
         finally:
-            self.quit(5000)
+            if not self.is_prod:
+                self.quit(5000)
             
 
 if __name__ == "__main__":
     automation = MyScraper()
+
+    # Skip en True implica NO ejecutar
+    automation.skips = {
+        "login"   : False,
+        "cart_1"  : True,
+        "order"   : False,
+        "cart_2"  : False,
+        "checkout": False,
+        "submit"  : True,
+    }
 
     # 
     # .env
@@ -285,13 +326,10 @@ if __name__ == "__main__":
 
     load_dotenv()
 
-    if os.getenv('IS_PRODUCTION') == 'True':
-        is_prod = True
-    else:
-        is_prod = False
+    automation.is_prod  = (os.getenv('IS_PRODUCTION') == 'True')
+    automation.headless = automation.is_prod or (os.getenv('OPT_HEADLESS') == 'True')
 
     web_driver = os.getenv('WEB_DRIVER')
 
-
-    automation.setup(is_prod, False, web_driver)
+    automation.setup(automation.headless, False, web_driver)
     automation.main()
