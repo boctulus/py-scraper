@@ -57,8 +57,8 @@ def create_or_replace_record(order_file: str, robot_status: str, last_screenshot
 
 # Ejemplo de uso
 create_or_replace_record(
-    order_file='orden123.txt',
+    order_file='orden1234.txt',
     robot_status='completed',
     last_screenshot='screenshot123.png',
-    error_msg='Ninguno'
+    error_msg='Ningunoooo'
 )
