@@ -18,6 +18,7 @@ from libs.web_automation import WebAutomation
 from libs.instruction_loader import InstructionLoader
 from libs.select2 import Select2
 from libs.label import Label
+from libs.files import Files
 from libs.robot_execution import RobotExecution
 
 class MyScraper(WebAutomation):
@@ -199,24 +200,6 @@ class MyScraper(WebAutomation):
                 # Esperar un breve tiempo antes de repetir el proceso
                 time.sleep(1)
 
-    def empty_directory(self, directory):
-        # Verificar si el directorio existe
-        if not os.path.exists(directory):
-            print(f"El directorio '{directory}' no existe.")
-            return
-
-        # Obtener la lista de archivos en el directorio
-        files = os.listdir(directory)
-
-        # Eliminar cada archivo en el directorio
-        for file in files:
-            file_path = os.path.join(directory, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-                print(f"Archivo '{file}' eliminado.")
-
-        print(f"Se han eliminado todos los archivos de '{directory}'.")
-
     def main(self):
         try:
             if len(sys.argv) != 2:
@@ -247,7 +230,7 @@ class MyScraper(WebAutomation):
             Login
             """
             
-            self.empty_directory("screenshots")
+            Files.empty_directory("screenshots")
             
             if (not automation.skips['login']):
                 self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
