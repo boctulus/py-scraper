@@ -214,11 +214,11 @@ class MyScraper(WebAutomation):
         self.robot_execution.create_record(
             order_file=sys.argv[1],
             robot_status='running',
-            last_screenshot=filename
+            last_screenshot=filename + '.png'
         )
 
         # Guardo el nombre de archivo del ultimo screenshot
-        self.screenshot = filename
+        self.screenshot = filename + '.png'
 
     def main(self):
         try:
