@@ -30,6 +30,14 @@ class MyScraper(WebAutomation):
         self.driver = None
         self.debug  = True ###
 
+    def sleep(self, t: int):
+        self.robot_execution.create_record(
+            order_file=sys.argv[1],
+            robot_status='idle'
+        )
+        
+        time.sleep(t)
+
     def get_cart_items(self):
         self.nav(self.data['cart']['cart_page'])
 
@@ -109,14 +117,14 @@ class MyScraper(WebAutomation):
 
             self.get(self.data['cart']['add_to_cart_btn'], None, False).click()
 
-            time.sleep(2)  
+            self.sleep(2)  
 
         print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
     def set_checkout(self):
         self.nav(self.data['checkout']['checkout_page'])
 
-        time.sleep(1)
+        self.sleep(1)
 
         if self.data['checkout']['shipping']['ID:billing_state'] == "CABA":
             self.data['checkout']['shipping']['ID:billing_state'] = "Ciudad Autónoma de Buenos Aires"
@@ -134,12 +142,12 @@ class MyScraper(WebAutomation):
         self.get_input_by_label_text("Moto GRAN BUENOS AIRES").click()  # por texto en la label
         """
         for selector, value in self.data['checkout']['radios'].items():
-            time.sleep(5)
+            self.sleep(5)
             Label.click(self.driver, value)
 
         # Enviar pedido (presionar boton)
         if (not automation.skips['submit']):
-            time.sleep(1)
+            self.sleep(1)
             self.click_selector(self.data['checkout']['submit_btn'])
 
         print("Terminado el trabajo con el Checkout. ---")
@@ -173,7 +181,7 @@ class MyScraper(WebAutomation):
             current_count = len(self.get_all(selector, timeout=timeout))
             if current_count < previous_count:
                 break
-            time.sleep(0.5)
+            self.sleep(0.5)
 
     def clear_cart(self):
         """
@@ -198,7 +206,16 @@ class MyScraper(WebAutomation):
                 self.wait_for_cart_items_decrease(len(remove_links))
 
                 # Esperar un breve tiempo antes de repetir el proceso
-                time.sleep(1)
+                self.sleep(1)
+
+    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
+        super().take_screenshot(filename, full_page, timeout)
+
+        self.robot_execution.create_record(
+            order_file=sys.argv[1],
+            robot_status='running',
+            last_screenshot=filename
+        )
 
     def main(self):
         try:
@@ -206,6 +223,7 @@ class MyScraper(WebAutomation):
                 print("Usage: python router.py <test_file>")
                 return
 
+            # Instruction loader
             loader = InstructionLoader()
 
             test_file         = sys.argv[1]
@@ -216,6 +234,14 @@ class MyScraper(WebAutomation):
             
             self.set_base_url(login['site_url'])
 
+            # Robot logger
+            self.robot_execution = RobotExecution()
+
+            self.robot_execution.create_record(
+                order_file=sys.argv[1],
+                robot_status='starting'
+            )
+
             """
             Ajustes al web driver
             """
@@ -224,7 +250,7 @@ class MyScraper(WebAutomation):
             self.driver.maximize_window()
 
             # self.cloudflareChallenge()
-            # time.sleep(20)
+            # self.sleep(20)
 
             """
             Login
@@ -235,6 +261,7 @@ class MyScraper(WebAutomation):
             if (not automation.skips['login']):
                 self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
                 self.take_screenshot('after_login')
+                
             
             """
             Carrito
@@ -273,6 +300,12 @@ class MyScraper(WebAutomation):
                 self.set_checkout()
                 self.take_screenshot('after_checkout')
 
+
+            self.robot_execution.create_record(
+                order_file=sys.argv[1],
+                robot_status='completed'
+            )
+
             # quiting
             if not self.is_prod:
                 self.quit(6000)
@@ -280,6 +313,12 @@ class MyScraper(WebAutomation):
         except Exception as e:
             # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
+
+            self.robot_execution.create_record(
+                order_file=sys.argv[1],
+                robot_status='failed',
+                error_msg=str(e)
+            )
 
         finally:
             if not self.is_prod:
