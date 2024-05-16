@@ -18,7 +18,7 @@ from libs.web_automation import WebAutomation
 from libs.instruction_loader import InstructionLoader
 from libs.select2 import Select2
 from libs.label import Label
-
+from libs.robot_execution import RobotExecution
 
 class MyScraper(WebAutomation):
     """
