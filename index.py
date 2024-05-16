@@ -217,6 +217,9 @@ class MyScraper(WebAutomation):
             last_screenshot=filename
         )
 
+        # Guardo el nombre de archivo del ultimo screenshot
+        self.screenshot = filename
+
     def main(self):
         try:
             if len(sys.argv) != 2:
@@ -303,7 +306,8 @@ class MyScraper(WebAutomation):
 
             self.robot_execution.create_record(
                 order_file=sys.argv[1],
-                robot_status='completed'
+                robot_status='completed',
+                last_screenshot=self.screenshot  # faltaria manejar caso de si es undefined
             )
 
             # quiting
