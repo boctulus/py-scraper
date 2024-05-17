@@ -1,6 +1,7 @@
-*.exe
+__pycache__/
+screenshots/
+instructions/order-*.json
 .env
+*.exe
 *.zip
 *.rar
-screenshots/
-__pycache__/
