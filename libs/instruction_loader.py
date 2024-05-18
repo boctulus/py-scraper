@@ -61,10 +61,15 @@ class InstructionLoader:
             return self.load_instructions_from_python(file_name)
 
     def get_last_modified_file(self, exclude_test_files=False):
-        list_of_files = glob(os.path.join('instructions', '*'))
+        search_pattern = 'instructions/*'
         if exclude_test_files:
-            list_of_files = [f for f in list_of_files if not os.path.basename(f).startswith('test-')]
+            list_of_files = [f for f in glob(search_pattern) if os.path.isfile(f) and not os.path.basename(f).startswith('test-')]
+        else:
+            list_of_files = [f for f in glob(search_pattern) if os.path.isfile(f)]
+        
         if not list_of_files:
             return None
+        
         latest_file = max(list_of_files, key=os.path.getmtime)
         return os.path.basename(latest_file)
+        

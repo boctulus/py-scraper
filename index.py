@@ -23,7 +23,9 @@ from libs.label import Label
 from libs.files import Files
 from libs.robot_execution import RobotExecution
 
+import shutil
 import logging
+
 
 class MyScraper(WebAutomation):
     """
@@ -334,6 +336,25 @@ class MyScraper(WebAutomation):
                 robot_status='completed',
                 last_screenshot=self.screenshot  # faltaria manejar caso de si es undefined
             )
+
+            # Mover archivo procesado a la carpeta 'archived' si no comienza con "test-"
+            if not test_file.startswith("test-"):
+                archived_dir = os.path.join('instructions', 'archived')
+                if not os.path.exists(archived_dir):
+                    os.makedirs(archived_dir)
+                src_path = os.path.join('instructions', test_file)
+                dest_path = os.path.join(archived_dir, test_file)
+                
+                # Verificar si src_path es un archivo antes de moverlo
+                if os.path.isfile(src_path):
+                    try:
+                        shutil.move(src_path, dest_path)
+                        print(f"Archivo '{test_file}' movido a 'archived'.")
+                    except Exception as e:
+                        print(f"Error al mover el archivo '{test_file}' a 'archived': {e}")
+                else:
+                    print(f"El archivo '{src_path}' no es un archivo regular o no existe.")
+
 
             # quiting
             if not self.is_prod:
