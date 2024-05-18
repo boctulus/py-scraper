@@ -17,6 +17,7 @@ class InstructionLoader:
     else:
         print(instructions)
     """
+    
     def load_instructions_from_python(self, test_file):
         instructions = {}
         test_file_path = os.path.join('instructions', test_file)
@@ -59,11 +60,11 @@ class InstructionLoader:
         else:
             return self.load_instructions_from_python(file_name)
 
-    def get_last_modified_file(self):
+    def get_last_modified_file(self, exclude_test_files=False):
         list_of_files = glob(os.path.join('instructions', '*'))
+        if exclude_test_files:
+            list_of_files = [f for f in list_of_files if not os.path.basename(f).startswith('test-')]
         if not list_of_files:
-            print("Error: No files found in 'instructions' directory.")
             return None
         latest_file = max(list_of_files, key=os.path.getmtime)
         return os.path.basename(latest_file)
-

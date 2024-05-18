@@ -236,15 +236,16 @@ class MyScraper(WebAutomation):
             logging.debug(f'Warming up in {current_directory}')
 
             if len(sys.argv) < 3 or sys.argv[1] != 'load':
-                print("Usage: python index.py load <test_file> or python index.py load last")
+                print("Usage: python index.py load <test_file> or python index.py load last [--no-test]")
                 return
 
             # Instruction loader
             loader = InstructionLoader()
             test_file = sys.argv[2]
+            exclude_test_files = '--no-test' in sys.argv
 
             if test_file == "last":
-                test_file = loader.get_last_modified_file()
+                test_file = loader.get_last_modified_file(exclude_test_files)
                 if not test_file:
                     print("Failed to find the latest file.")
                     return
