@@ -1,5 +1,5 @@
 __pycache__/
-screenshots/
+screenshots/*.png
 logs/
 instructions/order-*.json
 .env
