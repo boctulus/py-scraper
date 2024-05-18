@@ -230,13 +230,6 @@ class MyScraper(WebAutomation):
 
     def main(self):
         try:
-            # Configuración de logging
-            log_file = './logs/robot.log'
-            logging.basicConfig(filename=log_file, level=logging.DEBUG)
-
-            current_directory = os.getcwd()
-            logging.debug(f'Warming up in {current_directory}')
-
             if len(sys.argv) < 3 or sys.argv[1] != 'load':
                 print("Usage: python index.py load <test_file> or python index.py load last [--no-test]")
                 return
@@ -376,6 +369,13 @@ class MyScraper(WebAutomation):
             
 
 if __name__ == "__main__":
+    # Configuración de logging
+    log_file = './logs/robot.log'
+    logging.basicConfig(filename=log_file, level=logging.DEBUG)
+
+    current_directory = os.getcwd()
+    logging.debug(f'Warming up in {current_directory}')
+    
     automation = MyScraper()
 
     # Skip en True implica NO ejecutar
