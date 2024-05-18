@@ -1,7 +1,22 @@
+# instruction_loader.py
+
 import os
 import json
+from glob import glob
 
 class InstructionLoader:
+    """
+    # Uso de la clase
+
+    loader    = InstructionLoader()
+    test_file = 'pablotol.json'  # o 'pablotol.py' dependiendo del archivo
+    
+    instructions = loader.load_instructions(test_file)
+    if instructions is None:
+        print("Failed to load instructions.")
+    else:
+        print(instructions)
+    """
     def load_instructions_from_python(self, test_file):
         instructions = {}
         test_file_path = os.path.join('instructions', test_file)
@@ -44,11 +59,11 @@ class InstructionLoader:
         else:
             return self.load_instructions_from_python(file_name)
 
-# Uso de la clase
-loader = InstructionLoader()
-test_file = 'pablotol.json'  # o 'pablotol.py' dependiendo del archivo
-instructions = loader.load_instructions(test_file)
-if instructions is None:
-    print("Failed to load instructions.")
-else:
-    print(instructions)
+    def get_last_modified_file(self):
+        list_of_files = glob(os.path.join('instructions', '*'))
+        if not list_of_files:
+            print("Error: No files found in 'instructions' directory.")
+            return None
+        latest_file = max(list_of_files, key=os.path.getmtime)
+        return os.path.basename(latest_file)
+

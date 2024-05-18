@@ -1,3 +1,5 @@
+# index.py
+
 import time
 import sys
 import os
@@ -222,7 +224,7 @@ class MyScraper(WebAutomation):
 
         # Guardo el nombre de archivo del ultimo screenshot
         self.screenshot = filename + '.png'
-        logging.debug(f"Screenshot taken and saved in {self.screenshot}") #
+        logging.debug("Screenshot taken") #
 
     def main(self):
         try:
@@ -233,19 +235,30 @@ class MyScraper(WebAutomation):
             current_directory = os.getcwd()
             logging.debug(f'Warming up in {current_directory}')
 
-            if len(sys.argv) != 2:
-                print("Usage: python router.py <test_file>")
+            if len(sys.argv) < 3 or sys.argv[1] != 'load':
+                print("Usage: python index.py load <test_file> or python index.py load last")
                 return
 
             # Instruction loader
             loader = InstructionLoader()
+            test_file = sys.argv[2]
 
-            test_file         = sys.argv[1]
-            instructions      = loader.load_instructions(test_file)
+            if test_file == "last":
+                test_file = loader.get_last_modified_file()
+                if not test_file:
+                    print("Failed to find the latest file.")
+                    return
+
+            instructions = loader.load_instructions(test_file)
+            if instructions is None:
+                print("Failed to load instructions.")
+                return
+
+            print(f"Procesando archivo '{test_file}' ...")
+
             self.data = instructions.get('data')
            
-            login = self.data['login']
-            
+            login     = self.data['login']            
             self.set_base_url(login['site_url'])
 
             # Robot logger
@@ -328,6 +341,7 @@ class MyScraper(WebAutomation):
         except Exception as e:
             # print("Se ha producido un error durante la ejecución:", e)
             traceback.print_exc(limit=5)
+            logging.debug(e) #
 
             self.robot_execution.create_record(
                 order_file=sys.argv[1],
