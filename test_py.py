@@ -1,28 +1,19 @@
+import logging
 import os
-import time
-from datetime import datetime
+import sys
 
-def log_current_directory_and_time():
-    # Obtén el directorio actual
-    current_directory = os.getcwd()
-    
-    # Abre el archivo en modo append
-    with open('mylog.txt', 'a') as log_file:
-        while True:
-            # Obtén la fecha y hora actual
-            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            
-            # Formatea el mensaje
-            message = f"Directory: {current_directory} | Time: {current_time}"
-            
-            # Imprime en pantalla
-            print(message)
-            
-            # Escribe en el archivo
-            log_file.write(message + '\n')
-            
-            # Espera un segundo antes de la próxima iteración
-            time.sleep(1)
+# Configuración de logging
+log_file = '/var/www/store-scraper/logs/test_py.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG)
 
-if __name__ == "__main__":
-    log_current_directory_and_time()
+try:
+    logging.debug('Starting script...')
+    logging.debug('Current directory: %s', os.getcwd())
+    # Aquí va el resto del código de test_py.py
+    # Por ejemplo, si el script simplemente imprime algo:
+    logging.debug('Executing script content...')
+    print("Hello from Python script")
+    logging.debug('Script executed successfully.')
+except Exception as e:
+    logging.error('Error: %s', str(e))
+    sys.exit(1)
