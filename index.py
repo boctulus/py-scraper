@@ -1,8 +1,19 @@
 # index.py
 
+
+import os
+
+print(f"Directorio actual: {os.getcwd()}")
+
+# Cambiar al nuevo directorio al inicio del script
+nuevo_directorio = '/var/www/store-scraper'
+os.chdir(nuevo_directorio)
+
+# Verificar que el directorio ha cambiado correctamente
+print(f"Directorio actual: {os.getcwd()}")
+
 import time
 import sys
-import os
 import re
 import traceback
 
@@ -25,17 +36,6 @@ from libs.robot_execution import RobotExecution
 
 import shutil
 import logging
-
-
-# Configuración de logging
-log_file = './logs/robot.log'
-logging.basicConfig(filename=log_file, level=logging.DEBUG)
-
-current_directory = os.getcwd()
-logging.debug(current_directory)
-
-logging.debug('Starting script...')
-logging.debug('Current directory: %s', os.getcwd())
 
 
 class MyScraper(WebAutomation):
@@ -380,6 +380,17 @@ class MyScraper(WebAutomation):
             
 
 if __name__ == "__main__":
+
+    # Configuración de logging
+    log_file = './logs/robot.log'
+    logging.basicConfig(filename=log_file, level=logging.DEBUG)
+
+    current_directory = os.getcwd()
+    logging.debug(current_directory)
+
+    logging.debug('Starting script...')
+    logging.debug('Current directory: %s', os.getcwd())
+
     logging.debug(f'Warming up')
     
     automation = MyScraper()
