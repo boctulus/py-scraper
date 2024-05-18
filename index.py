@@ -27,6 +27,17 @@ import shutil
 import logging
 
 
+# Configuración de logging
+log_file = './logs/robot.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG)
+
+current_directory = os.getcwd()
+logging.debug(current_directory)
+
+logging.debug('Starting script...')
+logging.debug('Current directory: %s', os.getcwd())
+
+
 class MyScraper(WebAutomation):
     """
         https://chatgpt.com/c/b460b582-3f19-48e4-bd76-ae1f5c322890
@@ -369,12 +380,7 @@ class MyScraper(WebAutomation):
             
 
 if __name__ == "__main__":
-    # Configuración de logging
-    log_file = './logs/robot.log'
-    logging.basicConfig(filename=log_file, level=logging.DEBUG)
-
-    current_directory = os.getcwd()
-    logging.debug(f'Warming up in {current_directory}')
+    logging.debug(f'Warming up')
     
     automation = MyScraper()
 
