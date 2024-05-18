@@ -21,6 +21,8 @@ from libs.label import Label
 from libs.files import Files
 from libs.robot_execution import RobotExecution
 
+import logging
+
 class MyScraper(WebAutomation):
     """
         https://chatgpt.com/c/b460b582-3f19-48e4-bd76-ae1f5c322890
@@ -36,6 +38,7 @@ class MyScraper(WebAutomation):
             robot_status='idle'
         )
         
+        logging.debug(f"Taking a nap for {t} seconds ...zzzz...") #
         time.sleep(t)
 
     def get_cart_items(self):
@@ -219,9 +222,17 @@ class MyScraper(WebAutomation):
 
         # Guardo el nombre de archivo del ultimo screenshot
         self.screenshot = filename + '.png'
+        logging.debug(f"Screenshot taken and saved in {self.screenshot}") #
 
     def main(self):
         try:
+            # Configuración de logging
+            log_file = './logs/robot.log'
+            logging.basicConfig(filename=log_file, level=logging.DEBUG)
+
+            current_directory = os.getcwd()
+            logging.debug(f'Warming up in {current_directory}')
+
             if len(sys.argv) != 2:
                 print("Usage: python router.py <test_file>")
                 return
