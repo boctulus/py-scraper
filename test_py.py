@@ -14,7 +14,7 @@ try:
     logging.debug('Starting script...')
     logging.debug('Current directory: %s', os.getcwd())
 
-    for i in range(4):
+    for i in range(60):
         logging.debug(f'Executing script content... #{i}')
         print(f"Hello from Python script #{i}")
         time.sleep(1)
