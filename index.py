@@ -337,6 +337,22 @@ class MyScraper(WebAutomation):
                 last_screenshot=self.screenshot  # faltaria manejar caso de si es undefined
             )
 
+            # quiting
+            if not self.is_prod:
+                self.quit(6000)
+
+        except Exception as e:
+            # print("Se ha producido un error durante la ejecución:", e)
+            traceback.print_exc(limit=5)
+            logging.debug(e) #
+
+            self.robot_execution.create_record(
+                order_file=sys.argv[1],
+                robot_status='failed',
+                error_msg=str(e)
+            )
+
+        finally:
             # Mover archivo procesado a la carpeta 'archived' si no comienza con "test-"
             if not test_file.startswith("test-"):
                 archived_dir = os.path.join('instructions', 'archived')
@@ -355,23 +371,6 @@ class MyScraper(WebAutomation):
                 else:
                     print(f"El archivo '{src_path}' no es un archivo regular o no existe.")
 
-
-            # quiting
-            if not self.is_prod:
-                self.quit(6000)
-
-        except Exception as e:
-            # print("Se ha producido un error durante la ejecución:", e)
-            traceback.print_exc(limit=5)
-            logging.debug(e) #
-
-            self.robot_execution.create_record(
-                order_file=sys.argv[1],
-                robot_status='failed',
-                error_msg=str(e)
-            )
-
-        finally:
             if not self.is_prod:
                 self.quit(5000)
             
