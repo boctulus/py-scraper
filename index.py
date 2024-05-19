@@ -281,6 +281,9 @@ class MyScraper(WebAutomation):
             Files.empty_directory("screenshots")
             
             if (not automation.skips['login']):
+                self.nav(login['slug'])   # duplico la navegacion solo para poder sacar screenshot
+                self.take_screenshot('prev_login')
+
                 self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
                 self.take_screenshot('after_login')
                 
