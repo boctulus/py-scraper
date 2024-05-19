@@ -2,16 +2,6 @@
 
 
 import os
-
-print(f"Directorio actual: {os.getcwd()}")
-
-# Cambiar al nuevo directorio al inicio del script
-nuevo_directorio = '/var/www/store-scraper'
-os.chdir(nuevo_directorio)
-
-# Verificar que el directorio ha cambiado correctamente
-print(f"Directorio actual: {os.getcwd()}")
-
 import time
 import sys
 import re
@@ -49,7 +39,7 @@ class MyScraper(WebAutomation):
 
     def sleep(self, t: int):
         self.robot_execution.create_record(
-            order_file=sys.argv[1],
+            order_file=self.test_file,
             robot_status='idle'
         )
         
@@ -230,7 +220,7 @@ class MyScraper(WebAutomation):
         super().take_screenshot(filename, full_page, timeout)
 
         self.robot_execution.create_record(
-            order_file=sys.argv[1],
+            order_file=self.test_file,
             robot_status='running',
             last_screenshot=filename + '.png'
         )
@@ -242,26 +232,26 @@ class MyScraper(WebAutomation):
     def main(self):
         try:
             if len(sys.argv) < 3 or sys.argv[1] != 'load':
-                print("Usage: python index.py load <test_file> or python index.py load last [--no-test]")
+                print("Usage: python index.py load <self.test_file> or python index.py load last [--no-test]")
                 return
 
             # Instruction loader
-            loader = InstructionLoader()
-            test_file = sys.argv[2]
+            loader             = InstructionLoader()
+            self.test_file     = sys.argv[2]
             exclude_test_files = '--no-test' in sys.argv
 
-            if test_file == "last":
-                test_file = loader.get_last_modified_file(exclude_test_files)
-                if not test_file:
+            if self.test_file == "last":
+                self.test_file = loader.get_last_modified_file(exclude_test_files)
+                if not self.test_file:
                     print("Failed to find the latest file.")
                     return
 
-            instructions = loader.load_instructions(test_file)
+            instructions = loader.load_instructions(self.test_file)
             if instructions is None:
                 print("Failed to load instructions.")
                 return
 
-            print(f"Procesando archivo '{test_file}' ...")
+            print(f"Procesando archivo '{self.test_file}' ...")
 
             self.data = instructions.get('data')
            
@@ -272,7 +262,7 @@ class MyScraper(WebAutomation):
             self.robot_execution = RobotExecution()
 
             self.robot_execution.create_record(
-                order_file=sys.argv[1],
+                order_file=self.test_file,
                 robot_status='starting'
             )
 
@@ -336,7 +326,7 @@ class MyScraper(WebAutomation):
 
 
             self.robot_execution.create_record(
-                order_file=sys.argv[1],
+                order_file=self.test_file,
                 robot_status='completed',
                 last_screenshot=self.screenshot  # faltaria manejar caso de si es undefined
             )
@@ -351,27 +341,27 @@ class MyScraper(WebAutomation):
             logging.debug(e) #
 
             self.robot_execution.create_record(
-                order_file=sys.argv[1],
+                order_file=self.test_file,
                 robot_status='failed',
                 error_msg=str(e)
             )
 
         finally:
             # Mover archivo procesado a la carpeta 'archived' si no comienza con "test-"
-            if not test_file.startswith("test-"):
+            if not self.test_file.startswith("test-"):
                 archived_dir = os.path.join('instructions', 'archived')
                 if not os.path.exists(archived_dir):
                     os.makedirs(archived_dir)
-                src_path = os.path.join('instructions', test_file)
-                dest_path = os.path.join(archived_dir, test_file)
+                src_path = os.path.join('instructions', self.test_file)
+                dest_path = os.path.join(archived_dir, self.test_file)
                 
                 # Verificar si src_path es un archivo antes de moverlo
                 if os.path.isfile(src_path):
                     try:
                         shutil.move(src_path, dest_path)
-                        print(f"Archivo '{test_file}' movido a 'archived'.")
+                        print(f"Archivo '{self.test_file}' movido a 'archived'.")
                     except Exception as e:
-                        print(f"Error al mover el archivo '{test_file}' a 'archived': {e}")
+                        print(f"Error al mover el archivo '{self.test_file}' a 'archived': {e}")
                 else:
                     print(f"El archivo '{src_path}' no es un archivo regular o no existe.")
 
