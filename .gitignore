@@ -2,6 +2,7 @@ __pycache__/
 screenshots/*.png
 logs/
 instructions/order-*.json
+instructions/archived/order-*.json
 .env
 *.exe
 *.zip
