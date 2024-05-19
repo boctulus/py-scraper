@@ -26,6 +26,7 @@ from libs.robot_execution import RobotExecution
 
 import shutil
 import logging
+from logging.handlers import RotatingFileHandler
 
 
 class MyScraper(WebAutomation):
@@ -370,17 +371,29 @@ class MyScraper(WebAutomation):
             
 
 if __name__ == "__main__":
+    ''' 
+    Configuración de logging
+    '''
 
-    # Configuración de logging
     log_file = './logs/robot.log'
-    logging.basicConfig(filename=log_file, level=logging.DEBUG)
+
+    # Configuración del RotatingFileHandler
+    handler = RotatingFileHandler(log_file, maxBytes=1*1024*1024, backupCount=5)  # 1 MB por archivo, hasta 5 archivos de backup
+    handler.setLevel(logging.DEBUG)  # Configura el nivel de log del handler
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # Configuración del logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)  # Configura el nivel de log del logger principal
+    logger.addHandler(handler)
 
     current_directory = os.getcwd()
     logging.debug(current_directory)
 
     logging.debug('Starting script...')
     logging.debug('Current directory: %s', os.getcwd())
-
     logging.debug(f'Warming up')
     
     automation = MyScraper()
