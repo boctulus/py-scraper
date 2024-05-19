@@ -399,7 +399,7 @@ if __name__ == "__main__":
         "order"   : False,
         "cart_2"  : False,
         "checkout": False,
-        "submit"  : True,
+        "submit"  : False,
     }
 
     # 
