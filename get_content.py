@@ -34,7 +34,7 @@ class MyScraper(WebAutomation):
     def main(self):
         try:
             self.driver.maximize_window()
-            self.driver.get('https://www.python.org')
+            self.nav('https://www.python.org')
             
             self.take_screenshot('mi_archivo2.png')
 

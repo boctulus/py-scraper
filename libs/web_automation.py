@@ -30,13 +30,15 @@ class WebAutomation:
     def debug(self, value=True):
         self.debug = value
 
-    def nav(self, slug, delay=0):        
-        url = self.base_url + '/' + slug
-
-        if self.debug:
+    def nav(self, url, debug=False):    
+        if debug or self.debug:
             print(f"Navegando a '{url}'")
 
         self.driver.get(url)
+
+    def nav_slug(self, slug, debug=False):        
+        url = self.base_url + '/' + slug
+        self.nav(url)
 
     def quit(self, delay=0):
         time.sleep(delay)
@@ -141,6 +143,14 @@ class WebAutomation:
 
     def get(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         return self._get(selector, single=True, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+
+    def exists(self, selector, root=None, single=True, fail_if_not_exist=True, timeout=10, debug=False):
+        ret = self._get(selector, single=True, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+
+        if single:
+            return ret is not False and ret is not None
+        else:
+            return len(ret) > 0
 
     def get_all(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         return self._get(selector, single=False, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
@@ -335,7 +345,7 @@ class WebAutomation:
             return self.load_instructions_from_python(file_name) 
 
     def login(self, slug, selectors, username, password, debug = False):
-        self.nav(slug)
+        self.nav_slug(slug)
 
         # Obtener los selectores personalizados o los predeterminados
         username_selector = selectors.get('username_input')

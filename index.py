@@ -31,6 +31,12 @@ from logging.handlers import RotatingFileHandler
 class MyScraper(WebAutomation):
     """
         https://chatgpt.com/c/b460b582-3f19-48e4-bd76-ae1f5c322890
+
+        Ej:
+
+        py.exe .\index.py load test-pablotol.py
+        py.exe .\index.py load last
+        py.exe .\index.py load last --no-test
     """
     
     def __init__(self):
@@ -47,7 +53,7 @@ class MyScraper(WebAutomation):
         time.sleep(t)
 
     def get_cart_items(self):
-        self.nav(self.data['cart']['cart_page'])
+        self.nav_slug(self.data['cart']['cart_page'])
 
         cart_items = []
 
@@ -93,7 +99,7 @@ class MyScraper(WebAutomation):
 
     def get_product(self, product_url=None):
         if product_url is not None:
-            self.nav(product_url)
+            self.nav_slug(product_url)
 
         p = self.Product()
 
@@ -115,7 +121,7 @@ class MyScraper(WebAutomation):
             quantity     = product['qty']
             attrs        = product.get('attrs', {})  # Evita errores si no hay atributos definidos
 
-            self.nav(product_page)
+            self.nav_slug(product_page)
 
             for att_name, att_value in attrs.items():
                 self.fill(att_name, att_value, fail_if_not_exist=False)
@@ -130,7 +136,7 @@ class MyScraper(WebAutomation):
         print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
     def set_checkout(self):
-        self.nav(self.data['checkout']['checkout_page'])
+        self.nav_slug(self.data['checkout']['checkout_page'])
 
         self.sleep(1)
 
@@ -283,7 +289,7 @@ class MyScraper(WebAutomation):
             Files.empty_directory("screenshots")
             
             if (not automation.skips['login']):
-                self.nav(login['slug'])   # duplico la navegacion solo para poder sacar screenshot
+                self.nav_slug(login['slug'])   # duplico la navegacion solo para poder sacar screenshot
                 self.take_screenshot('prev_login')
 
                 self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
