@@ -1,0 +1,11 @@
+{
+    "nombre_producto": "//h1",
+    "precio_original": "//p/span/del",
+    "precio_descuento": "//span[@class='product-vip__price-value']", 
+    "porcentaje_descuento": "//span[@class='product-vip__off-value']",
+    "cuotas_sin_interes": {
+        "numero_cuotas": "//p/i/following-sibling::span/strong[1]",
+        "monto_cuota": "//p/i/following-sibling::span/strong[2]"
+    },
+    "colores_disponibles:all": "//select[@id='atributos-0']/option"
+}

@@ -22,6 +22,7 @@ from libs.select2 import Select2
 from libs.label import Label
 from libs.files import Files
 from libs.robot_execution import RobotExecution
+from libs.dataobject import DataObject
 
 import shutil
 import logging
@@ -407,14 +408,6 @@ if __name__ == "__main__":
         "checkout": False,
         "submit"  : False,
     }
-
-    # 
-    # .env
-    #
-    # pip install python-dotenv
-    #
-    # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
-    #
 
     load_dotenv()
 

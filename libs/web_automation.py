@@ -49,7 +49,7 @@ class WebAutomation:
         self.driver.quit()
         sys.exit()
 
-    def save_html(self, filename):
+    def save_html(self, filename, encoding='utf-8', debug=False):
         """
         Salva renderizado en archivo
         """
@@ -58,9 +58,20 @@ class WebAutomation:
             filename += '.html'
 
         html = self.driver.page_source
+
+        if self.debug or debug:
+            print(f'Filename: {filename}\n')
+            print(html)
         
-        with open(filename, 'w') as f:
-            f.write(html)
+        try:
+            if encoding is None:
+                encoding = 'utf-8'
+
+            with open(filename, 'w', encoding=encoding) as f:
+                f.write(html)
+        except Exception as e:
+            print(f"Error al escribir el archivo '{filename}': {e}")
+
 
     def _get(self, selector, root=None, single=True, fail_if_not_exist=True, timeout=10, debug=False):
         """
@@ -187,7 +198,6 @@ class WebAutomation:
         """
         element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.text
-
     
     def get_input_by_value(self, value, fail_if_not_exist=True, timeout=10, debug=False):
         """
@@ -438,5 +448,42 @@ class WebAutomation:
 
         # Capture the screenshot of the entire page
         self.driver.get_screenshot_as_file(f"screenshots/{filename}")
+
+    # sin ensayar
+    def get_text_all(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+        """
+        Obtiene el texto contenido dentro de una lista de elementos identificados por un selector CSS dentro de un elemento raíz.
+
+        Args:
+            selector (str): Selector CSS del elemento.
+            root (WebElement, opcional): Elemento raíz dentro del cual buscar el selector. Por defecto es None (la página completa).
+            fail_if_not_exist (bool, opcional): Indica si debe fallar si no se encuentra ningún elemento. Por defecto es True.
+            timeout (int, opcional): Tiempo máximo de espera en segundos. Por defecto es 10 segundos.
+            debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
+
+        Returns:
+            list: Lista de textos contenidos dentro de los elementos especificados.
+        """
+        elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+        return [element.text.strip() for element in elements] if elements else []
+
+
+    def evaluateXPath(self, xpath, single=True):
+        if single:
+            return self.get_text(f'XPATH:{xpath}')
+        else:
+            return self.get_text_all(f'XPATH:{xpath}')
+            
+
+    def evaluateXPathJson(self, instructions):
+        data = {}
+        for key, selector in instructions.items():
+            if key.endswith(":all"):
+                data[key[:-4]] = self.evaluateXPath(selector, single=False)
+            elif isinstance(selector, dict):
+                data[key] = self.evaluateXPathJson(selector)
+            else:
+                data[key] = self.evaluateXPath(selector)
+        return data
 
     def main(self): pass
