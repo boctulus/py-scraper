@@ -45,7 +45,7 @@ class MyScraper(WebAutomation):
         self.debug  = True ###
 
     def sleep(self, t: int):
-        self.robot_execution.create_record(
+        self.robot_execution.createRecord(
             order_file=self.test_file,
             robot_status='idle'
         )
@@ -53,20 +53,20 @@ class MyScraper(WebAutomation):
         logging.debug(f"Taking a nap for {t} seconds ...zzzz...") #
         time.sleep(t)
 
-    def get_cart_items(self):
-        self.nav_slug(self.data['cart']['cart_page'])
+    def getCartItems(self):
+        self.navSlug(self.data['cart']['cart_page'])
 
         cart_items = []
 
-        product_rows = self.get_all("tr.woocommerce-cart-form__cart-item", fail_if_not_exist=False) # aqui
+        product_rows = self.getAll("tr.woocommerce-cart-form__cart-item", fail_if_not_exist=False) # aqui
 
         if isinstance(product_rows, list):
             for row in product_rows:
-                product_name     = self.get_text("td.product-name a", root=row)
-                product_url      = self.get_attr("td.product-name a", "href", root=row)
-                product_price    = self.get_text("td.product-price span.woocommerce-Price-amount", root=row)
-                product_quantity = self.get_attr("td.product-quantity input.input-text.qty.text", "value", root=row)
-                product_subtotal = self.get_text("td.product-subtotal span.woocommerce-Price-amount", root=row)
+                product_name     = self.getText("td.product-name a", root=row)
+                product_url      = self.getAttr("td.product-name a", "href", root=row)
+                product_price    = self.getText("td.product-price span.woocommerce-Price-amount", root=row)
+                product_quantity = self.getAttr("td.product-quantity input.input-text.qty.text", "value", root=row)
+                product_subtotal = self.getText("td.product-subtotal span.woocommerce-Price-amount", root=row)
 
                 cart_items.append({
                     'name': product_name,
@@ -100,15 +100,15 @@ class MyScraper(WebAutomation):
 
     def get_product(self, product_url=None):
         if product_url is not None:
-            self.nav_slug(product_url)
+            self.navSlug(product_url)
 
         p = self.Product()
 
-        p.title       = self.get_text("XPATH://h1[@class='product_title entry-title']")
-        p.price       = self.get_text("XPATH://div[@class='product-main']//bdi[1]")
-        p.description = self.get_text("XPATH://div[@class='product-short-description']/p")
-        p.stock       = self.get_text("CSS_SELECTOR:p.stock.in-stock")
-        p.sku         = self.get_text("CSS_SELECTOR:span.sku")
+        p.title       = self.getText("XPATH://h1[@class='product_title entry-title']")
+        p.price       = self.getText("XPATH://div[@class='product-main']//bdi[1]")
+        p.description = self.getText("XPATH://div[@class='product-short-description']/p")
+        p.stock       = self.getText("CSS_SELECTOR:p.stock.in-stock")
+        p.sku         = self.getText("CSS_SELECTOR:span.sku")
 
         # Retorna un objeto Producto
         return p
@@ -122,7 +122,7 @@ class MyScraper(WebAutomation):
             quantity     = product['qty']
             attrs        = product.get('attrs', {})  # Evita errores si no hay atributos definidos
 
-            self.nav_slug(product_page)
+            self.navSlug(product_page)
 
             for att_name, att_value in attrs.items():
                 self.fill(att_name, att_value, fail_if_not_exist=False)
@@ -136,8 +136,8 @@ class MyScraper(WebAutomation):
 
         print("FINALIZADA LA EJECUCION DE LA ORDEN <---\r\n")
 
-    def set_checkout(self):
-        self.nav_slug(self.data['checkout']['checkout_page'])
+    def setCheckout(self):
+        self.navSlug(self.data['checkout']['checkout_page'])
 
         self.sleep(1)
 
@@ -150,11 +150,11 @@ class MyScraper(WebAutomation):
 
         # Rellenar los campos tipo "radio" --- no es una solucion 100 fiable o estable
         """
-        Otra posibilidad es usar get_input_by_label_text() que soporta substrings pero no funciona correctamente
+        Otra posibilidad es usar getInputByLabelText() que soporta substrings pero no funciona correctamente
 
         Ej:
         
-        self.get_input_by_label_text("Moto GRAN BUENOS AIRES").click()  # por texto en la label
+        self.getInputByLabelText("Moto GRAN BUENOS AIRES").click()  # por texto en la label
         """
         for selector, value in self.data['checkout']['radios'].items():
             self.sleep(5)
@@ -163,7 +163,7 @@ class MyScraper(WebAutomation):
         # Enviar pedido (presionar boton)
         if (not automation.skips['submit']):
             self.sleep(1)
-            self.click_selector(self.data['checkout']['submit_btn'])
+            self.clickSelector(self.data['checkout']['submit_btn'])
 
         print("Terminado el trabajo con el Checkout. ---")
 
@@ -193,7 +193,7 @@ class MyScraper(WebAutomation):
         Espera hasta que la cantidad de elementos identificados por el selector sea menor que previous_count.
         """
         while True:
-            current_count = len(self.get_all(selector, timeout=timeout))
+            current_count = len(self.getAll(selector, timeout=timeout))
             if current_count < previous_count:
                 break
             self.sleep(0.5)
@@ -207,7 +207,7 @@ class MyScraper(WebAutomation):
             self.wait_for_cart_items()
 
             # Encuentra todos los elementos "a.remove" en el carrito
-            remove_links = self.get_all('CSS_SELECTOR:a.remove')
+            remove_links = self.getAll('CSS_SELECTOR:a.remove')
 
             # Si no hay elementos "a.remove", salir del bucle
             if not remove_links:
@@ -223,10 +223,10 @@ class MyScraper(WebAutomation):
                 # Esperar un breve tiempo antes de repetir el proceso
                 self.sleep(1)
 
-    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
-        super().take_screenshot(filename, full_page, timeout)
+    def takeScreenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
+        super().takeScreenshot(filename, full_page, timeout)
 
-        self.robot_execution.create_record(
+        self.robot_execution.createRecord(
             order_file=self.test_file,
             robot_status='running',
             last_screenshot=filename + '.png'
@@ -248,12 +248,12 @@ class MyScraper(WebAutomation):
             exclude_test_files = '--no-test' in sys.argv
 
             if self.test_file == "last":
-                self.test_file = loader.get_last_modified_file(exclude_test_files)
+                self.test_file = loader.getLastModifiedFile(exclude_test_files)
                 if not self.test_file:
                     print("Failed to find the latest file.")
                     return
 
-            instructions = loader.load_instructions(self.test_file)
+            instructions = loader.loadInstructions(self.test_file)
             if instructions is None:
                 print("Failed to load instructions.")
                 return
@@ -263,12 +263,12 @@ class MyScraper(WebAutomation):
             self.data = instructions.get('data')
            
             login     = self.data['login']            
-            self.set_base_url(login['site_url'])
+            self.setBaseUrl(login['site_url'])
 
             # Robot logger
             self.robot_execution = RobotExecution()
 
-            self.robot_execution.create_record(
+            self.robot_execution.createRecord(
                 order_file=self.test_file,
                 robot_status='starting'
             )
@@ -287,14 +287,14 @@ class MyScraper(WebAutomation):
             Login
             """
             
-            Files.empty_directory("screenshots")
+            Files.emptyDirectory("screenshots")
             
             if (not automation.skips['login']):
-                self.nav_slug(login['slug'])   # duplico la navegacion solo para poder sacar screenshot
-                self.take_screenshot('prev_login')
+                self.navSlug(login['slug'])   # duplico la navegacion solo para poder sacar screenshot
+                self.takeScreenshot('prev_login')
 
                 self.login(login['slug'], login['selectors'], login['log'], login['pwd'])
-                self.take_screenshot('after_login')
+                self.takeScreenshot('after_login')
                 
             
             """
@@ -302,9 +302,9 @@ class MyScraper(WebAutomation):
             """
 
             if (not automation.skips['cart_1']):
-                cart_items = self.get_cart_items()
+                cart_items = self.getCartItems()
                 self.print_cart_items(cart_items)
-                self.take_screenshot('after_prev_cart')
+                self.takeScreenshot('after_prev_cart')
 
 
             # self.quit()
@@ -315,27 +315,27 @@ class MyScraper(WebAutomation):
 
             if (not automation.skips['order']):
                 self.process_order()
-                self.take_screenshot('after_order')
+                self.takeScreenshot('after_order')
 
             """
             Carrito
             """
 
             if (not automation.skips['cart_2']):
-                cart_items = self.get_cart_items()
+                cart_items = self.getCartItems()
                 self.print_cart_items(cart_items)
-                self.take_screenshot('cart_after_order')
+                self.takeScreenshot('cart_after_order')
 
             """
             Checkout
             """
 
             if (not automation.skips['checkout']):
-                self.set_checkout()
-                self.take_screenshot('after_checkout')
+                self.setCheckout()
+                self.takeScreenshot('after_checkout')
 
 
-            self.robot_execution.create_record(
+            self.robot_execution.createRecord(
                 order_file=self.test_file,
                 robot_status='completed',
                 last_screenshot=self.screenshot  # faltaria manejar caso de si es undefined
@@ -350,7 +350,7 @@ class MyScraper(WebAutomation):
             traceback.print_exc(limit=5)
             logging.debug(e) #
 
-            self.robot_execution.create_record(
+            self.robot_execution.createRecord(
                 order_file=self.test_file,
                 robot_status='failed',
                 error_msg=str(e)

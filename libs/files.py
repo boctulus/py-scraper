@@ -2,7 +2,7 @@ import os
 
 class Files:
     @staticmethod
-    def empty_directory(directory):
+    def emptyDirectory(directory):
         # Verificar si el directorio existe
         if not os.path.exists(directory):
             print(f"El directorio '{directory}' no existe.")
@@ -22,7 +22,7 @@ class Files:
 
     
     @staticmethod
-    def url_to_filename(url: str) -> str:
+    def urlToFilename(url: str) -> str:
         # Eliminar http:// o https:// del comienzo
         if url.startswith("http://"):
             url = url[7:]

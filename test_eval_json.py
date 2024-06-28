@@ -17,7 +17,7 @@ class MyScraper(WebAutomation):
             with open('instructions/instructions.json', 'r') as f:
                 instructions = json.load(f)
 
-            result = self.evaluateXPathJson(instructions)
+            result = self.getJson(instructions)
             print(json.dumps(result, indent=4, ensure_ascii=False))
             
         except InvalidSelectorException as e:
