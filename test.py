@@ -105,8 +105,8 @@ class MyScraper(WebAutomation):
             # self.wait_until_elements_present(att_selector)
             # self.fill(att_selector, att_value)
 
-            filename = Files.urlToFilename(data.product_url) + '.txt'
-            self.saveHtml(filename)
+            filename = Files.url_to_filename(data.product_url) + '.txt'
+            self.save_html(filename)
 
             # quiting
             if not self.is_prod:

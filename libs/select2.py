@@ -13,7 +13,7 @@ class Select2:
     select2_countries = Select2(self.driver, billing_state_input)
 
     if select2_countries:
-        select2_countries.selectByVisibleText('Salta') # selecciono
+        select2_countries.select_by_visible_text('Salta') # selecciono
     else:
         print("The select element is not a Select2.")
 
@@ -51,19 +51,19 @@ class Select2:
             self.options = {opt.text: opt.get_attribute('value') for opt in options_elements}
         return self.options
 
-    def selectByVisibleText(self, text):
+    def select_by_visible_text(self, text):
         options = self.get_options()
         value   = options[text]
         self.webdriver.execute_script(self.SELECT_BY_VALUE, self.element, value)
 
     @property
-    def firstSelectedOption(self):
+    def first_selected_option(self):
         selections = self.webdriver.execute_script(self.GET_SELECTIONS, self.element)
         option = self.Option(selections[0]['text'])
         return option
 
     @staticmethod
-    def isSelect2(element):
+    def is_select2(element):
         if element:
             classes = element.get_attribute('class').split(' ')
             for class_name in classes:

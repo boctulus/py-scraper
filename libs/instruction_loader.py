@@ -11,14 +11,14 @@ class InstructionLoader:
     loader    = InstructionLoader()
     test_file = 'pablotol.json'  # o 'pablotol.py' dependiendo del archivo
     
-    instructions = loader.loadInstructions(test_file)
+    instructions = loader.load_instructions(test_file)
     if instructions is None:
         print("Failed to load instructions.")
     else:
         print(instructions)
     """
     
-    def loadInstructionsFromPython(self, test_file):
+    def load_instructions_from_python(self, test_file):
         instructions = {}
         test_file_path = os.path.join('instructions', test_file)
         
@@ -31,7 +31,7 @@ class InstructionLoader:
             
         return instructions 
 
-    def loadInstructionsFromJson(self, json_file):
+    def load_instructions_from_json(self, json_file):
         json_file_path = os.path.join('instructions', json_file)
         
         if not os.path.isfile(json_file_path):
@@ -54,13 +54,13 @@ class InstructionLoader:
         
         return instructions
 
-    def loadInstructions(self, file_name):
+    def load_instructions(self, file_name):
         if file_name.endswith('.json'):
-            return self.loadInstructionsFromJson(file_name)
+            return self.load_instructions_from_json(file_name)
         else:
-            return self.loadInstructionsFromPython(file_name)
+            return self.load_instructions_from_python(file_name)
 
-    def getLastModifiedFile(self, exclude_test_files=False):
+    def get_last_modified_file(self, exclude_test_files=False):
         search_pattern = 'instructions/*'
         if exclude_test_files:
             list_of_files = [f for f in glob(search_pattern) if os.path.isfile(f) and not os.path.basename(f).startswith('test-')]

@@ -66,7 +66,7 @@ class WebAutomation:
                 self.driver = webdriver.Firefox(options=options)
 
 
-    def saveHtml(filename):
+    def save_html(filename):
         if not filename.endswith('.html'):
             filename += '.html'
 
@@ -130,7 +130,7 @@ class WebAutomation:
         login_button.click()
 
 
-    def loadInstructions(self, test_file):
+    def load_instructions(self, test_file):
         instructions = {}
         test_file_path = os.path.join('tests', test_file)
        
@@ -150,7 +150,7 @@ class WebAutomation:
 
         test_file        = sys.argv[1]
 
-        instructions     = self.loadInstructions(test_file)
+        instructions     = self.load_instructions(test_file)
 
         self.login_data  = instructions.get('login_data')
 

@@ -10,7 +10,7 @@ class RobotExecution:
 
     robot_execution = RobotExecution()
 
-    robot_execution.createRecord(
+    robot_execution.create_record(
         order_file='orden1234.txt',
         robot_status='completed',
         last_screenshot='screenshot123.png',
@@ -29,7 +29,7 @@ class RobotExecution:
         self.db_username = os.getenv('DB_USERNAME')
         self.db_password = os.getenv('DB_PASSWORD')
 
-    def createRecord(self, order_file: str, robot_status: str, last_screenshot: str = None, error_msg: str = None):
+    def create_record(self, order_file: str, robot_status: str, last_screenshot: str = None, error_msg: str = None):
         try:
             # Establecer la conexión a la base de datos
             connection = mysql.connector.connect(

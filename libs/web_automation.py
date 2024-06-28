@@ -24,7 +24,7 @@ from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 
 
 class WebAutomation:
-    def setBaseUrl(self, url):
+    def set_base_url(self, url):
         self.base_url = url.rstrip('/')
 
     def debug(self, value=True):
@@ -36,7 +36,7 @@ class WebAutomation:
 
         self.driver.get(url)
 
-    def navSlug(self, slug, debug=False):        
+    def nav_slug(self, slug, debug=False):        
         url = self.base_url + '/' + slug
         self.nav(url)
 
@@ -49,7 +49,7 @@ class WebAutomation:
         self.driver.quit()
         sys.exit()
 
-    def saveHtml(self, filename, encoding='utf-8', debug=False):
+    def save_html(self, filename, encoding='utf-8', debug=False):
         """
         Salva renderizado en archivo
         """
@@ -163,10 +163,10 @@ class WebAutomation:
         else:
             return len(ret) > 0
 
-    def getAll(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+    def get_all(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         return self._get(selector, single=False, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
 
-    def getAttr(self, selector, attr_name, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+    def get_attr(self, selector, attr_name, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene el valor de un atributo de un elemento identificado por un selector CSS dentro de un elemento raíz.
 
@@ -183,7 +183,7 @@ class WebAutomation:
         element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.get_attribute(attr_name)
 
-    def getText(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+    def get_text(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene el texto contenido dentro de un elemento identificado por un selector CSS dentro de un elemento raíz.
 
@@ -199,7 +199,7 @@ class WebAutomation:
         element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.text
 
-    def getTextAll(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+    def get_text_all(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene el texto contenido dentro de una lista de elementos identificados por un selector CSS dentro de un elemento raíz.
 
@@ -213,33 +213,56 @@ class WebAutomation:
         Returns:
             list: Lista de textos contenidos dentro de los elementos especificados.
         """
-        elements = self.getAll(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+        elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return [element.text.strip() for element in elements] if elements else []
 
-    def __evaluateXPath(self, xpath, single=True):
-        if single:
-            return self.getText(f'XPATH:{xpath}')
-        else:
-            return self.getTextAll(f'XPATH:{xpath}')
+    def evaluate_xpath(self, xpath, single=True, attribute=None):
+        elements = self.driver.find_elements(By.XPATH, xpath)
+        
+        if not elements:
+            return None
+        
+        if single and not attribute:
+            return elements[0].text.strip()
+        elif single and attribute:
+            return elements[0].get_attribute(attribute)
+        elif not single and not attribute:
+            return [element.text.strip() for element in elements]
+        else:  # not single and attribute
+            return [element.get_attribute(attribute) for element in elements]
 
-    def getJson(self, instructions):
-        data = {}
-        for key, selector in instructions.items():
+    def get_json(self, instructions):
+        result = {}
+        for key, value in instructions.items():
+            return_all = False
+            new_key = key
+            attribute = None
+
+            # Check if the field name ends with ":all"
             if key.endswith(":all"):
-                data[key[:-4]] = self.__evaluateXPath(selector, single=False)
-            elif isinstance(selector, dict):
-                data[key] = self.getJson(selector)
-            else:
-                data[key] = self.__evaluateXPath(selector)
-        return data
+                return_all = True
+                new_key = key[:-4]  # Remove ":all" from the field name
+
+            # Check if the field name contains an attribute
+            attr_match = re.search(r'\[(\w+)\]$', new_key)
+            if attr_match:
+                attribute = attr_match.group(1)
+                new_key = re.sub(r'\[\w+\]$', '', new_key)  # Remove the attribute from the field name
+
+            if isinstance(value, str):
+                result[new_key] = self.evaluate_xpath(value, not return_all, attribute)
+            elif isinstance(value, dict):
+                result[new_key] = self.get_json(value)
+
+        return result
     
-    def getInputByValue(self, value, fail_if_not_exist=True, timeout=10, debug=False):
+    def get_input_by_value(self, value, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Caso de uso: "radio buttons", otros
 
         Ej:
 
-        self.getInputByValue("flat_rate:7").click()
+        self.get_input_by_value("flat_rate:7").click()
         """
 
         xpath = f'//input[@value="{value}"]'
@@ -255,13 +278,13 @@ class WebAutomation:
             else:
                 return None
 
-    def getInputByLabelText(self, text, fail_if_not_exist=True, timeout=10, debug=False):
+    def get_input_by_label_text(self, text, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Caso de uso: "radio buttons", otros
 
         EJ:
 
-        self.getInputByLabelText("Recogida local").click()
+        self.get_input_by_label_text("Recogida local").click()
         """
 
         # Encuentra el label que contiene el texto especificado
@@ -282,10 +305,10 @@ class WebAutomation:
         return radio_button
 
     # Hacer clic usando JavaScript
-    def clickByJs(self, element):
+    def click_by_js(self, element):
         self.driver.execute_script("arguments[0].click();", element)
 
-    def clickSelector(self, selector):
+    def click_selector(self, selector):
         element = self.get(selector)
 
         try:
@@ -294,7 +317,7 @@ class WebAutomation:
             self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
             self.driver.execute_script("arguments[0].click();", element)
 
-    def sendReturn(self, element, value):
+    def send_return(self, element, value):
         """
         I was able to get around it by using .SendKeys(Keys.Return) instead of .Click. 
          
@@ -333,7 +356,7 @@ class WebAutomation:
                 element.send_keys(value)
             elif element_tag == 'select':            
                 select = Select(element)
-                select.selectByVisibleText(value)
+                select.select_by_visible_text(value)
             else:
                 raise ValueError(f"Unsupported element type: {element_tag}") 
 
@@ -346,7 +369,7 @@ class WebAutomation:
             else:
                 return False
 
-    def loadInstructionsFromPython(self, filename):
+    def load_instructions_from_python(self, filename):
         instructions = {}
         filename_path = os.path.join('instructions', filename)
        
@@ -359,7 +382,7 @@ class WebAutomation:
             
         return instructions  
 
-    def loadInstructionsFromJson(self, json_file):
+    def load_instructions_from_json(self, json_file):
         json_file_path = os.path.join('instructions', json_file)
         
         if not os.path.isfile(json_file_path):
@@ -382,14 +405,14 @@ class WebAutomation:
         
         return instructions   
 
-    def loadInstructions(self, file_name):
+    def load_instructions(self, file_name):
         if file_name.endswith('.json'):
             return self.load_instructions_from_json_string(file_name)
         else:
-            return self.loadInstructionsFromPython(file_name) 
+            return self.load_instructions_from_python(file_name) 
 
     def login(self, slug, selectors, username, password, debug = False):
-        self.navSlug(slug)
+        self.nav_slug(slug)
 
         # Obtener los selectores personalizados o los predeterminados
         username_selector = selectors.get('username_input')
@@ -458,7 +481,7 @@ class WebAutomation:
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-    def takeScreenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
+    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
         """
         Tomar screenshots en full page requiere de modo "headless" y setear el tamano de la ventana
 

@@ -36,7 +36,7 @@ class MyScraper(WebAutomation):
             self.driver.maximize_window()
             self.nav('https://www.python.org')
             
-            self.takeScreenshot('mi_archivo2.png')
+            self.take_screenshot('mi_archivo2.png')
 
         except Exception as e:
             traceback.print_exc(limit=5)

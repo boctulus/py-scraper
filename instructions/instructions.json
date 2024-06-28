@@ -7,5 +7,6 @@
         "numero_cuotas": "//p/i/following-sibling::span/strong[1]",
         "monto_cuota": "//p/i/following-sibling::span/strong[2]"
     },
-    "colores_disponibles:all": "//select[@id='atributos-0']/option"
+    "colores_disponibles:all": "//select[@id='atributos-0']/option",
+    "imagenes:all[src]": "//div[contains(@class, 'product-vip__images-grid')]//ul[contains(@class, 'product-vip__images-grid-list')]//li[contains(@class, 'product-vip__images-grid-list-item')]//img"
 }
