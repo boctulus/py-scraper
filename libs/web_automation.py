@@ -293,17 +293,24 @@ class WebAutomation:
 
             # Check if the field name contains an attribute
             attr_match = re.search(r'\[(\w+)\]$', key)
+
             if attr_match:
                 attribute = attr_match.group(1)
                 key = re.sub(r'\[\w+\]$', '', key)  # Remove the attribute from the field name
 
+                # Check if the field name ends with ":all"
+                if key.endswith(":all"):
+                    return_all = True
+                    key = key[:-4]  # Remove ":all" from the field name
+
             if isinstance(value, str):
                 result[key] = self.evaluate_xpath(value, return_all, attribute, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
             elif isinstance(value, dict):
-                result[key] = self.get_json(value)
+                result[key] = self.get_json(value, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
 
         return result
-    
+
+        
     def get_input_by_value(self, value, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Caso de uso: "radio buttons", otros
