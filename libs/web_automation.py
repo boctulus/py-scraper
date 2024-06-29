@@ -185,6 +185,16 @@ class WebAutomation:
 
     # ok
     def get_attr_all(self, selector, attr_name, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+        """ 
+        Ej:
+
+        self.driver.maximize_window()
+        self.nav('https://www.mateandoarg.com/materas/porta-mate-rutero-cuero')
+        
+        xpath_selector = "//div[contains(@class, 'product-vip__images-grid')]//ul[contains(@class, 'product-vip__images-grid-list')]//li[contains(@class, 'product-vip__images-grid-list-item')]//img"
+
+        print(self.get_attr_all('XPATH:' + xpath_selector, 'src'))
+        """
         elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return [element.get_attribute(attr_name) for element in elements]
 
@@ -221,24 +231,56 @@ class WebAutomation:
         elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return [element.text.strip() for element in elements] if elements else []
 
-    def evaluate_xpath(self, xpath, return_all=False, attribute=None):
-        elements = self.driver.find_elements(By.XPATH, xpath)
-        
-        if not elements:
-            return None
-        
+    def evaluate_xpath(self, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=debug):
+        """
+        Evalúa un selector XPath y obtiene los atributos o textos de los elementos seleccionados.
+
+        Args:
+            selector (str): El selector XPath del elemento.
+            return_all (bool, opcional): Indica si se deben devolver todos los elementos encontrados. Por defecto es False.
+            attribute (str, opcional): El atributo que se desea obtener. Si es None, se devuelve el texto del elemento.
+
+        Returns:
+            str, list o None: El texto o atributo del primer elemento encontrado si return_all es False,
+                            o una lista de textos o atributos de todos los elementos encontrados si return_all es True.
+        """
+
+        if debug:
+            print(f'Selector: {selector} ; multiple: {return_all}')
+
         if return_all:
+            elements = self.get_all(f"XPATH:{selector}", root, fail_if_not_exist, timeout, debug)
             if attribute:
-                return [element.get_attribute(attribute) for element in elements]
+                return [element.get_attribute(attribute) for element in elements] if elements else None
             else:
-                return [element.text.strip() for element in elements]
+                return [element.text.strip() for element in elements] if elements else None
         else:
+            element = self.get(f"XPATH:{selector}")
             if attribute:
-                return elements[0].get_attribute(attribute)
+                return element.get_attribute(attribute) if element else None
             else:
-                return elements[0].text.strip()
+                return element.text.strip() if element else None
                 
-    def get_json(self, instructions):
+    def get_json(self, instructions, fail_if_not_exist=True, timeout=10, debug=False):
+        """
+        Importante: asume que los selectores recibidos son siempre de tipo XPATH
+
+        Ej:
+
+        {
+            "nombre_producto": "//h1",
+            "precio_original": "//p/span/del",
+            "precio_descuento": "//span[@class='product-vip__price-value']", 
+            "porcentaje_descuento": "//span[@class='product-vip__off-value']",
+            "cuotas_sin_interes": {
+                "numero_cuotas": "//p/i/following-sibling::span/strong[1]",
+                "monto_cuota": "//p/i/following-sibling::span/strong[2]"
+            },
+            "colores_disponibles:all": "//select[@id='atributos-0']/option",
+            "imagenes:all[src]": "//div[contains(@class, 'product-vip__images-grid')]//ul[contains(@class, 'product-vip__images-grid-list')]//li[contains(@class, 'product-vip__images-grid-list-item')]//img"
+        }
+        """
+
         result = {}
         for key, value in instructions.items():
             return_all = False
@@ -256,7 +298,7 @@ class WebAutomation:
                 key = re.sub(r'\[\w+\]$', '', key)  # Remove the attribute from the field name
 
             if isinstance(value, str):
-                result[key] = self.evaluate_xpath(value, return_all, attribute)
+                result[key] = self.evaluate_xpath(value, return_all, attribute, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
             elif isinstance(value, dict):
                 result[key] = self.get_json(value)
 
