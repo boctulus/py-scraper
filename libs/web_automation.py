@@ -79,25 +79,28 @@ class WebAutomation:
 
         Tipos soportados:
 
-        ID = "id"
-        NAME = "name"
-        XPATH = "xpath"
-        LINK_TEXT = "link text"
-        PARTIAL_LINK_TEXT = "partial link text"
-        TAG_NAME = "tag name"
-        CLASS_NAME = "class name"
-        CSS_SELECTOR = "css selector"
+            ID = "id"
+            NAME = "name"
+            XPATH = "xpath"
+            LINK_TEXT = "link text"
+            PARTIAL_LINK_TEXT = "partial link text"
+            TAG_NAME = "tag name"
+            CLASS_NAME = "class name"
+            CSS_SELECTOR = "css selector"
 
         Args:
-            selector (str):         El selector del elemento, que puede comenzar con uno de los siguientes identificadores seguido
-                                    de dos puntos (ID:, NAME:, XPATH:, LINK_TEXT:, PARTIAL_LINK_TEXT:, TAG_NAME:, CLASS_NAME:),
-                                    seguido del valor del selector.
-            single (bool, opcional): Indica si se espera un solo elemento. Por defecto es True.
-            root (WebElement, opcional): Elemento raíz dentro del cual buscar el selector. Por defecto es None (la página completa).
-            debug (bool, opcional): Indica si se debe imprimir información de depuración. Por defecto es False.
+            selector (str): el selector del elemento, que puede comenzar con uno de los siguientes identificadores seguido
+                            de dos puntos (ID:, NAME:, XPATH:, LINK_TEXT:, PARTIAL_LINK_TEXT:, TAG_NAME:, CLASS_NAME:),
+                            seguido del valor del selector.
+            
+            single (bool, opcional): indica si se espera un solo elemento. Por defecto es True.
+            
+            root (WebElement, opcional): elemento raíz dentro del cual buscar el selector. Por defecto es None (la página completa).
+            
+            debug (bool, opcional): endica si se debe imprimir información de depuración. Por defecto es False.
 
         Returns:
-            selenium.webdriver.remote.webelement.WebElement o lista de elementos: El elemento encontrado en la página, o una lista de elementos si single es False.
+            selenium.webdriver.remote.webelement.WebElement o lista de elementos: el elemento encontrado en la página, o una lista de elementos si single es False.
         """
         if selector.startswith('ID:'):
             locator = By.ID
@@ -128,7 +131,7 @@ class WebAutomation:
             value = selector
 
         if self.debug or debug:
-            print(f"{selector} > {value}")
+            print(f'Selector: {selector} ; single: {single}')
 
         try:
             if (single):
@@ -244,9 +247,6 @@ class WebAutomation:
             str, list o None: El texto o atributo del primer elemento encontrado si return_all es False,
                             o una lista de textos o atributos de todos los elementos encontrados si return_all es True.
         """
-
-        if debug:
-            print(f'Selector: {selector} ; multiple: {return_all}')
 
         if return_all:
             elements = self.get_all(f"XPATH:{selector}", root, fail_if_not_exist, timeout, debug)
