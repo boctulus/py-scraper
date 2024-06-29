@@ -322,6 +322,8 @@ class WebAutomation:
         """
         Similar a get_json() con la diferencia de que asume que los selectores recibidos son siempre de tipo XPath.
 
+        De no comenzar con 'XPATH:', es agregado
+
         Ejemplo:
 
         {
