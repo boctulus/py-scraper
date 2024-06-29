@@ -234,12 +234,12 @@ class WebAutomation:
         elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return [element.text.strip() for element in elements] if elements else []
 
-    def evaluate_xpath(self, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=debug):
+    def evaluate(self, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
-        Evalúa un selector XPath y obtiene los atributos o textos de los elementos seleccionados.
+        Evalúa un selector CSS y obtiene los atributos o textos de los elementos seleccionados.
 
         Args:
-            selector (str): El selector XPath del elemento.
+            selector (str): El selector CSS del elemento.
             return_all (bool, opcional): Indica si se deben devolver todos los elementos encontrados. Por defecto es False.
             attribute (str, opcional): El atributo que se desea obtener. Si es None, se devuelve el texto del elemento.
 
@@ -247,25 +247,82 @@ class WebAutomation:
             str, list o None: El texto o atributo del primer elemento encontrado si return_all es False,
                             o una lista de textos o atributos de todos los elementos encontrados si return_all es True.
         """
-
         if return_all:
-            elements = self.get_all(f"XPATH:{selector}", root, fail_if_not_exist, timeout, debug)
+            elements = self.get_all(selector, root, fail_if_not_exist, timeout, debug)
             if attribute:
                 return [element.get_attribute(attribute) for element in elements] if elements else None
             else:
                 return [element.text.strip() for element in elements] if elements else None
         else:
-            element = self.get(f"XPATH:{selector}")
+            element = self.get(selector)
             if attribute:
                 return element.get_attribute(attribute) if element else None
             else:
                 return element.text.strip() if element else None
-                
+
+    def evaluate_xpath(self, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+        """
+        Evalúa un selector XPath y obtiene los atributos o textos de los elementos seleccionados.
+
+        Similar a evaluate() pero actúa solo sobre selectores XPath.
+        """
+        if not selector.startswith('XPATH:'):
+            selector = f"XPATH:{selector}"
+
+        return self.evaluate(selector, return_all, attribute, root, fail_if_not_exist, timeout, debug)
+
     def get_json(self, instructions, fail_if_not_exist=True, timeout=10, debug=False):
         """
-        Importante: asume que los selectores recibidos son siempre de tipo XPATH
+        Obtiene contenido o atributos de cada selector CSS de un JSON.
 
-        Ej:
+        Ejemplo:
+
+        {
+            "nombre_producto": "XPATH://h1",
+            "precio_original": "XPATH://p/span/del",
+            "precio_descuento": "XPATH://span[@class='product-vip__price-value']", 
+            "porcentaje_descuento": "XPATH://span[@class='product-vip__off-value']",
+            "cuotas_sin_interes": {
+                "numero_cuotas": "XPATH://p/i/following-sibling::span/strong[1]",
+                "monto_cuota": "XPATH://p/i/following-sibling::span/strong[2]"
+            },
+            "colores_disponibles:all": "XPATH://select[@id='atributos-0']/option",
+            "imagenes:all[src]": "XPATH://div[contains(@class, 'product-vip__images-grid')]//ul[contains(@class, 'product-vip__images-grid-list')]//li[contains(@class, 'product-vip__images-grid-list-item')]//img"
+        }
+        """
+        result = {}
+        for key, value in instructions.items():
+            return_all = False
+            attribute = None
+
+            # Check if the field name ends with ":all"
+            if key.endswith(":all"):
+                return_all = True
+                key = key[:-4]  # Remove ":all" from the field name
+
+            # Check if the field name contains an attribute
+            attr_match = re.search(r'\[(\w+)\]$', key)
+            if attr_match:
+                attribute = attr_match.group(1)
+                key = re.sub(r'\[\w+\]$', '', key)  # Remove the attribute from the field name
+
+                # Check if the field name ends with ":all"
+                if key.endswith(":all"):
+                    return_all = True
+                    key = key[:-4]  # Remove ":all" from the field name
+
+            if isinstance(value, str):
+                result[key] = self.evaluate(value, return_all, attribute, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+            elif isinstance(value, dict):
+                result[key] = self.get_json(value, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+
+        return result
+
+    def get_json_using_xpath(self, instructions, fail_if_not_exist=True, timeout=10, debug=False):
+        """
+        Similar a get_json() con la diferencia de que asume que los selectores recibidos son siempre de tipo XPath.
+
+        Ejemplo:
 
         {
             "nombre_producto": "//h1",
@@ -280,7 +337,6 @@ class WebAutomation:
             "imagenes:all[src]": "//div[contains(@class, 'product-vip__images-grid')]//ul[contains(@class, 'product-vip__images-grid-list')]//li[contains(@class, 'product-vip__images-grid-list-item')]//img"
         }
         """
-
         result = {}
         for key, value in instructions.items():
             return_all = False
@@ -293,7 +349,6 @@ class WebAutomation:
 
             # Check if the field name contains an attribute
             attr_match = re.search(r'\[(\w+)\]$', key)
-
             if attr_match:
                 attribute = attr_match.group(1)
                 key = re.sub(r'\[\w+\]$', '', key)  # Remove the attribute from the field name
@@ -306,7 +361,7 @@ class WebAutomation:
             if isinstance(value, str):
                 result[key] = self.evaluate_xpath(value, return_all, attribute, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
             elif isinstance(value, dict):
-                result[key] = self.get_json(value, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+                result[key] = self.get_json_using_xpath(value, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
 
         return result
 
