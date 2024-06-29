@@ -183,6 +183,10 @@ class WebAutomation:
         element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.get_attribute(attr_name)
 
+    def get_attr_all(self, xpath, attribute):
+        elements = self.get_all(xpath, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+        return [element.get_attribute(attribute) for element in elements]
+
     def get_text(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Obtiene el texto contenido dentro de un elemento identificado por un selector CSS dentro de un elemento raíz.
@@ -216,43 +220,44 @@ class WebAutomation:
         elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return [element.text.strip() for element in elements] if elements else []
 
-    def evaluate_xpath(self, xpath, single=True, attribute=None):
+    def evaluate_xpath(self, xpath, return_all=False, attribute=None):
         elements = self.driver.find_elements(By.XPATH, xpath)
         
         if not elements:
             return None
         
-        if single and not attribute:
-            return elements[0].text.strip()
-        elif single and attribute:
-            return elements[0].get_attribute(attribute)
-        elif not single and not attribute:
-            return [element.text.strip() for element in elements]
-        else:  # not single and attribute
-            return [element.get_attribute(attribute) for element in elements]
-
+        if return_all:
+            if attribute:
+                return [element.get_attribute(attribute) for element in elements]
+            else:
+                return [element.text.strip() for element in elements]
+        else:
+            if attribute:
+                return elements[0].get_attribute(attribute)
+            else:
+                return elements[0].text.strip()
+                
     def get_json(self, instructions):
         result = {}
         for key, value in instructions.items():
             return_all = False
-            new_key = key
             attribute = None
 
             # Check if the field name ends with ":all"
             if key.endswith(":all"):
                 return_all = True
-                new_key = key[:-4]  # Remove ":all" from the field name
+                key = key[:-4]  # Remove ":all" from the field name
 
             # Check if the field name contains an attribute
-            attr_match = re.search(r'\[(\w+)\]$', new_key)
+            attr_match = re.search(r'\[(\w+)\]$', key)
             if attr_match:
                 attribute = attr_match.group(1)
-                new_key = re.sub(r'\[\w+\]$', '', new_key)  # Remove the attribute from the field name
+                key = re.sub(r'\[\w+\]$', '', key)  # Remove the attribute from the field name
 
             if isinstance(value, str):
-                result[new_key] = self.evaluate_xpath(value, not return_all, attribute)
+                result[key] = self.evaluate_xpath(value, return_all, attribute)
             elif isinstance(value, dict):
-                result[new_key] = self.get_json(value)
+                result[key] = self.get_json(value)
 
         return result
     
@@ -447,17 +452,24 @@ class WebAutomation:
         WebDriverWait(self.driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR,"iframe[title='Widget containing a Cloudflare security challenge']")))
         WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "label.ctp-checkbox-label"))).click()
     
-    def setup(self, is_prod=False, install=False, web_driver='Google'):
+    def setup(self, headless=False, install=False, web_driver='Google'):
+        """
+        Este metodo no es del todo general sino que esta ajustado cargando la extension "DarkReader.crx"
+        cuando headless es False
+
+        Lo ideal seria dejar la version minima y luego agregar funcionalidad al extender la clase
+        o cargar algun tipo de Trait 
+        """
+
         options = ChromeOptions() if web_driver == 'Google' else FireFoxOptions() if web_driver == 'FireFox' else None
 
         if options is None:
             raise ValueError(f"Unsupported web driver: {web_driver}. Supported options are 'Chrome' and 'Firefox'")
         
-        if is_prod:
-            # prod
+        # typically in production
+        if headless:
             options.add_argument('--headless=new')
         else:
-            # dev
             options.add_extension("DarkReader.crx")    
 
         # options.add_argument("--headless")
@@ -481,19 +493,19 @@ class WebAutomation:
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1):
+    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1, path='screenshots/':
         """
         Tomar screenshots en full page requiere de modo "headless" y setear el tamano de la ventana
 
         https://dev.to/shadow_b/capturing-full-webpage-screenshots-with-selenium-in-python-a-step-by-step-guide-187f
-
         """
+        
         time.sleep(timeout)
         if not filename.endswith(".png"):
             filename += ".png"
 
         if full_page == False:
-            self.driver.get_screenshot_as_file(f"screenshots/{filename}")
+            self.driver.get_screenshot_as_file(f"{path}{filename}")
             return
         
         # Use JavaScript to get the full width and height of the webpage
