@@ -183,9 +183,10 @@ class WebAutomation:
         element = self.get(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return element.get_attribute(attr_name)
 
-    def get_attr_all(self, xpath, attribute):
-        elements = self.get_all(xpath, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
-        return [element.get_attribute(attribute) for element in elements]
+    # ok
+    def get_attr_all(self, selector, attr_name, root=None, fail_if_not_exist=True, timeout=10, debug=False):
+        elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+        return [element.get_attribute(attr_name) for element in elements]
 
     def get_text(self, selector, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
@@ -493,13 +494,13 @@ class WebAutomation:
             if (web_driver == 'FireFox'):
                 self.driver = webdriver.Firefox(options=options)
 
-    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1, path='screenshots/':
+    def take_screenshot(self, filename: str, full_page: bool = False, timeout: int = 1, path='screenshots/'):
         """
         Tomar screenshots en full page requiere de modo "headless" y setear el tamano de la ventana
 
         https://dev.to/shadow_b/capturing-full-webpage-screenshots-with-selenium-in-python-a-step-by-step-guide-187f
         """
-        
+
         time.sleep(timeout)
         if not filename.endswith(".png"):
             filename += ".png"
