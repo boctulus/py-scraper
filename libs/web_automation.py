@@ -639,6 +639,9 @@ class WebAutomation:
         # Capture the screenshot of the entire page
         self.driver.get_screenshot_as_file(f"screenshots/{filename}")
 
+    def clean_text(text):
+        return re.sub(r'\s+', ' ', text).strip()
+
     def evaluate_from_file(self, html_file_path, xpath, return_all=False, attribute=None, fail_if_not_exist=True, timeout=10, debug=False):
         with open(html_file_path, 'rb') as f:
             html_content = f.read()
@@ -665,7 +668,6 @@ class WebAutomation:
             if fail_if_not_exist:
                 raise Exception(f"Elemento no encontrado para el selector: {xpath}")
             return None
-
 
     def get_json_using_xpath_from_file(self, instructions, html_file_path, debug=False, fail_if_not_exist=True, timeout=10):
         result = {}
