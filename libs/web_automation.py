@@ -246,6 +246,10 @@ class WebAutomation:
         elements = self.get_all(selector, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
         return [element.text.strip() for element in elements] if elements else []
 
+
+    def clean_text(self, text):
+        return re.sub(r'\s+', ' ', text).strip()
+
     def evaluate(self, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=False):
         """
         Evalúa un selector CSS y obtiene los atributos o textos de los elementos seleccionados.
@@ -639,9 +643,6 @@ class WebAutomation:
         # Capture the screenshot of the entire page
         self.driver.get_screenshot_as_file(f"screenshots/{filename}")
 
-    def clean_text(text):
-        return re.sub(r'\s+', ' ', text).strip()
-
     def evaluate_from_file(self, html_file_path, xpath, return_all=False, attribute=None, fail_if_not_exist=True, timeout=10, debug=False):
         with open(html_file_path, 'rb') as f:
             html_content = f.read()
@@ -669,6 +670,13 @@ class WebAutomation:
                 raise Exception(f"Elemento no encontrado para el selector: {xpath}")
             return None
 
+    '''
+    Similar a  get_json_using_xpath() pero desde archivo
+
+    Experimental 
+    
+    No funciona para todos los selectores.
+    '''
     def get_json_using_xpath_from_file(self, instructions, html_file_path, debug=False, fail_if_not_exist=True, timeout=10):
         result = {}
 

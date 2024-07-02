@@ -14,7 +14,7 @@ class MyScraper(WebAutomation):
         url      = 'https://www.mateandoarg.com/materas/porta-mate-rutero-cuero'
 
         # Instrucciones de que y como hacer el scraping
-        filename = 'instructions/instructions.json'
+        filename = 'instructions/instructions_2.json'
 
         try:
             self.driver.maximize_window()
