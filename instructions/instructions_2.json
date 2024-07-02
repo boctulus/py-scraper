@@ -1,0 +1,12 @@
+{
+    "product_name": "//h1[@class='product-vip__title text--primary']",
+    "regular_price": "//p[@class='product-vip__price uk-flex uk-flex-middle text--primary']/span[@class='product-vip__price-value']/del",
+    "sales_price": "//p[@class='product-vip__price uk-flex uk-flex-middle text--primary']/span[@class='product-vip__price-value']/text()[normalize-space()]",
+    "discount_as_percentaje": "//span[@class='product-vip__off-value']",
+    "interest_free_installments": {
+        "number_of_installments": "//p[@class='product-vip__promo-installments text--primary']/span[@class='product-vip__promo-installments-value']/strong[1]",
+        "fee_amount": "//p[@class='product-vip__promo-installments text--primary']/span[@class='product-vip__promo-installments-value']/strong[2]"
+    },
+    "colors:all": "//select[@id='atributos-0']/option",
+    "images:all[src]":  "//div[@uk-lightbox]//a/@href"
+}

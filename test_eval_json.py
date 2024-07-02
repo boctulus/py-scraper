@@ -10,15 +10,21 @@ from libs.web_automation import WebAutomation
 
 class MyScraper(WebAutomation):
     def main(self):
+        # URL a scrapear
+        url      = 'https://www.mateandoarg.com/materas/porta-mate-rutero-cuero'
+
+        # Instrucciones de que y como hacer el scraping
+        filename = 'instructions/instructions.json'
+
         try:
             self.driver.maximize_window()
-            self.driver.get('https://www.mateandoarg.com/materas/porta-mate-rutero-cuero')  # URL del producto
+            self.driver.get(url)  
 
-            with open('instructions/instructions.json', 'r') as f:
+            with open(filename, 'r') as f:
                 instructions = json.load(f)
 
             # proceso
-            result = self.get_json_using_xpath(instructions, debug=True) 
+            result = self.get_json_using_xpath(instructions, debug=True, fail_if_not_exist=False) 
 
             # imprimo
             print(json.dumps(result, indent=4, ensure_ascii=False))
