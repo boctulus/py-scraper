@@ -14,7 +14,7 @@ class MyScraper(WebAutomation):
         html_file_path = 'D:\python\selenium\py-scraper\page.html'
 
         # Instrucciones de qué y cómo hacer el scraping
-        filename = 'instructions/instructions_2b.json'
+        filename = 'instructions/instructions.json'
 
         try:
             with open(filename, 'r') as f:

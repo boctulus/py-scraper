@@ -639,124 +639,54 @@ class WebAutomation:
         # Capture the screenshot of the entire page
         self.driver.get_screenshot_as_file(f"screenshots/{filename}")
 
-       
-
-
-    def evaluate_from_file(self, html_file_path, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=False):
-        """
-        Evalúa un selector en un archivo HTML y obtiene los atributos o textos de los elementos seleccionados.
-
-        Args:
-            html_file_path (str): Ruta al archivo HTML.
-            selector (str): El selector XPath del elemento.
-            return_all (bool, opcional): Indica si se deben devolver todos los elementos encontrados. Por defecto es False.
-            attribute (str, opcional): El atributo que se desea obtener. Si es None, se devuelve el texto del elemento.
-
-        Returns:
-            str, list o None: El texto o atributo del primer elemento encontrado si return_all es False,
-                              o una lista de textos o atributos de todos los elementos encontrados si return_all es True.
-        """
-
-        with open(html_file_path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
-
-        tree = etree.HTML(html_content)
-
-        if debug:
-            print(f'Selector: {selector} ; multiple: {return_all}')
-
-        if return_all:
-            elements = tree.xpath(selector)
-            if attribute:
-                return [element.get(attribute) for element in elements] if elements else None
-            else:
-                return [element.text.strip() for element in elements] if elements else None
-        else:
-            element = tree.xpath(selector)
-            if attribute:
-                return element[0].get(attribute) if element else None
-            else:
-                return element[0].text.strip() if element else None
-
-    def evaluate_from_file(self, html_file_path, selector, return_all=False, attribute=None, root=None, fail_if_not_exist=True, timeout=10, debug=False):
-        """
-        Evalúa un selector en un archivo HTML y obtiene los atributos o textos de los elementos seleccionados.
-
-        Args:
-            html_file_path (str): Ruta al archivo HTML.
-            selector (str): El selector XPath del elemento.
-            return_all (bool, opcional): Indica si se deben devolver todos los elementos encontrados. Por defecto es False.
-            attribute (str, opcional): El atributo que se desea obtener. Si es None, se devuelve el texto del elemento.
-
-        Returns:
-            str, list o None: El texto o atributo del primer elemento encontrado si return_all es False,
-                              o una lista de textos o atributos de todos los elementos encontrados si return_all es True.
-        """
-
+    def evaluate_from_file(self, html_file_path, xpath, return_all=False, attribute=None, fail_if_not_exist=True, timeout=10, debug=False):
         with open(html_file_path, 'rb') as f:
             html_content = f.read()
 
         tree = etree.HTML(html_content)
+        elements = tree.xpath(xpath)
 
         if debug:
-            print(f'Selector: {selector} ; multiple: {return_all}')
+            print(f"Selector: {xpath} ; multiple: {return_all}")
 
         if return_all:
-            elements = tree.xpath(selector)
             if attribute:
-                return [element.get(attribute) for element in elements] if elements else None
+                return [elem.get(attribute).strip() if elem.get(attribute) else None for elem in elements]
             else:
-                return [element.text.strip() for element in elements] if elements else None
+                return [elem.text.strip() if elem.text else None for elem in elements]
+
+        if elements:
+            element = elements[0]
+            if attribute:
+                return element.get(attribute).strip() if element.get(attribute) else None
+            else:
+                return element.text.strip() if element.text else None
         else:
-            element = tree.xpath(selector)
-            if attribute:
-                return element[0].get(attribute) if element else None
-            else:
-                return element[0].text.strip() if element else None
+            if fail_if_not_exist:
+                raise Exception(f"Elemento no encontrado para el selector: {xpath}")
+            return None
 
-    def get_json_using_xpath_from_file(self, instructions, html_file_path, fail_if_not_exist=True, timeout=10, debug=False):
-        """
-        Similar a get_json() con la diferencia de que asume que los selectores recibidos son siempre de tipo XPATH
-        y los evalúa desde un archivo HTML.
 
-        Ej:
-
-        {
-            "nombre_producto": "//h1",
-            "precio_original": "//p/span/del",
-            "precio_descuento": "//span[@class='product-vip__price-value']", 
-            "porcentaje_descuento": "//span[@class='product-vip__off-value']",
-            "cuotas_sin_interes": {
-                "numero_cuotas": "//p/i/following-sibling::span/strong[1]",
-                "monto_cuota": "//p/i/following-sibling::span/strong[2]"
-            },
-            "colores_disponibles:all": "//select[@id='atributos-0']/option",
-            "imagenes:all[src]": "//div[contains(@class, 'product-vip__images-grid')]//ul[contains(@class, 'product-vip__images-grid-list')]//li[contains(@class, 'product-vip__images-grid-list-item')]//img"
-        }
-        """
-
+    def get_json_using_xpath_from_file(self, instructions, html_file_path, debug=False, fail_if_not_exist=True, timeout=10):
         result = {}
+
         for key, value in instructions.items():
             return_all = False
             attribute = None
 
-            # Check if the field name ends with ":all"
-            if key.endswith(":all"):
+            if ":all" in key:
+                key = key.replace(":all", "")
                 return_all = True
-                key = key[:-4]  # Remove ":all" from the field name
+            if ":" in key:
+                key, attribute = key.split(":", 1)
 
-            # Check if the field name contains an attribute
-            attr_match = re.search(r'\[(\w+)\]$', key)
-            if attr_match:
-                attribute = attr_match.group(1)
-                key = re.sub(r'\[\w+\]$', '', key)  # Remove the attribute from the field name
-
-            if isinstance(value, str):
-                result[key] = self.evaluate_from_file(html_file_path, value, return_all, attribute, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
-            elif isinstance(value, dict):
-                result[key] = self.get_json_using_xpath_from_file(value, html_file_path, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
+            if isinstance(value, dict):
+                result[key] = self.get_json_using_xpath_from_file(value, html_file_path, debug, fail_if_not_exist, timeout)
+            else:
+                result[key] = self.evaluate_from_file(html_file_path, value, return_all, attribute, fail_if_not_exist, timeout, debug)
 
         return result
+
 
     def __init__(self):
         self.headless = None
