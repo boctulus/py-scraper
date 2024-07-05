@@ -31,6 +31,10 @@ from lxml import etree, html
     Instalacion
 
     pip install lxml
+
+    Cache
+
+    https://chatgpt.com/c/35523ed3-9ffb-46c3-8cec-606eb32a34b1
 """
 class WebAutomation:
     def set_base_url(self, url):
