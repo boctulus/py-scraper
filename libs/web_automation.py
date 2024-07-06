@@ -739,11 +739,10 @@ class WebAutomation:
     """
 
     def select_every_selector(self, attrs_list):
-        for attr_dict in attrs_list:
-            for att_selector, att_value in attr_dict.items():
-                self.wait_until_elements_present(att_selector)
-                self.fill(att_selector, att_value)
-                self.sleep(1)
+        for attr_name, attr_value in attrs_list.items():
+            self.wait_until_elements_present(att_selector)
+            self.fill(att_selector, att_value)
+            self.sleep(1)
 
     """
     Selecciona en cada SELECT dado el nombre del campo referido desde un <LABEL for=""> y su valor
@@ -757,28 +756,27 @@ class WebAutomation:
                 "Rejilla": "Rejilla Inox."
             }
     """
-    def select_every_selector_by_attributes(self, attrs_list):        
-        for attr_dict in attrs_list:
-            for attr_name, attr_value in attr_dict.items():
-                select_name, select_id = self.find_select_name_by_label(attr_name)
-                if select_id:
-                    select_selector = f"ID:{select_id}"
-                    self.wait_until_elements_present(select_selector)
-                    
-                    # Obtener las opciones disponibles
-                    select_element = self.get(select_selector)
-                    select = Select(select_element)
-                    options = [option.text.strip() for option in select.options]
-                    
-                    logging.info(f"Options for {attr_name}: {options}")
-                    
-                    if attr_value in options:
-                        self.fill(select_selector, attr_value)
-                    else:
-                        logging.warning(f"Valor '{attr_value}' no encontrado para el atributo '{attr_name}'. Opciones disponibles: {options}")
-                    self.sleep(1)
+    def select_every_selector_by_attributes(self, attrs_list): 
+        for attr_name, attr_value in attrs_list.items():
+            select_name, select_id = self.find_select_name_by_label(attr_name)
+            if select_id:
+                select_selector = f"ID:{select_id}"
+                self.wait_until_elements_present(select_selector)
+                
+                # Obtener las opciones disponibles
+                select_element = self.get(select_selector)
+                select = Select(select_element)
+                options = [option.text.strip() for option in select.options]
+                
+                logging.info(f"Options for {attr_name}: {options}")
+                
+                if attr_value in options:
+                    self.fill(select_selector, attr_value)
                 else:
-                    logging.warning(f"No se pudo encontrar un SELECT para el atributo '{attr_name}'")
+                    logging.warning(f"Valor '{attr_value}' no encontrado para el atributo '{attr_name}'. Opciones disponibles: {options}")
+                self.sleep(1)
+            else:
+                logging.warning(f"No se pudo encontrar un SELECT para el atributo '{attr_name}'")
 
 
     def __init__(self):

@@ -86,14 +86,13 @@ class MyScraper(WebAutomation):
             instructions = {
                 "data": {
                     "product_url": "https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Products/stcne",
-                    "attrs": [
-                        {
+                    "attrs":  {
                             "Ancho": "70",
                             "Largo": "70",
                             "Textura": "Pizarra",
                             "Rejilla": "Rejilla Inox."
                         }
-                    ]
+                    
                 }
             }
             
