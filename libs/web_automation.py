@@ -501,6 +501,21 @@ class WebAutomation:
             else:
                 return False
 
+    def find_select_name_by_label(self, label_text):
+        try:
+            label = self.driver.find_element(By.XPATH, f"//label[contains(text(), '{label_text}')]")
+            select_id = label.get_attribute('for')
+            if select_id:
+                select = self.driver.find_element(By.ID, select_id)
+                return select.get_attribute('name'), select_id
+            else:
+                logging.warning(f"No se encontró un SELECT asociado al label '{label_text}'")
+                return None, None
+        except NoSuchElementException:
+            logging.warning(f"No se encontró un label con el texto '{label_text}'")
+            return None, None
+
+
     def load_instructions_from_python(self, filename):
         instructions = {}
         filename_path = os.path.join('instructions', filename)
@@ -703,8 +718,9 @@ class WebAutomation:
 
 
     def __init__(self):
-        self.headless = None
-        self.driver   = None
+        self.test_file = None
+        self.headless  = None
+        self.driver    = None
 
 
 

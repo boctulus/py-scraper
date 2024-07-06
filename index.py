@@ -41,8 +41,9 @@ class MyScraper(WebAutomation):
     """
     
     def __init__(self):
-        self.driver = None
-        self.debug  = True ###
+        self.driver    = None
+        self.debug     = True ###
+        self.test_file = None
 
     def sleep(self, t: int):
         self.robot_execution.create_record(
@@ -240,7 +241,7 @@ class MyScraper(WebAutomation):
         try:
             if len(sys.argv) < 3 or sys.argv[1] != 'load':
                 print("Usage: python index.py load <self.test_file> or python index.py load last [--no-test]")
-                return
+                self.quit()
 
             # Instruction loader
             loader             = InstructionLoader()
