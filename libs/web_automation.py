@@ -736,6 +736,10 @@ class WebAutomation:
             "NAME:SelectedVariation": "120x45x60 Dos muebles.",
             // otros
         }
+
+        La limitacion de esta implementacion es que el NAME se puede repetir y si se se repitiera
+        entre varios SELECT y para peor un campo es "Ancho" y otro es "Alto" y los valores de las dimensiones
+        como puede ser 70,80,90,... se repiten tambien entre SELECT-OPTIONs el resultado seria errado.
     """
 
     def select_every_selector(self, attrs_list):
