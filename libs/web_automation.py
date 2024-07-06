@@ -24,6 +24,10 @@ from webdriver_manager.firefox import DriverManager as FireFoxDriverManager
 
 from lxml import etree, html
 
+import shutil
+import logging
+from logging.handlers import RotatingFileHandler
+
 """
     https://claude.ai/chat/a3452697-a1bc-4b24-8606-62dfc0d4dd08
     https://chatgpt.com/c/b460b582-3f19-48e4-bd76-ae1f5c322890
@@ -501,21 +505,6 @@ class WebAutomation:
             else:
                 return False
 
-    def find_select_name_by_label(self, label_text):
-        try:
-            label = self.driver.find_element(By.XPATH, f"//label[contains(text(), '{label_text}')]")
-            select_id = label.get_attribute('for')
-            if select_id:
-                select = self.driver.find_element(By.ID, select_id)
-                return select.get_attribute('name'), select_id
-            else:
-                logging.warning(f"No se encontró un SELECT asociado al label '{label_text}'")
-                return None, None
-        except NoSuchElementException:
-            logging.warning(f"No se encontró un label con el texto '{label_text}'")
-            return None, None
-
-
     def load_instructions_from_python(self, filename):
         instructions = {}
         filename_path = os.path.join('instructions', filename)
@@ -715,6 +704,81 @@ class WebAutomation:
                 result[key] = self.evaluate_from_file(html_file_path, value, return_all, attribute, fail_if_not_exist, timeout, debug)
 
         return result
+
+
+    ### SELECT
+   
+    """
+    Encuentra el NAME del SELECT basándose en el texto del label asociado.
+    
+    :param label_text: El texto del label que estamos buscando (por ejemplo, "Ancho").
+    :return: El NAME del SELECT asociado o None si no se encuentra.
+    """
+    def find_select_name_by_label(self, label_text):
+        try:
+            label = self.driver.find_element(By.XPATH, f"//label[contains(text(), '{label_text}')]")
+            select_id = label.get_attribute('for')
+            if select_id:
+                select = self.driver.find_element(By.ID, select_id)
+                return select.get_attribute('name'), select_id
+            else:
+                logging.warning(f"No se encontró un SELECT asociado al label '{label_text}'")
+                return None, None
+        except NoSuchElementException:
+            logging.warning(f"No se encontró un label con el texto '{label_text}'")
+            return None, None
+
+
+    """
+    Selecciona en cada SELECT dado su selector:valor
+
+        {
+            "NAME:SelectedVariation": "120x45x60 Dos muebles.",
+            // otros
+        }
+    """
+
+    def select_every_selector(self, attrs_list):
+        for attr_dict in attrs_list:
+            for att_selector, att_value in attr_dict.items():
+                self.wait_until_elements_present(att_selector)
+                self.fill(att_selector, att_value)
+                self.sleep(1)
+
+    """
+    Selecciona en cada SELECT dado el nombre del campo referido desde un <LABEL for=""> y su valor
+
+        Ej:
+
+            {
+                "Ancho": "70",
+                "Largo": "70",
+                "Textura": "Pizarra",
+                "Rejilla": "Rejilla Inox."
+            }
+    """
+    def select_every_selector_by_attributes(self, attrs_list):        
+        for attr_dict in attrs_list:
+            for attr_name, attr_value in attr_dict.items():
+                select_name, select_id = self.find_select_name_by_label(attr_name)
+                if select_id:
+                    select_selector = f"ID:{select_id}"
+                    self.wait_until_elements_present(select_selector)
+                    
+                    # Obtener las opciones disponibles
+                    select_element = self.get(select_selector)
+                    select = Select(select_element)
+                    options = [option.text.strip() for option in select.options]
+                    
+                    logging.info(f"Options for {attr_name}: {options}")
+                    
+                    if attr_value in options:
+                        self.fill(select_selector, attr_value)
+                    else:
+                        logging.warning(f"Valor '{attr_value}' no encontrado para el atributo '{attr_name}'. Opciones disponibles: {options}")
+                    self.sleep(1)
+                else:
+                    logging.warning(f"No se pudo encontrar un SELECT para el atributo '{attr_name}'")
 
 
     def __init__(self):

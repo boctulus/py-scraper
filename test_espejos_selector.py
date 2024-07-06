@@ -18,7 +18,6 @@ from dotenv import load_dotenv
 
 from libs.web_automation import WebAutomation
 from libs.instruction_loader import InstructionLoader
-from libs.select2 import Select2
 from libs.label import Label
 from libs.files import Files
 from libs.dataobject import DataObject
@@ -56,36 +55,13 @@ class MyScraper(WebAutomation):
         nav_to_variation() -> get_product()
     '''
 
-    def nav_to_variation(self, attrs_list):
-        for attr_dict in attrs_list:
-            for attr_name, attr_value in attr_dict.items():
-                select_name, select_id = self.find_select_name_by_label(attr_name)
-                if select_id:
-                    select_selector = f"ID:{select_id}"
-                    self.wait_until_elements_present(select_selector)
-                    
-                    # Obtener las opciones disponibles
-                    select_element = self.get(select_selector)
-                    select = Select(select_element)
-                    options = [option.text.strip() for option in select.options]
-                    
-                    logging.info(f"Options for {attr_name}: {options}")
-                    
-                    if attr_value in options:
-                        self.fill(select_selector, attr_value)
-                    else:
-                        logging.warning(f"Valor '{attr_value}' no encontrado para el atributo '{attr_name}'. Opciones disponibles: {options}")
-                    self.sleep(1)
-                else:
-                    logging.warning(f"No se pudo encontrar un SELECT para el atributo '{attr_name}'")
-
     def get_product(self, data):
         if data.product_url is not None:
             self.nav(data.product_url)
 
         time.sleep(10)
 
-        self.nav_to_variation(data.attrs)
+        self.select_every_selector_by_attributes(data.attrs)
 
         p = self.Product()
 
