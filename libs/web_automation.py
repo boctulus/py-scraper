@@ -749,14 +749,25 @@ class WebAutomation:
 
         Ej:
 
-            {
-                "Ancho": "70",
-                "Largo": "70",
-                "Textura": "Pizarra",
-                "Rejilla": "Rejilla Inox."
-            }
+        {
+            "Ancho": "70",
+            "Largo": "70",
+            "Textura": "Pizarra",
+            "Rejilla": "Rejilla Inox."
+        }
+        
+        donde el HTML puede ser algo como:
+
+        <th class="AlignLeft MediumColumn"><label class="SelectLabelling" for="SelectedVariation0">Ancho</label></th> <!-- label -->        
+        <td class="AlignLeft">
+          <select name="SelectedVariation" id="SelectedVariation0" class="LongText ep-js ep-uiInput ep-uiInput-select ep-uiValidate" data-js="" data-attributeid="97325407">
+            <option value="97325417" selected="selected">70</option>
+            <option value="97325422">80</option>
+            <option value="97325427">90</option>
+          </select>
+        </td>
     """
-    def select_every_selector_by_attributes(self, attrs_list): 
+    def select_every_selector_using_labels(self, attrs_list): 
         for attr_name, attr_value in attrs_list.items():
             select_name, select_id = self.find_select_name_by_label(attr_name)
             if select_id:

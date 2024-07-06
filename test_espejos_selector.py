@@ -61,7 +61,7 @@ class MyScraper(WebAutomation):
 
         time.sleep(10)
 
-        self.select_every_selector_by_attributes(data.attrs)
+        self.select_every_selector_using_labels(data.attrs)
 
         p = self.Product()
 
